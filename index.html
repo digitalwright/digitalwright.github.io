@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Home
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1sel">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Overview</p>
+DECIPHER is a software that can be used for deciphering and managing biological sequences efficiently in the <a href="http://www.r-project.org/">R</a> programming language. The <a href="http://www.r-project.org/">R</a> package is distributed as platform independent source code under the <a href="http://www.gnu.org/copyleft/gpl.html">GPL version 3 license</a>.
+
+<p class="c1">Installation</p>
+To install DECIPHER, start the latest version of <a href="http://www.r-project.org/">R</a> and enter:<br>
+<div class="code">
+if (!requireNamespace("BiocManager", quietly=TRUE))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BiocManager")<br>
+BiocManager::install("DECIPHER")<br>
+</div>
+Visit the <a href="Tutorials.html">Tutorials</a> page to learn how you can get started DECIPHERing. Questions can be posted on the <a href="https://support.bioconductor.org/">Bioconductor Support</a> forum or <a href="Contact.html">contact us</a>.
+
+<p class="c1">Features</p>
+<ul>
+<li><b>Sequence databases:</b> import, maintain, view, export, and interact with a massive number of sequences.</li>
+<li><b>Analyze sequences:</b> classify into a taxonomy of organisms or functions, detect repeats, find chimeras, predict secondary structure, create phylogenetic trees, and reconstruct ancestral states.</li>
+<li><b>Manipulate sequences:</b> trim low quality regions, correct frameshifts, reorient nucleotides, determine consensus, or digest with restriction enzymes.</li>
+<li><b>Sequence alignment:</b> accurately align thousands of DNA, RNA, or amino acid sequences. Quickly find and align the syntenic regions of multiple genomes.</li>
+<li><b>Homology finding:</b> rapidly query sequences for homologous hits among a set of target sequences or genomes.  Cluster into groups of related sequences.</li>
+<li><b>Population genetics:</b> infer demography, infer recombination, and infer selection.</li>
+<li><b>Gene finding:</b> predict coding and non-coding genes in a genome, extract them from the genome, and export them to a file.</li>
+<li><b>Oligo design:</b> test oligos <i>in silico</i>, or create new primer and probe sequences optimized for a variety of objectives.</li>
+</ul>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

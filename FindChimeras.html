@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Find Chimeras
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1sub">Homology<span class="right">&#9662;</span></a></li>
+<li><a href="Clusterize.html" class="l2">Clusterize</a></li>
+<li><a href="DetectRepeats.html" class="l2">Detect Repeats</a></li>
+<li><a href="FindChimeras.html" class="l2sel">Find Chimeras</a></li>
+<li><a href="SequenceSearch.html" class="l2">Sequence Search</a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Find Chimeras</p>
+
+The FindChimeras function is described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright <i>et al.</i> (2012) "DECIPHER, A Search-Based Approach to Chimera Identification for 16S rRNA Sequences." <i>Applied and Environmental Microbiology</i>, <a href="http://aem.asm.org/cgi/pmidlookup?view=long&pmid=22101057">doi:10.1128/AEM.06516-11</a>.</p></div>
+
+For an in-depth tutorial on finding chimeras, see the &quot;Finding Chimeric Sequences&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">Note</p>
+
+Chimeras are sequence artifacts due to incomplete template elongation during PCR.  We now recommend using a high-fidelity polymerase, such as KAPA HiFi, instead of removing chimeras after the fact.  High processivity polymerases largely avoid chimera formation.  Alternatively, it is possible to use greatly extended (&ge; 3 minute) elongation times with <i>Taq</i> polymerase, which has relatively low processivity.  In our opinion, these experimental solutions are preferable to <i>post hoc</i> bioinformatic chimera removal.
+
+<br><br>Please refer to this publication more information (see Fig. 4):
+
+<div style="margin-left: 1em;"><p class="hanging">TJ De Wolfe &amp; ES Wright (2023) "Multi-factorial examination of amplicon sequencing workflows from sample preparation to bioinformatic analysis." <i>BMC Microbiology</i>, <a href="https://link.springer.com/article/10.1186/s12866-023-02851-8">doi:10.1186/s12866-023-02851-8</a>.</p></div>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

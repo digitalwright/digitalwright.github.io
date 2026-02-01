@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #5
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #5 - Character basics</p>
+
+Despite its name, the character type can be used to store single letters, words, sentences, paragraphs, and numbers as text. In this sense, 'character' is short for 'character strings', which are commonly called 'strings' in many other programming languages. This lesson describes basic character manipulation, printing to the screen, and named indexing.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># named indexing - indexing by character names</span></span>
+&gt; x &lt;- <span class='numbers'>1</span>:<span class='numbers'>26</span>
+&gt; <span class='functs'>names</span>&#40;x&#41; <span class='comments'># NULL is a special object (undefined, length 0)</span>
+NULL
+&gt; <span class='functs'>names</span>&#40;x&#41; &lt;- letters
+&gt; x
+ a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r 
+ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 
+ s  t  u  v  w  x  y  z 
+19 20 21 22 23 24 25 26 
+&gt; x[<span class='chars'>&quot;a&quot;</span>] <span class='comments'># equivalent to x[1]</span>
+a 
+1 
+&gt; x[<span class='functs'>c</span>&#40;<span class='chars'>&quot;a&quot;</span>, <span class='chars'>&quot;d&quot;</span>&#41;] <span class='comments'># x[c&#40;1, 4&#41;]</span>
+a d 
+1 4 
+&gt; y &lt;- <span class='functs'>sample</span>&#40;letters, <span class='numbers'>100</span>, replace=TRUE&#41;
+&gt; x[y] <span class='comments'># index with another variable</span>
+ y  p  v  i  w  l  p  q  c  m  n  h  n  y  d  w  n  h 
+25 16 22  9 23 12 16 17  3 13 14  8 14 25  4 23 14  8 
+ q  k  v  h  h  f  a  d  p  j  f  n  x  h  i  k  g  b 
+17 11 22  8  8  6  1  4 16 10  6 14 24  8  9 11  7  2 
+ p  w  q  w  i  i  r  p  i  z  m  r  v  i  y  f  f  w 
+16 23 17 23  9  9 18 16  9 26 13 18 22  9 25  6  6 23 
+ f  x  s  i  p  h  d  k  i  n  k  d  b  q  a  o  a  p 
+ 6 24 19  9 16  8  4 11  9 14 11  4  2 17  1 15  1 16 
+ f  e  a  p  n  p  f  e  y  c  l  x  w  f  r  c  u  u 
+ 6  5  1 16 14 16  6  5 25  3 12 24 23  6 18  3 21 21 
+ r  l  p  m  x  l  w  f  p  q 
+18 12 16 13 24 12 23  6 16 17 
+&gt; 
+&gt; z &lt;- <span class='functs'>list</span>&#40;A=<span class='numbers'>1</span>:<span class='numbers'>10</span>, B=<span class='functs'>list</span>&#40;C=<span class='numbers'>11</span>:<span class='numbers'>20</span>, D=<span class='chars'>&quot;Choose me!&quot;</span>&#41;&#41;
+&gt; <span class='comments'># function arguments are always set with `=` not `<-`</span>
+&gt; z
+$A
+ [1]  1  2  3  4  5  6  7  8  9 10
+<br>
+$B
+$B$C
+ [1] 11 12 13 14 15 16 17 18 19 20
+<br>
+$B$D
+[1] "Choose me!"
+<br>
+<br>
+&gt; <span class='functs'>names</span>&#40;z&#41;
+[1] "A" "B"
+&gt; z[[<span class='numbers'>1</span>]]
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; z$A <span class='comments'># indexing by name</span>
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; z$B
+$C
+ [1] 11 12 13 14 15 16 17 18 19 20
+<br>
+$D
+[1] "Choose me!"
+<br>
+&gt; z$B$D
+[1] "Choose me!"
+&gt; z[<span class='chars'>&quot;A&quot;</span>]
+$A
+ [1]  1  2  3  4  5  6  7  8  9 10
+<br>
+&gt; z[[<span class='chars'>&quot;A&quot;</span>]]
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; 
+&gt; <span class='comments'># familiar classes handle character data too:</span>
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;letters[<span class='numbers'>1</span>:<span class='numbers'>25</span>], nrow=<span class='numbers'>5</span>&#41;
+&gt; m
+     [,1] [,2] [,3] [,4] [,5]
+[1,] "a"  "f"  "k"  "p"  "u" 
+[2,] "b"  "g"  "l"  "q"  "v" 
+[3,] "c"  "h"  "m"  "r"  "w" 
+[4,] "d"  "i"  "n"  "s"  "x" 
+[5,] "e"  "j"  "o"  "t"  "y" 
+&gt; <span class='functs'>colnames</span>&#40;m&#41; &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;c1&quot;</span>, <span class='chars'>&quot;c2&quot;</span>, <span class='chars'>&quot;c3&quot;</span>, <span class='chars'>&quot;c4&quot;</span>, <span class='chars'>&quot;c5&quot;</span>&#41;
+&gt; <span class='functs'>rownames</span>&#40;m&#41; &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;r1&quot;</span>, <span class='chars'>&quot;r2&quot;</span>, <span class='chars'>&quot;r3&quot;</span>, <span class='chars'>&quot;r4&quot;</span>, <span class='chars'>&quot;r5&quot;</span>&#41;
+&gt; m
+   c1  c2  c3  c4  c5 
+r1 "a" "f" "k" "p" "u"
+r2 "b" "g" "l" "q" "v"
+r3 "c" "h" "m" "r" "w"
+r4 "d" "i" "n" "s" "x"
+r5 "e" "j" "o" "t" "y"
+&gt; a &lt;- <span class='functs'>array</span>&#40;LETTERS[<span class='numbers'>1</span>:<span class='numbers'>25</span>], dim=<span class='functs'>c</span>&#40;<span class='numbers'>5</span>, <span class='numbers'>5</span>&#41;&#41;
+&gt; <span class='functs'>class</span>&#40;a&#41; <span class='comments'># matrix</span>
+[1] "matrix"
+&gt; <span class='functs'>toupper</span>&#40;m&#41;==a <span class='comments'># upper-case</span>
+     c1   c2   c3   c4   c5
+r1 TRUE TRUE TRUE TRUE TRUE
+r2 TRUE TRUE TRUE TRUE TRUE
+r3 TRUE TRUE TRUE TRUE TRUE
+r4 TRUE TRUE TRUE TRUE TRUE
+r5 TRUE TRUE TRUE TRUE TRUE
+&gt; <span class='functs'>tolower</span>&#40;a&#41;==m <span class='comments'># lower-case</span>
+     c1   c2   c3   c4   c5
+r1 TRUE TRUE TRUE TRUE TRUE
+r2 TRUE TRUE TRUE TRUE TRUE
+r3 TRUE TRUE TRUE TRUE TRUE
+r4 TRUE TRUE TRUE TRUE TRUE
+r5 TRUE TRUE TRUE TRUE TRUE</span></pre>
+
+<div class="breakout">The paste function will separate its inputs by a separator, and, if desired, collapse the vector into a single element.</div>
+
+<pre><span class="codebox"><span class="line">dna1 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;T&quot;</span>, <span class='chars'>&quot;G&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;</span>
+&gt; dna2 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;a&quot;</span>, <span class='chars'>&quot;t&quot;</span>, <span class='chars'>&quot;g&quot;</span>, <span class='chars'>&quot;c&quot;</span>&#41;
+&gt; <span class='comments'># given multiple character vectors, by default</span>
+&gt; <span class='comments'># paste will merge them with spaces between:</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, dna2&#41;
+[1] "A a" "T t" "G g" "C c"
+&gt; <span class='comments'># the default behavior can be changed:</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, dna2, sep=<span class='chars'>&quot;&quot;</span>&#41;
+[1] "Aa" "Tt" "Gg" "Cc"
+&gt; <span class='functs'>paste0</span>&#40;dna1, dna2&#41; <span class='comments'># paste0 defaults to sep=&quot;&quot;</span>
+[1] "Aa" "Tt" "Gg" "Cc"
+&gt; <span class='comments'># we can specify whatever separator we desire:</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, dna2, sep=<span class='chars'>&quot;*&quot;</span>&#41;
+[1] "A*a" "T*t" "G*g" "C*c"
+&gt; <span class='functs'>paste</span>&#40;dna1, dna2, sep=<span class='chars'>&quot;+++&quot;</span>&#41;
+[1] "A+++a" "T+++t" "G+++g" "C+++c"
+&gt; <span class='comments'># we can also "collapse" the output to length 1</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, dna2, sep=<span class='chars'>&quot;*&quot;</span>, collapse=<span class='chars'>&quot;_&quot;</span>&#41;
+[1] "A*a_T*t_G*g_C*c"
+&gt; <span class='comments'># collapse works on single vectors too:</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, collapse=<span class='chars'>&quot;-&quot;</span>&#41;
+[1] "A-T-G-C"
+&gt; <span class='comments'># whereas the `sep` argument does not apply</span>
+&gt; <span class='comments'># to single vector inputs</span>
+&gt; <span class='functs'>paste</span>&#40;dna1, sep=<span class='chars'>&quot;-&quot;</span>&#41;
+[1] "A" "T" "G" "C"
+&gt; 
+&gt; <span class='comments'># many functions accept character inputs</span>
+&gt; <span class='functs'>rep</span>&#40;<span class='numbers'>2</span>, times=<span class='numbers'>10</span>&#41;
+ [1] 2 2 2 2 2 2 2 2 2 2
+&gt; <span class='functs'>rep</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;a&quot;</span>, <span class='chars'>&quot;B&quot;</span>&#41;, times=<span class='numbers'>5</span>&#41;
+ [1] "a" "B" "a" "B" "a" "B" "a" "B" "a" "B"
+&gt; <span class='functs'>rep</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;a&quot;</span>, <span class='chars'>&quot;B&quot;</span>&#41;, times=<span class='functs'>c</span>&#40;<span class='numbers'>5</span>, <span class='numbers'>2</span>&#41;&#41;
+[1] "a" "a" "a" "a" "a" "B" "B"
+&gt; <span class='functs'>rep</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;a&quot;</span>, <span class='chars'>&quot;B&quot;</span>&#41;, each=<span class='numbers'>5</span>&#41;
+ [1] "a" "a" "a" "a" "a" "B" "B" "B" "B" "B"</span></pre>
+
+<div class="breakout">Here, two useful character functions are introduced: substring and strsplit. The substring function enables the extraction of parts of each character element. The strsplit function will burst each character element at a split point. Note that substring returns a character object, whereas strsplit returns a list.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># common functions acting on character vectors</span></span>
+&gt; a &lt;- <span class='functs'>c</span>&#40;A=<span class='chars'>&quot;One&quot;</span>, B=<span class='chars'>&quot;Two&quot;</span>, C=<span class='chars'>&quot;Three&quot;</span>&#41;
+&gt; <span class='comments'># alternatively:</span>
+&gt; a &lt;- <span class='functs'>setNames</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;One&quot;</span>, <span class='chars'>&quot;Two&quot;</span>, <span class='chars'>&quot;Three&quot;</span>&#41;, <span class='functs'>c</span>&#40;<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;&#41;
+&gt; <span class='functs'>nchar</span>&#40;a&#41;
+A B C 
+3 3 5 
+&gt; <span class='functs'>substring</span>&#40;a, <span class='numbers'>1</span>, <span class='numbers'>2</span>&#41; <span class='comments'># extract substrings</span>
+   A    B    C 
+"On" "Tw" "Th" 
+&gt; <span class='functs'>substring</span>&#40;a, <span class='numbers'>4</span>, <span class='numbers'>5</span>&#41; <span class='comments'># beyond the nchar of a[1:2]</span>
+   A    B    C 
+  ""   "" "ee" 
+&gt; <span class='functs'>substring</span>&#40;a[<span class='numbers'>3</span>], <span class='numbers'>3</span>, <span class='numbers'>5</span>&#41; &lt;- <span class='chars'>&quot;ird&quot;</span> <span class='comments'># can also set</span>
+&gt; a
+      A       B       C 
+  "One"   "Two" "Third" 
+&gt; <span class='comments'># note: the above replacement only works once per element</span>
+&gt; <span class='functs'>substring</span>&#40;a[<span class='numbers'>3</span>], <span class='numbers'>3</span>:<span class='numbers'>4</span>, <span class='numbers'>3</span>:<span class='numbers'>4</span>&#41;
+[1] "i" "r"
+&gt; <span class='functs'>substring</span>&#40;a[<span class='numbers'>3</span>], <span class='numbers'>3</span>:<span class='numbers'>4</span>, <span class='numbers'>3</span>:<span class='numbers'>4</span>&#41; &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;1&quot;</span>, <span class='chars'>&quot;2&quot;</span>&#41;
+&gt; a
+      A       B       C 
+  "One"   "Two" "Th1rd" 
+&gt; 
+&gt; <span class='comments'># use strsplit to "explode" a character vector</span>
+&gt; s &lt;- <span class='functs'>strsplit</span>&#40;a, <span class='chars'>&quot;&quot;</span>&#41; <span class='comments'># returns a list!</span>
+&gt; s
+$A
+[1] "O" "n" "e"
+<br>
+$B
+[1] "T" "w" "o"
+<br>
+$C
+[1] "T" "h" "1" "r" "d"
+<br>
+&gt; s$C
+[1] "T" "h" "1" "r" "d"
+&gt; s &lt;- <span class='functs'>unlist</span>&#40;s&#41;
+&gt; s &lt;- <span class='functs'>paste</span>&#40;s, collapse=<span class='chars'>&quot;&quot;</span>&#41; <span class='comments'># put letters back together</span>
+&gt; s <span class='comments'># one string</span>
+[1] "OneTwoTh1rd"
+&gt; <span class='functs'>substring</span>&#40;s, <span class='numbers'>1</span>:<span class='numbers'>3</span>, <span class='numbers'>3</span>:<span class='numbers'>5</span>&#41; <span class='comments'># extract multiple substrings</span>
+[1] "One" "neT" "eTw"</span></pre>
+
+<div class="breakout">It is common to display text on the screen with cat (concatenate) or print. The main difference between these two alternatives is that cat is unaware of the input object's class, and simply writes its contents to the screen, whereas print will change how the output looks depending on the input object's class.</div>
+
+<pre><span class="codebox"><span class="line">dna &lt;- <span class='functs'>sample</span>&#40;dna1, <span class='numbers'>50</span>, replace=TRUE&#41;</span>
+&gt; <span class='functs'>print</span>&#40;dna&#41; <span class='comments'># pretty formatting depending on input class</span>
+ [1] "T" "A" "G" "A" "G" "T" "G" "T" "C" "C" "G" "G"
+[13] "G" "A" "C" "G" "G" "A" "A" "A" "T" "A" "T" "G"
+[25] "A" "G" "A" "C" "G" "T" "C" "C" "A" "G" "G" "G"
+[37] "G" "T" "G" "T" "G" "A" "G" "G" "G" "T" "C" "C"
+[49] "G" "G"
+&gt; <span class='functs'>cat</span>&#40;dna&#41; <span class='comments'># no pretty formatting</span>
+T A G A G T G T C C G G G A C G G A A A T A T G A G A C G T C C A G G G G T G T G A G G G T C C G G
+&gt; <span class='functs'>cat</span>&#40;dna, sep=<span class='chars'>&quot;&quot;</span>&#41; <span class='comments'># no collapse argument</span>
+TAGAGTGTCCGGGACGGAAATATGAGACGTCCAGGGGTGTGAGGGTCCGG
+&gt; <span class='functs'>paste</span>&#40;dna, sep=<span class='chars'>&quot;&quot;</span>&#41; <span class='comments'># cat behaves differently than paste</span>
+ [1] "T" "A" "G" "A" "G" "T" "G" "T" "C" "C" "G" "G"
+[13] "G" "A" "C" "G" "G" "A" "A" "A" "T" "A" "T" "G"
+[25] "A" "G" "A" "C" "G" "T" "C" "C" "A" "G" "G" "G"
+[37] "G" "T" "G" "T" "G" "A" "G" "G" "G" "T" "C" "C"
+[49] "G" "G"
+&gt; <span class='functs'>paste</span>&#40;dna, collapse=<span class='chars'>&quot;&quot;</span>&#41;
+[1] "TAGAGTGTCCGGGACGGAAATATGAGACGTCCAGGGGTGTGAGGGTCCGG"
+&gt; 
+&gt; <span class='comments'># delimiters, escaping quotes</span>
+&gt; <span class='functs'>cat</span>(<span class='chars'>&quot;\tThis is an indented paragraph of text&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;that I wish to wrap around the screen.&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;\nFollowed by a newline, where I will&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;&#39;single&#39; and \&quot;double\&quot; quote some text.&quot;</span>)
+    This is an indented paragraph of text that I wish
+to wrap around the screen. 
+Followed by a newline, where I will 'single' and
+"double" quote some text.
+&gt; <span class='functs'>cat</span>&#40;&#39;<span class='chars'>&quot; no escape needed if wrapped in single quotes.&#39;</span>&#41;
+" no escape needed if wrapped in single quotes.
+&gt; <span class='functs'>cat</span>&#40;<span class='chars'>&quot;&#39; no escape needed if wrapped in double quotes.&quot;</span>&#41;
+' no escape needed if wrapped in double quotes.
+&gt; <span class='functs'>cat</span>&#40;<span class='chars'>&quot;so that &#39;you&#39;&quot;, &#39;&quot;can&quot; alternate&#39;, &quot;as \&quot;desired&#39;.&quot;</span>&#41;
+so that 'you' "can" alternate as "desired'.</span></pre>
+
+<br><br><a style="float:left;" href="RLesson4.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson6.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

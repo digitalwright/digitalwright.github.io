@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Gallery Example 7
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2sel">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Gallery - Example 7</p>
+
+Below is the <a href="http://www.r-project.org/">R</a> code to reproduce the example:<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+Loading required package: Biostrings
+Loading required package: BiocGenerics
+<br>
+Attaching package: ‘BiocGenerics’
+<br>
+The following objects are masked from ‘package:stats’:
+<br>
+	IQR, mad, sd, var, xtabs
+<br>
+The following objects are masked from ‘package:base’:
+<br>
+	anyDuplicated, aperm, append,
+	as.data.frame, basename, cbind,
+	colnames, dirname, do.call, duplicated,
+	eval, evalq, Filter, Find, get, grep,
+	grepl, intersect, is.unsorted, lapply,
+	Map, mapply, match, mget, order, paste,
+	pmax, pmax.int, pmin, pmin.int,
+	Position, rank, rbind, Reduce, rownames,
+	sapply, setdiff, table, tapply, union,
+	unique, unsplit, which.max, which.min
+<br>
+Loading required package: S4Vectors
+Loading required package: stats4
+<br>
+Attaching package: ‘S4Vectors’
+<br>
+The following object is masked from ‘package:utils’:
+<br>
+	findMatches
+<br>
+The following objects are masked from ‘package:base’:
+<br>
+	expand.grid, I, unname
+<br>
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: GenomeInfoDb
+<br>
+Attaching package: ‘Biostrings’
+<br>
+The following object is masked from ‘package:base’:
+<br>
+	strsplit
+<br>
+&gt; 
+&gt; <span class='comments'># load the H5N1 HA protein coding gene sequence</span>
+&gt; dna &lt;- <span class='functs'>readDNAStringSet</span>&#40;<span class='chars'>&quot;InfluenzaA_hemagglutinin_CDS.fas.gz&quot;</span>&#41;
+&gt; 
+&gt; <span class='comments'># align sequences</span>
+&gt; ali &lt;- <span class='functs'>AlignPairs</span>&#40;dna, dna,
++ pairs=<span class='functs'>data.frame</span>&#40;Pattern=<span class='numbers'>1</span>, Subject=<span class='functs'>seq_along</span>&#40;dna&#41;&#41;,
++ type=<span class='chars'>&quot;both&quot;</span>,
++ processors=NULL&#41;
+|========================================| 100%
+<br>
+Time difference of 13.85 secs
+<br>
+&gt; 
+&gt; <span class='comments'># remove sequences with internal indels</span>
+&gt; dna &lt;- ali$SubjectAligned[<span class='functs'>lengths</span>&#40;ali$Result$PatternGapPosition&#41; == <span class='numbers'>0L</span>]
+&gt; 
+&gt; x &lt;- <span class='functs'>InferSelection</span>&#40;dna, windowSize=<span class='numbers'>1</span>, showPlot=TRUE&#41;
+LnL = -39816.395
+<br>
+Time difference of 116.48 secs
+<br>
+&gt; 
+&gt; <span class='functs'>head</span>&#40;x&#41; <span class='comments'># parameter estimates</span>
+LogLikelihood         theta         kappa 
+-3.981640e+04  4.376473e+00  1.555070e+00 
+	omega 1       omega 2       omega 3 
+4.539993e-05  4.034462e-02  5.905828e+02 
+&gt; 
+&gt; <span class='functs'>tail</span>&#40;x&#41; <span class='comments'># statistical significance</span>
+pvalue 556   pvalue 557   pvalue 558 
+1.722166e-06 3.547689e-06 1.940913e-03 
+pvalue 559   pvalue 560   pvalue 561 
+1.427480e-06 3.295784e-09 1.000000e+00 
+&gt; 
+&gt; <span class='comments'># codons under strong positive selection</span>
+&gt; <span class='functs'>which</span>&#40;x[<span class='functs'>startsWith</span>&#40;<span class='functs'>names</span>&#40;x&#41;, <span class='chars'>&quot;omega&quot;</span>&#41;] &gt; <span class='numbers'>2</span> &
++ x[<span class='functs'>startsWith</span>&#40;<span class='functs'>names</span>&#40;x&#41;, <span class='chars'>&quot;pvalue&quot;</span>&#41;] &lt; <span class='numbers'>0.05</span>&#41;
+omega 540 
+	540</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #2
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #2 - Basic data types and operators</p>
+
+The four primary types in the R language are logicals, integers, doubles, and characters. Each of these types is stored differently in binary form on the computer. Unless forced to do otherwise, all numbers are stored as doubles (64 bits) in R.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line">x &lt;- <span class='chars'>&quot;Hello, World!&quot;</span></span>
+&gt; x <span class='comments'># prints x</span>
+[1] &quot;Hello, World!&quot;
+&gt; 
+&gt; <span class='functs'>typeof</span>&#40;x&#41;
+[1] &quot;character&quot;
+&gt; <span class='functs'>class</span>&#40;x&#41;
+[1] &quot;character&quot;
+&gt; <span class='functs'>object.size</span>&#40;x&#41;
+104 bytes
+&gt; 
+&gt; <span class='numbers'>1.2</span>
+[1] 1.2
+&gt; y &lt;- <span class='numbers'>1.2</span>
+&gt; y
+[1] 1.2
+&gt; y = <span class='numbers'>1.2</span>
+&gt; y
+[1] 1.2
+&gt; <span class='functs'>print</span>&#40;y&#41; <span class='comments'># same as above</span>
+[1] 1.2</span></pre>
+
+<div class="breakout">Doubles have finite precision, meaning that they are stored with a limited number of decimal places. Irrational numbers like pi cannot be stored inside a double without loss of precision, and this principle applies even to many numbers with finite digits, as shown below.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># note that R hides the finite precision</span></span>
+&gt; <span class='functs'>print</span>&#40;y, digits=<span class='numbers'>22</span>&#41; <span class='comments'># specifying another argument</span>
+[1] 1.199999999999999955591
+&gt; 
+&gt; <span class='functs'>typeof</span>&#40;y&#41;
+[1] &quot;double&quot;
+&gt; <span class='functs'>class</span>&#40;y&#41;
+[1] &quot;numeric&quot;
+&gt; <span class='functs'>object.size</span>&#40;y&#41;
+48 bytes</span></pre>
+
+<div class="breakout">Note that the object `y` requires 48 bytes to store, even though a double precision number is stored using 8 bytes (64 bits). The additional 40 bytes is required to store information about the object. This &quot;overhead&quot; stays roughly the same size no matter how many numbers are stored in the object, as seen below.</div>
+
+<pre><span class="codebox"><span class="line">z &lt;- <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>, <span class='numbers'>3</span>, <span class='numbers'>4</span>, <span class='numbers'>5</span>, <span class='numbers'>6</span>&#41; <span class='comments'># `c` is the combine function</span></span>
+&gt; z
+[1] 1 2 3 4 5 6
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;double&quot;
+&gt; <span class='functs'>object.size</span>&#40;z&#41;
+88 bytes
+&gt; 
+&gt; <span class='comments'># the overhead stays the same (40 bytes)</span>
+&gt; <span class='functs'>object.size</span>&#40;z&#41; - <span class='functs'>length</span>&#40;z&#41;*<span class='numbers'>8</span> <span class='comments'># (8 bytes/number)</span>
+40 bytes
+&gt; 
+&gt; z &lt;- <span class='functs'>c</span>&#40;<span class='numbers'>1L</span>, <span class='numbers'>2L</span>, <span class='numbers'>3L</span>, <span class='numbers'>4L</span>, <span class='numbers'>5L</span>, <span class='numbers'>6L</span>&#41; <span class='comments'># integer literals</span>
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;integer&quot;
+&gt; 
+&gt; <span class='comments'># integers require less memory to store</span>
+&gt; <span class='comments'># R currently stores each integer in 4 bytes</span>
+&gt; <span class='functs'>object.size</span>&#40;z&#41;
+72 bytes
+&gt; 
+&gt; z &lt;- <span class='numbers'>1</span>:<span class='numbers'>5</span> <span class='comments'># shorthand for integer sequence</span>
+&gt; <span class='functs'>typeof</span>&#40;z&#41; <span class='comments'># still integer</span>
+[1] &quot;integer&quot;
+&gt; z &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>5</span>&#41;
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;integer&quot;
+&gt; z &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>5</span>, by=<span class='numbers'>1</span>&#41; <span class='comments'># setting the `by` argument</span>
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;double&quot;
+&gt; z &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>1L</span>, <span class='numbers'>5L</span>, by=<span class='numbers'>1L</span>&#41;
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;integer&quot;
+&gt; z &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>5</span>, length.out=<span class='numbers'>5</span>&#41; <span class='comments'># setting `length.out`</span>
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;double&quot;
+&gt; z &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>1L</span>, <span class='numbers'>5L</span>, length.out=<span class='numbers'>5L</span>&#41;
+&gt; <span class='functs'>typeof</span>&#40;z&#41;
+[1] &quot;double&quot;
+&gt; 
+&gt; s &lt;- <span class='functs'>sum</span>&#40;z&#41;
+&gt; <span class='functs'>typeof</span>&#40;s&#41; <span class='comments'># keeps the same type as z</span>
+[1] &quot;double&quot;
+&gt; 
+&gt; <span class='functs'>sum</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>100000</span>&#41; <span class='comments'># Warning:  too big of an integer!</span>
+[1] NA
+Warning message:
+In sum(1:1e+05) : Integer overflow - use sum(as.numeric(.))
+&gt; <span class='comments'># the biggest possible signed integer in R is (2^31 - 1)</span>
+&gt; <span class='functs'>as.integer</span>&#40;<span class='numbers'>2</span>^<span class='numbers'>31</span> - <span class='numbers'>1</span>&#41;
+[1] 2147483647
+&gt; <span class='functs'>as.integer</span>&#40;<span class='numbers'>2</span>^<span class='numbers'>31</span>&#41; <span class='comments'># NA</span>
+[1] NA
+Warning message:
+NAs introduced by coercion to integer range 
+&gt; 
+&gt; <span class='comments'># doubles can store larger numbers</span>
+&gt; <span class='functs'>sum</span>&#40;<span class='functs'>as.numeric</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>100000</span>&#41;&#41;
+[1] 5000050000</span></pre>
+
+<div class="breakout">The type of an object can be coerced depending on the operation. The order of coercion is logical to integer to numeric to character. For example, if adding an integer and numeric then the output will be a numeric, as seen below. Note that, since y is only a single number, it is &quot;recycled&quot; when adding to a vector.</div>
+
+<pre><span class="codebox"><span class="line">a &lt;- z + y</span>
+&gt; a
+[1] 2.2 3.2 4.2 5.2 6.2
+&gt; <span class='functs'>typeof</span>&#40;a&#41;
+[1] &quot;double&quot;
+&gt; <span class='functs'>class</span>&#40;a&#41;
+[1] &quot;numeric&quot;
+&gt; 
+&gt; <span class='functs'>sum</span>&#40;a&#41;
+[1] 21
+&gt; <span class='functs'>max</span>&#40;a&#41;
+[1] 6.2
+&gt; <span class='functs'>min</span>&#40;a&#41;
+[1] 2.2
+&gt; <span class='functs'>print</span>&#40;a, digits=<span class='numbers'>22</span>&#41;
+[1] 2.200000000000000177636 3.200000000000000177636
+[3] 4.200000000000000177636 5.200000000000000177636
+[5] 6.200000000000000177636</span></pre>
+
+<div class="breakout">Although the type of an object determines how it is stored, the class is more flexible. The class can be set to anything, but will change how functions react to the variable. The same function may behave differently for two objects with different classes, even though they are stored as the same type.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>class</span>&#40;a&#41; &lt;- <span class='chars'>&quot;foo&quot;</span> <span class='comments'># the class can be anything</span></span>
+&gt; <span class='functs'>print</span>&#40;a&#41; <span class='comments'># note the alternative behavior</span>
+[1] 2.2 3.2 4.2 5.2 6.2
+attr(,&quot;class&quot;)
+[1] &quot;foo&quot;
+&gt; <span class='comments'># change it back to the original class</span>
+&gt; <span class='functs'>class</span>&#40;a&#41; &lt;- <span class='chars'>&quot;numeric&quot;</span>
+&gt; <span class='functs'>print</span>&#40;a&#41; <span class='comments'># displays the original behavior</span>
+[1] 2.2 3.2 4.2 5.2 6.2
+&gt; 
+&gt; <span class='comments'># classes can be coerced with `as` functions</span>
+&gt; <span class='functs'>as.numeric</span>&#40;a&#41; <span class='comments'># switches class (and therefore type)</span>
+[1] 2.2 3.2 4.2 5.2 6.2
+&gt; <span class='functs'>as</span>&#40;a, <span class='chars'>&quot;numeric&quot;</span>&#41; <span class='comments'># general purpose coercion</span>
+[1] 2.2 3.2 4.2 5.2 6.2
+&gt; <span class='functs'>as.character</span>&#40;a&#41; <span class='comments'># coercion to character</span>
+[1] &quot;2.2&quot; &quot;3.2&quot; &quot;4.2&quot; &quot;5.2&quot; &quot;6.2&quot;
+&gt; 
+&gt; <span class='comments'># objects can also be initialized</span>
+&gt; <span class='functs'>integer</span>&#40;&#41; <span class='comments'># a zero-length integer</span>
+integer(0)
+&gt; <span class='functs'>integer</span>&#40;<span class='numbers'>10</span>&#41; <span class='comments'># get a vector of 10 zeros</span>
+ [1] 0 0 0 0 0 0 0 0 0 0
+&gt; <span class='functs'>character</span>&#40;<span class='numbers'>2</span>&#41; <span class='comments'># get a vector of two &quot;&quot;</span>
+[1] &quot;&quot; &quot;&quot;
+&gt; b &lt;- <span class='functs'>numeric</span>&#40;<span class='numbers'>100</span>&#41;
+&gt; <span class='functs'>object.size</span>&#40;b&#41;/<span class='functs'>length</span>&#40;b&#41; <span class='comments'># approaching 8 bytes each</span>
+8.4 bytes</span></pre>
+
+<div class="breakout">There are a variety of ways to extract subsets of elements from an object. Elements can be extracted by their index (e.g., 1, 2, 3, etc.), by removing other elements, or by using another object as the index.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># subsetting is performed with square brackets</span></span>
+&gt; a[<span class='numbers'>1</span>]
+[1] 2.2
+&gt; a[<span class='numbers'>5</span>]
+[1] 6.2
+&gt; a[z]
+[1] 2.2 3.2 4.2 5.2 6.2
+&gt; a[<span class='numbers'>-1</span>]
+[1] 3.2 4.2 5.2 6.2
+&gt; a[<span class='numbers'>-1</span>] &lt;- <span class='numbers'>5</span>
+&gt; a <span class='comments'># everything except the first element is now 5</span>
+[1] 2.2 5.0 5.0 5.0 5.0
+&gt; -z
+[1] -1 -2 -3 -4 -5
+&gt; a[-z] <span class='comments'># drop all elements</span>
+numeric(0)
+&gt; 
+&gt; b <span class='comments'># note the index is printed</span>
+  [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ [25] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ [49] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ [73] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ [97] 0 0 0 0
+&gt; b[<span class='numbers'>1</span>:<span class='numbers'>3</span>] &lt;- <span class='numbers'>1</span>
+&gt; b[<span class='functs'>length</span>&#40;b&#41;] &lt;- <span class='numbers'>10</span>
+&gt; <span class='functs'>object.size</span>&#40;b&#41;/<span class='functs'>length</span>&#40;b&#41; <span class='comments'># unchanged</span>
+8.4 bytes
+&gt; 
+&gt; <span class='comments'># head and tail are useful functions</span>
+&gt; <span class='functs'>head</span>&#40;b&#41; <span class='comments'># the first size elements</span>
+[1] 1 1 1 0 0 0
+&gt; <span class='functs'>head</span>&#40;b, n=<span class='numbers'>10</span>&#41;
+ [1] 1 1 1 0 0 0 0 0 0 0
+&gt; <span class='functs'>tail</span>&#40;b&#41; <span class='comments'># the last 6 elements</span>
+[1]  0  0  0  0  0 10
+&gt; 
+&gt; <span class='comments'># scientific notation is also possible</span>
+&gt; b[(<span class='functs'>length</span>&#40;b&#41; - <span class='numbers'>4</span>):<span class='functs'>length</span>&#40;b&#41;] &lt;- <span class='numbers'>1e1</span>
+&gt; <span class='functs'>tail</span>&#40;b&#41;
+[1]  0 10 10 10 10 10
+&gt; <span class='functs'>tail</span>&#40;b&#41; &lt;- <span class='numbers'>5</span> <span class='comments'># Error! Cannot do this.</span>
+Error in tail(b) &lt;- 5 : could not find function &quot;tail&lt;-&quot;
+&gt; b[<span class='numbers'>45</span>:<span class='numbers'>55</span>] <span class='comments'># look at the middle</span>
+ [1] 0 0 0 0 0 0 0 0 0 0 0</span></pre>
+
+<br><br><a style="float:left;" href="RLesson1.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson3.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Big Biological Data Part #3
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2sel">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Managing big biological sequence data - Workflow part #3</p>
+
+In part #3 of the workflow, representatives from each sequence cluster are compared to known <i>Pythium</i> species. The goal of this analysis is to identify which organisms present in each sample are similar to known species. The known species are separated into two groups: those that are used as biocontrol agents &#40;good strains&#41; and those that are known to be plant pathogens &#40;bad strains&#41;.<br><br>
+
+<!--<video width="590" poster="images/Poster4.png" controls><source src="data/Videos/BigBioSeqData_Part3.mp4" type="video/mp4">Your browser does not support this video format.</video><br><br>-->
+<iframe width="590" height="443" src="https://drive.google.com/file/d/1Aymw3K_EpvX0iGTbhWw0H_aC5qzRPH3D/preview"></iframe>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line">ids &lt;- <span class='functs'>IdentifyByRank</span>&#40;dbConn,</span>
++ &nbsp;&nbsp;&nbsp;add2tbl=TRUE&#41;
+<br>
+Updating column: "identifier"...
+Formed 167 distinct groups.
+Added to table Seqs: "identifier".
+Time difference of 0.09 secs
+<br>
+&gt; lens &lt;- <span class='functs'>IdLengths</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;add2tbl=TRUE&#41;
+<br>
+Lengths counted for 488 sequences.
+Added to Seqs:  "bases", "nonbases", and "width".
+<br>
+Time difference of 0.05 secs
+<br>
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn&#41;
+&gt; 
+&gt; <span class='comments'># separate Pythium strains into good and bad groups</span>
+&gt; biocontrol &lt;- <span class='functs'>c</span>&#40;&#39;Pythium oligandrum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium nunn&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium periplocum&#39;&#41;
+&gt; pathogen &lt;- <span class='functs'>c</span>&#40;&#39;Pythium acanthicum&#39;, <span class='comments'># strawberries:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium rostratum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium middletonii&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium aristosporum&#39;, <span class='comments'># grasses/cereals:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium graminicola&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium okanoganense&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium paddicum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium volutum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium arrhenomanes&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium buismaniae&#39;, <span class='comments'># flowers:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium spinosum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium mastophorum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium splendens&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium violae&#39;, <span class='comments'># carrots:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium paroecandrum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium sulcatum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium dissotocum&#39;, <span class='comments'># potatoes:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium scleroteichum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium myriotylum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium heterothallicum&#39;, <span class='comments'># lettuce:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium tracheiphilum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium ultimum&#39;, <span class='comments'># multiple plants:</span>
++ &nbsp;&nbsp;&nbsp;&#39;Pythium irregulare&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium aphanidermatum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium debaryanum&#39;,
++ &nbsp;&nbsp;&nbsp;&#39;Pythium sylvaticum&#39;&#41;
+&gt; 
+&gt; <span class='comments'># Select the longest sequence from each species</span>
+&gt; species &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;nameBy=<span class='chars'>&quot;identifier&quot;</span>,
++ &nbsp;&nbsp;&nbsp;clause=<span class='functs'>paste</span>&#40;<span class='chars'>&quot;identifier in &#40;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>paste</span>&#40;&quot;&#39;&quot;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;biocontrol,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pathogen&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&#39;&quot;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collapse=<span class='chars'>&quot;, &quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&#41; group by identifier
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;having <span class='functs'>max</span>&#40;bases&#41;&quot;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;&quot;</span>&#41;&#41;
+Search Expression:
+select identifier, _Seqs.sequence from Seqs join
+_Seqs on Seqs.row_names = _Seqs.row_names where
+_Seqs.row_names in (select row_names from Seqs where
+identifier in ('Pythium oligandrum', 'Pythium nunn',
+'Pythium periplocum', 'Pythium acanthicum', 'Pythium
+rostratum', 'Pythium middletonii', 'Pythium
+aristosporum', 'Pythium graminicola', 'Pythium
+okanoganense', 'Pythium paddicum', 'Pythium
+volutum', 'Pythium arrhenomanes', 'Pythium
+buismaniae', 'Pythium spinosum', 'Pythium
+mastophorum', 'Pythium splendens', 'Pythium violae',
+'Pythium paroecandrum', 'Pythium sulcatum', 'Pythium
+dissotocum', 'Pythium scleroteichum', 'Pythium
+myriotylum', 'Pythium heterothallicum', 'Pythium
+tracheiphilum', 'Pythium ultimum', 'Pythium
+irregulare', 'Pythium aphanidermatum', 'Pythium
+debaryanum', 'Pythium sylvaticum') group by
+identifier having max(bases))
+<br>
+DNAStringSet of length: 29
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># Select the longest sequence in each cluster</span>
+&gt; dna &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='chars'>&quot;DauphinFarm&quot;</span>, <span class='comments'># choose a sample</span>
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;clause=&quot;cluster is not null
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group by cluster
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;having <span class='functs'>max</span>&#40;end - start&#41;&quot;&#41;
+Search Expression:
+select row_names, sequence from _Reads where
+row_names in (select row_names from Reads where
+identifier is "DauphinFarm" and cluster is not null
+group by cluster having max(end - start))
+<br>
+DNAStringSet of length: 13
+Time difference of 0.06 secs
+<br>
+&gt; 
+&gt; <span class='comments'># Trim to the high quality central region</span>
+&gt; index &lt;- <span class='functs'>as.numeric</span>&#40;<span class='functs'>names</span>&#40;dna&#41;&#41;
+&gt; dna &lt;- <span class='functs'>subseq</span>&#40;dna,
++ &nbsp;&nbsp;&nbsp;start=starts[index],
++ &nbsp;&nbsp;&nbsp;end=ends[index]&#41;
+&gt; 
+&gt; <span class='comments'># Create a tree with known and unknown species</span>
+&gt; combined &lt;- <span class='functs'>AlignSeqs</span>&#40;<span class='functs'>c</span>&#40;dna, species&#41;&#41;
+Determining distance matrix based on shared 8-mers:
+  |============================================| 100%
+<br>
+Time difference of 0.1 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.07 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 0.52 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.06 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.07 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 0.41 secs
+<br>
+Refining the alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.17 secs
+<br>
+&gt; dists &lt;- <span class='functs'>DistanceMatrix</span>&#40;combined,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;correction=<span class='chars'>&quot;Jukes-Cantor&quot;</span>&#41;
+&gt; tree &lt;- <span class='functs'>IdClusters</span>&#40;dists,
++ &nbsp;&nbsp;&nbsp;method=<span class='chars'>&quot;NJ&quot;</span>, <span class='comments'># Neighbor joining</span>
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;dendrogram&quot;</span>,
++ &nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
+&gt; <span class='functs'>plot</span>&#40;tree,
++ &nbsp;&nbsp;&nbsp;nodePar=<span class='functs'>list</span>&#40;lab.cex=<span class='numbers'>0.5</span>, pch=NA&#41;&#41;
+&gt; 
+&gt; <span class='comments'># Color known species based on their pathogenicity</span>
+&gt; tree_colored &lt;- <span class='functs'>dendrapply</span>&#40;tree,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if &#40;<span class='functs'>is.leaf</span>&#40;x&#41;&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if &#40;<span class='functs'>attr</span>&#40;x, <span class='chars'>&quot;label&quot;</span>&#41; %in% pathogen&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>attr</span>&#40;x, <span class='chars'>&quot;edgePar&quot;</span>&#41; &lt;- <span class='functs'>list</span>&#40;col=<span class='chars'>&quot;red&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else if &#40;<span class='functs'>attr</span>&#40;x, <span class='chars'>&quot;label&quot;</span>&#41; %in% biocontrol&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>attr</span>&#40;x, <span class='chars'>&quot;edgePar&quot;</span>&#41; &lt;- <span class='functs'>list</span>&#40;col=<span class='chars'>&quot;green&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='comments'># remove the label</span>
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>attr</span>&#40;x, <span class='chars'>&quot;label&quot;</span>&#41; &lt;- <span class='chars'>&quot;&quot;</span>
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;x&#41;
++ &nbsp;&nbsp;&nbsp;}&#41;
+&gt; <span class='functs'>plot</span>&#40;tree_colored&#41;
+&gt; 
+&gt; <span class='comments'># Disconnect from the sequence database</span>
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;
+[1] TRUE
+&gt; <span class='comments'># permanently delete the database</span>
+&gt; <span class='functs'>unlink</span>&#40;<span class='chars'>&quot;./COIgenes.sqlite&quot;</span>&#41; <span class='comments'># optional!</span></span></pre>
+
+<br><br><a style="float:left;" href="BigBioSeqData3.html">&lt; Previous Part</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

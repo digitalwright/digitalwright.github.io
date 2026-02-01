@@ -1,0 +1,572 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #14
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #14 - Introduction to Biostrings</p>
+
+For this lesson we are going to be introduced to the Biostrings package, which is a popular way to work with biological sequences in R. First, we must ensure Biostrings is installed before we can load the library.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;Biostrings&#41; <span class='comments'># load the Biostrings package</span></span>
+Loading required package: BiocGenerics
+Loading required package: parallel
+<br>
+Attaching package: ‘BiocGenerics’
+<br>
+The following objects are masked from ‘package:parallel’:
+<br>
+    clusterApply, clusterApplyLB, clusterCall,
+    clusterEvalQ, clusterExport, clusterMap,
+    parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply,
+    parSapplyLB
+<br>
+The following objects are masked from ‘package:stats’:
+<br>
+    IQR, mad, sd, var, xtabs
+<br>
+The following objects are masked from ‘package:base’:
+<br>
+    anyDuplicated, append, as.data.frame,
+    basename, cbind, colMeans, colnames,
+    colSums, dirname, do.call, duplicated,
+    eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply,
+    lengths, Map, mapply, match, mget, order,
+    paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rowMeans,
+    rownames, rowSums, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit,
+    which, which.max, which.min
+<br>
+Loading required package: S4Vectors
+Loading required package: stats4
+<br>
+Attaching package: ‘S4Vectors’
+<br>
+The following object is masked from ‘package:base’:
+<br>
+    expand.grid
+<br>
+Loading required package: IRanges
+Loading required package: XVector
+<br>
+Attaching package: ‘Biostrings’
+<br>
+The following object is masked from ‘package:base’:
+<br>
+    strsplit</span></pre>
+
+<div class="breakout">The Biostrings package introduces XStringSets to store biological sequences. Amino acid sequences are stored in the class AAStringSet, nucleotide sequences are stored in the class DNAStringSet or RNAStringSet. XStringSets can be imported from FASTA/FASTQ files or created directly with the appropriate constructor.</div>
+
+<pre><span class="codebox"><span class="line">dna &lt;- <span class='functs'>DNAStringSet</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;ACTG&quot;</span>, <span class='chars'>&quot;NSYR&quot;</span>, <span class='chars'>&quot;CG&quot;</span>&#41;&#41;</span></pre></span>
+
+<div class="breakout">An XStringSet is simply a collection of XStrings. Individual XStrings &#40;i.e., single sequences&#41; can be accessed with `[[`, whereas `[` returns an XStringSet.</div>
+
+<pre><span class="codebox"><span class="line">dna[[<span class='numbers'>1</span>]]</span>
+  4-letter "DNAString" instance
+seq: ACTG
+&gt; dna[<span class='numbers'>1</span>]
+  A DNAStringSet instance of length 1
+    width seq
+[1]     4 ACTG
+&gt; dna[<span class='numbers'>1</span>:<span class='numbers'>2</span>]
+  A DNAStringSet instance of length 2
+    width seq
+[1]     4 ACTG
+[2]     4 NSYR</span></pre>
+
+<div class="breakout">Biostrings uses a byte encoding to store nucleotide sequences. The letter A is stored as 0000 0001, C as 0000 0010, G as 0000 0100, and T/U as 0000 1000. Since RNA and DNA sequences are stored in the same manner, they can be equal even though they represent different letters.</div>
+
+<pre><span class="codebox"><span class="line">rna &lt;- <span class='functs'>RNAStringSet</span>&#40;dna&#41;</span>
+&gt; rna
+  A RNAStringSet instance of length 3
+    width seq
+[1]     4 ACUG
+[2]     4 NSYR
+[3]     2 CG
+&gt; dna==rna
+[1] TRUE TRUE TRUE</span></pre>
+
+<div class="breakout">Byte encoding allows ambiguity codes to be supported as combinations of letters. For example, the letter N, meaning any nucleotide, would be stored as 0000 1111. The letter S, meaning C or G, is stored as 0000 0110. Biostrings uses the IUPAC standard to represent ambiguity codes.</div>
+
+<pre><span class="codebox"><span class="line">IUPAC_CODE_MAP</span>
+     A      C      G      T      M      R      W 
+   "A"    "C"    "G"    "T"   "AC"   "AG"   "AT" 
+     S      Y      K      V      H      D      B 
+  "CG"   "CT"   "GT"  "ACG"  "ACT"  "AGT"  "CGT" 
+     N 
+"ACGT" </span></pre>
+
+<div class="breakout">The advantage of storing nucleotides in this manner is that they can more quickly be compared with binary operations. For example, the AND operator could be used to test whether N matches C &#40;i.e., when fixed = FALSE&#41;, whereas the equality operator could be use to test whether N is C &#40;i.e., when fixed = TRUE&#41;.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>neditAt</span>&#40;dna[[<span class='numbers'>1</span>]], dna[[<span class='numbers'>2</span>]], fixed=FALSE&#41; <span class='comments'># 0 mismatches</span></span>
+[1] 0
+&gt; <span class='functs'>neditAt</span>&#40;dna[[<span class='numbers'>1</span>]], dna[[<span class='numbers'>2</span>]], fixed=TRUE&#41; <span class='comments'># 4 mismatches</span>
+[1] 4</span></pre>
+
+<div class="breakout">Other positions of the byte are used to store gap &#40;"-": 0001 0000&#41;, mask &#40;"+": 0010 0000&#41;, or unknown characters &#40;".": 0100 0000&#41;. This allows XStringSets to contain the full set of symbols commonly used in sequences and alignments.</div>
+
+<pre><span class="codebox"><span class="line">align &lt;- <span class='functs'>DNAStringSet</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;.+AC-TG.&quot;</span>, <span class='chars'>&quot;.+ACCTG.&quot;</span>&#41;&#41;</span>
+&gt; align
+  A DNAStringSet instance of length 2
+    width seq
+[1]     8 .+AC-TG.
+[2]     8 .+ACCTG.</span></pre>
+
+<div class="breakout">Many standard functions work with XStringSet inputs.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>length</span>&#40;align&#41;</span>
+[1] 2
+&gt; <span class='functs'>unique</span>&#40;align&#41;
+  A DNAStringSet instance of length 2
+    width seq
+[1]     8 .+AC-TG.
+[2]     8 .+ACCTG.
+&gt; <span class='functs'>names</span>&#40;align&#41; &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;one&quot;</span>, <span class='chars'>&quot;two&quot;</span>&#41;
+&gt; align
+  A DNAStringSet instance of length 2
+    width seq                     names               
+[1]     8 .+AC-TG.                one
+[2]     8 .+ACCTG.                two</span></pre>
+
+<div class="breakout">There are also many functions specific to XStringSets.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>alphabet</span>&#40;align&#41;</span>
+ [1] "A" "C" "G" "T" "M" "R" "W" "S" "Y" "K" "V" "H"
+[13] "D" "B" "N" "-" "+" "."
+&gt; <span class='functs'>width</span>&#40;align&#41; <span class='comments'># analogous to nchar&#40;&#41;</span>
+[1] 8 8
+&gt; <span class='functs'>alphabetFrequency</span>&#40;align&#41;
+     A C G T M R W S Y K V H D B N - + .
+[1,] 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 1 1 2
+[2,] 1 2 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 2</span></pre>
+
+<div class="breakout">Biostrings has the ability to read sequences from popular file formats such as FASTA and FASTQ. It will also read &#40;gzip&#41; compressed files. For example, we can import the sequences from an example set of fly DNA sequences that are included in the Biostrings package.</div>
+
+<pre><span class="codebox"><span class="line">fas1 &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,</span>
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;dm3_upstream2000.fa.gz&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;Biostrings&quot;</span>&#41;
+&gt; flyDNA &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas1&#41;
+&gt; 
+&gt; <span class='comments'># This set contains 26,454 sequences that originated from</span>
+&gt; <span class='comments'>the 2,000 nucleotides upstream of annotated transcription</span>
+&gt; <span class='comments'>start sites in the reference <i>D. melanogaster</i> genome.</span>
+&gt; 
+&gt; flyDNA
+  A DNAStringSet instance of length 26454
+        width seq                 names               
+    [1]  2000 GTTGGTGG...TGCACGGT NM_078863_up_2000...
+    [2]  2000 TTATTTAT...TCCTCGAT NM_001201794_up_2...
+    [3]  2000 TTATTTAT...TCCTCGAT NM_001201795_up_2...
+    [4]  2000 TTATTTAT...TCCTCGAT NM_001201796_up_2...
+    [5]  2000 TTATTTAT...TCCTCGAT NM_001201797_up_2...
+    ...   ... ...
+[26450]  2000 ATTTACAA...AATAAAAC NM_001111010_up_2...
+[26451]  2000 GATATACG...TATATATT NM_001015258_up_2...
+[26452]  2000 GATATACG...TATATATT NM_001110997_up_2...
+[26453]  2000 GATATACG...TATATATT NM_001276245_up_2...
+[26454]  2000 CGTATGTA...ACAAATTG NM_001015497_up_2...</span></pre>
+
+<div class="breakout">One of the advantages of working with XStringSets is that they are very efficient to manipulate relative to character vectors. For example, we could count all of the 3-mer subsequences in the XStringSet nearly instantaneously.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>oligonucleotideFrequency</span>&#40;flyDNA,</span>
++ &nbsp;&nbsp;&nbsp;width=<span class='numbers'>3</span>,
++ &nbsp;&nbsp;&nbsp;simplify.as=<span class='chars'>&quot;collapse&quot;</span>&#41;
+    AAA     AAC     AAG     AAT     ACA     ACC 
+1993983  905456  900748 1465752  954857  547841 
+    ACG     ACT     AGA     AGC     AGG     AGT 
+ 510627  765761  760979  791574  549221  764487 
+    ATA     ATC     ATG     ATT     CAA     CAC 
+1171226  790838  880302 1466466 1114071  753589 
+    CAG     CAT     CCA     CCC     CCG     CCT 
+ 790741  875637  855883  479831  515840  561712 
+    CGA     CGC     CGG     CGT     CTA     CTC 
+ 691226  617419  517643  516995  531742  653339 
+    CTG     CTT     GAA     GAC     GAG     GAT 
+ 793467  915254  993671  513881  637293  797460 
+    GCA     GCC     GCG     GCT     GGA     GGC 
+ 915283  693226  618808  798138  677551  698698 
+    GGG     GGT     GTA     GTC     GTG     GTT 
+ 486510  543056  615815  525247  742186  902574 
+    TAA     TAC     TAG     TAT     TCA     TCC 
+1163197  605994  537799 1169575  807727  692488 
+    TCG     TCT     TGA     TGC     TGG     TGT 
+ 698648  768187  811903  918120  852311  961474 
+    TTA     TTC     TTG     TTT 
+1157169  999049 1127636 1986916 </span></pre>
+
+<div class="breakout">The way that XStringSets are internally stored allows them to be subset with almost no memory footprint. For example, we could select the first 100 nucleotides from a random subset of the sequences, and none of the nucleotide information would actually be replicated in memory! This operation is analogous to using substring</span>&#40;&#41; but far more memory efficient.</div>
+
+<pre><span class="codebox"><span class="line">s &lt;- <span class='functs'>sample</span>&#40;<span class='functs'>length</span>&#40;flyDNA&#41;, <span class='numbers'>1000</span>&#41;</span>
+&gt; <span class='functs'>subseq</span>&#40;flyDNA[s], <span class='numbers'>1</span>, <span class='numbers'>100</span>&#41;
+  A DNAStringSet instance of length 1000
+       width seq                  names               
+   [1]   100 AAAAGAGCT...AATCGTGT NM_001273770_up_2...
+   [2]   100 ATTTGTGCC...CTGTCTTC NM_001170066_up_2...
+   [3]   100 TTTAAAATG...ATATTGAC NM_001275166_up_2...
+   [4]   100 CTTTCAAAA...GTTTTGCC NM_001169963_up_2...
+   [5]   100 CGAGGGCAC...ACAGATTG NM_143785_up_2000...
+   ...   ... ...
+ [996]   100 GAAGCAGGT...GAGTCTAC NM_143123_up_2000...
+ [997]   100 ATTGTAGTT...CCGGGTGG NM_136715_up_2000...
+ [998]   100 TCATTTTTG...CTCTCTTA NM_078996_up_2000...
+ [999]   100 ACGACTTCT...TCGAACTG NM_140033_up_2000...
+[1000]   100 CACCGATGG...TTGAAACG NM_001260247_up_2...</span></pre>
+
+<div class="breakout">Biostrings is built on top of the IRanges package, which is used to define ranges in a sequence. To effectively use Biostrings, it is necessary to understand how to create and access IRanges objects. Here we will extract the first 100 nucleotides using IRanges.</div>
+
+<pre><span class="codebox"><span class="line">at1 &lt;- <span class='functs'>IRanges</span>&#40;start=<span class='numbers'>1</span>, end=<span class='numbers'>100</span>&#41;</span>
+&gt; <span class='functs'>extractAt</span>&#40;flyDNA, at1&#41; <span class='comments'># DNAStringSetList</span>
+DNAStringSetList of length 26454
+[["NM_078863_up_2000_chr2L_16764737_f chr2L:16764737-16766736"]] 
+[["NM_001201794_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_001201795_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_001201796_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_001201797_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_164812_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_164814_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_164815_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_205935_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+[["NM_205936_up_2000_chr2L_8382455_f chr2L:8382455-8384454"]] 
+...
+ &lt;26444 more elements&gt;</span></pre>
+
+<div class="breakout">This command returned a DNAStringSetList, which is a list of XStringSets. Like other lists, it can be unlisted to merge its contents into a single XStringSet. Note that XStringSets can be unlisted to become a single XString.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>unlist</span>&#40;<span class='functs'>extractAt</span>&#40;flyDNA, at1&#41;&#41; <span class='comments'># DNAStringSet</span></span>
+  A DNAStringSet instance of length 26454
+        width seq                 names               
+    [1]   100 GTTGGTGG...CGAAAATG NM_078863_up_2000...
+    [2]   100 TTATTTAT...TTGTTAGG NM_001201794_up_2...
+    [3]   100 TTATTTAT...TTGTTAGG NM_001201795_up_2...
+    [4]   100 TTATTTAT...TTGTTAGG NM_001201796_up_2...
+    [5]   100 TTATTTAT...TTGTTAGG NM_001201797_up_2...
+    ...   ... ...
+[26450]   100 ATTTACAA...CATGGATC NM_001111010_up_2...
+[26451]   100 GATATACG...GGTGCTGG NM_001015258_up_2...
+[26452]   100 GATATACG...GGTGCTGG NM_001110997_up_2...
+[26453]   100 GATATACG...GGTGCTGG NM_001276245_up_2...
+[26454]   100 CGTATGTA...GAAGATTA NM_001015497_up_2...
+&gt; <span class='functs'>unlist</span>&#40;<span class='functs'>unlist</span>&#40;<span class='functs'>extractAt</span>&#40;flyDNA, at1&#41;&#41;&#41; <span class='comments'># DNAString</span>
+  2645400-letter "DNAString" instance
+seq: GTTGGTGGCCCACCAGTGCCAAA...GATTACTGTAGTTAGGAAGATTA</span></pre>
+
+<div class="breakout">If we wished to extract different positions from every sequence, we would need to provide an IRangesList rather than a single set of IRanges. For example, we could extract a random nucleotide from every sequence.</div>
+
+<pre><span class="codebox"><span class="line">at2 &lt;- <span class='functs'>sample</span>&#40;<span class='numbers'>100</span>, <span class='functs'>length</span>&#40;flyDNA&#41;, replace=TRUE&#41;</span>
+&gt; at2 &lt;- <span class='functs'>lapply</span>&#40;at2, IRanges, width=<span class='numbers'>1</span>&#41;
+&gt; at2 &lt;- <span class='functs'>as</span>&#40;at2, <span class='chars'>&quot;IRangesList&quot;</span>&#41;
+&gt; at2
+IRangesList of length 26454
+[[1]]
+IRanges object with 1 range and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]        67        67         1
+<br>
+[[2]]
+IRanges object with 1 range and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]        70        70         1
+<br>
+[[3]]
+IRanges object with 1 range and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]        86        86         1
+<br>
+...
+ &lt;26451 more elements&gt;
+&gt; <span class='functs'>unlist</span>&#40;<span class='functs'>extractAt</span>&#40;flyDNA, at2&#41;&#41;
+  A DNAStringSet instance of length 26454
+        width seq                 names               
+    [1]     1 A                   NM_078863_up_2000...
+    [2]     1 C                   NM_001201794_up_2...
+    [3]     1 T                   NM_001201795_up_2...
+    [4]     1 C                   NM_001201796_up_2...
+    [5]     1 C                   NM_001201797_up_2...
+    ...   ... ...
+[26450]     1 A                   NM_001111010_up_2...
+[26451]     1 G                   NM_001015258_up_2...
+[26452]     1 A                   NM_001110997_up_2...
+[26453]     1 G                   NM_001276245_up_2...
+[26454]     1 T                   NM_001015497_up_2...</span></pre>
+
+<div class="breakout">The Biostrings package is particularly useful for rapidly searching sequences for a specific pattern. The following command finds the pattern "ACTG" in every sequence and returns a list of IRanges.</div>
+
+<pre><span class="codebox"><span class="line">v1 &lt;- <span class='functs'>vmatchPattern</span>&#40;<span class='chars'>&quot;ACTG&quot;</span>, flyDNA&#41;</span>
+&gt; v1
+MIndex object of length 26454
+$`NM_078863_up_2000_chr2L_16764737_f chr2L:16764737-16766736`
+IRanges object with 3 ranges and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]       539       542         4
+  [2]      1265      1268         4
+  [3]      1339      1342         4
+<br>
+$`NM_001201794_up_2000_chr2L_8382455_f chr2L:8382455-8384454`
+IRanges object with 6 ranges and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]       576       579         4
+  [2]       843       846         4
+  [3]      1350      1353         4
+  [4]      1438      1441         4
+  [5]      1688      1691         4
+  [6]      1947      1950         4
+<br>
+$`NM_001201795_up_2000_chr2L_8382455_f chr2L:8382455-8384454`
+IRanges object with 6 ranges and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]       576       579         4
+  [2]       843       846         4
+  [3]      1350      1353         4
+  [4]      1438      1441         4
+  [5]      1688      1691         4
+  [6]      1947      1950         4
+<br>
+...
+ &lt;26451 more elements&gt;
+&gt; <span class='functs'>unlist</span>&#40;<span class='functs'>extractAt</span>&#40;flyDNA, v1&#41;&#41;
+  A DNAStringSet instance of length 188577
+         width seq                names               
+     [1]     4 ACTG               NM_078863_up_2000...
+     [2]     4 ACTG               NM_078863_up_2000...
+     [3]     4 ACTG               NM_078863_up_2000...
+     [4]     4 ACTG               NM_001201794_up_2...
+     [5]     4 ACTG               NM_001201794_up_2...
+     ...   ... ...
+[188573]     4 ACTG               NM_001015497_up_2...
+[188574]     4 ACTG               NM_001015497_up_2...
+[188575]     4 ACTG               NM_001015497_up_2...
+[188576]     4 ACTG               NM_001015497_up_2...
+[188577]     4 ACTG               NM_001015497_up_2...
+Warning message:
+In .normarg_at2(at, x) : 'at' names were ignored</span></pre>
+
+<div class="breakout">Patterns can match ambiguities &#40;when fixed = FALSE&#41;, and allow for mismatches &#40;when max.mismatches > 0&#41;. However, this also matches ambiguities in the subject &#40;flyDNA&#41; such that runs of Ns appear as matches. We can change this behavior by only allow ambiguities in the pattern sequence &#40;fixed = "subject"&#41;.</div>
+
+<pre><span class="codebox"><span class="line">v2 &lt;- <span class='functs'>vmatchPattern</span>&#40;pattern=<span class='chars'>&quot;AACTGNCATCG&quot;</span>,</span>
++ &nbsp;&nbsp;&nbsp;subject=flyDNA,
++ &nbsp;&nbsp;&nbsp;fixed=<span class='chars'>&quot;subject&quot;</span>,
++ &nbsp;&nbsp;&nbsp;max.mismatch=<span class='numbers'>1</span>&#41;
+&gt; <span class='functs'>unlist</span>&#40;<span class='functs'>extractAt</span>&#40;flyDNA, v2&#41;&#41;
+  A DNAStringSet instance of length 1675
+       width seq                  names               
+   [1]    11 AGCTGTCATCG          NM_165124_up_2000...
+   [2]    11 AGCTGTCATCG          NM_165123_up_2000...
+   [3]    11 AGCTGTCATCG          NM_001259108_up_2...
+   [4]    11 AACTGCCATTG          NM_205903_up_2000...
+   [5]    11 AACTGACATCC          NM_135746_up_2000...
+   ...   ... ...
+[1671]    11 AACTGCAATCG          NM_001272822_up_2...
+[1672]    11 AACTGGCAGCG          NM_001042822_up_2...
+[1673]    11 AACTGGCAGCG          NM_001144752_up_2...
+[1674]    11 AACTCCCATCG          NM_001170391_up_2...
+[1675]    11 AACTGCCATCG          NM_001015255_up_2...
+Warning message:
+In .normarg_at2(at, x) : 'at' names were ignored</span></pre>
+
+<div class="breakout">An analogous function, replaceAt, exist to replace ranges in an XStringSet. For example, we could delete the matches by replacing them with nothing &#40;the default&#41;, or we could replace them with another sequence.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>replaceAt</span>&#40;flyDNA, v2&#41; <span class='comments'># deletes the matches</span></span>
+  A DNAStringSet instance of length 26454
+        width seq                 names               
+    [1]  2000 GTTGGTGG...TGCACGGT NM_078863_up_2000...
+    [2]  2000 TTATTTAT...TCCTCGAT NM_001201794_up_2...
+    [3]  2000 TTATTTAT...TCCTCGAT NM_001201795_up_2...
+    [4]  2000 TTATTTAT...TCCTCGAT NM_001201796_up_2...
+    [5]  2000 TTATTTAT...TCCTCGAT NM_001201797_up_2...
+    ...   ... ...
+[26450]  2000 ATTTACAA...AATAAAAC NM_001111010_up_2...
+[26451]  2000 GATATACG...TATATATT NM_001015258_up_2...
+[26452]  2000 GATATACG...TATATATT NM_001110997_up_2...
+[26453]  2000 GATATACG...TATATATT NM_001276245_up_2...
+[26454]  2000 CGTATGTA...ACAAATTG NM_001015497_up_2...
+Warning message:
+In .normarg_at2(at, x) : 'at' names were ignored
+&gt; <span class='functs'>replaceAt</span>&#40;flyDNA, v2, <span class='chars'>&quot;+&quot;</span>&#41; <span class='comments'># replaces the matches</span>
+  A DNAStringSet instance of length 26454
+        width seq                 names               
+    [1]  2000 GTTGGTGG...TGCACGGT NM_078863_up_2000...
+    [2]  2000 TTATTTAT...TCCTCGAT NM_001201794_up_2...
+    [3]  2000 TTATTTAT...TCCTCGAT NM_001201795_up_2...
+    [4]  2000 TTATTTAT...TCCTCGAT NM_001201796_up_2...
+    [5]  2000 TTATTTAT...TCCTCGAT NM_001201797_up_2...
+    ...   ... ...
+[26450]  2000 ATTTACAA...AATAAAAC NM_001111010_up_2...
+[26451]  2000 GATATACG...TATATATT NM_001015258_up_2...
+[26452]  2000 GATATACG...TATATATT NM_001110997_up_2...
+[26453]  2000 GATATACG...TATATATT NM_001276245_up_2...
+[26454]  2000 CGTATGTA...ACAAATTG NM_001015497_up_2...
+Warning message:
+In .normarg_at2(at, x) : 'at' names were ignored</span></pre>
+
+<div class="breakout">Several Biostrings functions make use of its excellent searching abilities. The findPalindromes function will search for palindromic sequences in an XString. Unfortunately, it does not work with XStringSets, so we must first unlist our XStringSet to convert it into an XString. Then we can try to find potential stem-loop structures in the regions upstream of transcribed regions in the fly genome.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>unlist</span>&#40;flyDNA&#41;</span>
+  52904706-letter "DNAString" instance
+seq: GTTGGTGGCCCACCAGTGCCAAA...ATTCAAAGTGTAAGAACAAATTG
+&gt; pal &lt;- <span class='functs'>findPalindromes</span>&#40;<span class='functs'>unlist</span>&#40;flyDNA&#41;,
++ &nbsp;&nbsp;&nbsp;min.armlength=<span class='numbers'>8</span>,
++ &nbsp;&nbsp;&nbsp;max.looplength=<span class='numbers'>10</span>,
++ &nbsp;&nbsp;&nbsp;max.mismatch=<span class='numbers'>1</span>&#41;</span></pre>
+
+<div class="breakout">Now we must map each palindrome back to its respective sequence positions in the XStringSet. Here we can tally the number of times that we saw an upstream palindrome to see if there are any palindrome hotspots.</div>
+
+<pre><span class="codebox"><span class="line">bounds &lt;- <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='functs'>cumsum</span>&#40;<span class='functs'>width</span>&#40;flyDNA&#41;&#41;&#41;</span>
+&gt; <span class='functs'>head</span>&#40;bounds&#41; <span class='comments'># boundaries of each sequence</span>
+[1]     1  2000  4000  6000  8000 10000
+&gt; starts &lt;- <span class='functs'>start</span>&#40;pal&#41;
+&gt; ends &lt;- <span class='functs'>end</span>&#40;pal&#41;
+&gt; <span class='functs'>cbind</span>&#40;<span class='functs'>head</span>&#40;starts&#41;, <span class='functs'>head</span>&#40;ends&#41;&#41; <span class='comments'># pairs of positions</span>
+     [,1] [,2]
+[1,]   73   91
+[2,]  238  253
+[3,]  446  462
+[4,]  654  672
+[5,]  659  674
+[6,]  791  806
+&gt; seq &lt;- <span class='numbers'>1L</span> <span class='comments'># current sequence</span>
+&gt; counts &lt;- <span class='functs'>integer</span>&#40;<span class='numbers'>2000</span>&#41; <span class='comments'># counts for upstream positions</span>
+&gt; for &#40;i in <span class='functs'>seq_along</span>&#40;starts&#41;&#41; {
++ &nbsp;&nbsp;&nbsp;while &#40;ends[i] &gt;= bounds[seq + <span class='numbers'>1L</span>]&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seq &lt;- seq + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;}
++ &nbsp;&nbsp;&nbsp;if &#40;starts[i] &gt;= bounds[seq]&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;range &lt;- starts[i]:ends[i] - bounds[seq] + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;counts[range] &lt;- counts[range] + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;}
++ }</span></pre>
+
+<div class="breakout">Now we can plot the palindrome counts to see that there are about twice as many palindromes as usual about 200 nucleotides upstream of transcript start sites in the fly genome.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>plot</span>&#40;-<span class='functs'>rev</span>&#40;<span class='functs'>seq_along</span>&#40;counts&#41;&#41;,</span>
++ &nbsp;&nbsp;&nbsp;counts,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Positions from transcription start site&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Number of palindromes covering position&quot;</span>&#41;</span></pre>
+
+<div class="breakout">Biostrings also includes a number of functions for working with amino acid sequences, i.e. AAStringSets. As an example, we can import some Yeast open reading frames &#40;ORFs&#41; from a FASTA file included with Biostrings.</div>
+
+<pre><span class="codebox"><span class="line">fas2 &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,</span>
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;someorf.fa.gz&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;Biostrings&quot;</span>&#41;
+&gt; ORFs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas2&#41;
+&gt; ORFs
+  A DNAStringSet instance of length 7
+    width seq                     names               
+[1]  5573 ACTTGTAAAT...TTGTTGATAT YAL001C TFC3 SGDI...
+[2]  5825 TTCCAAGGCC...CTATTCTCTT YAL002W VPS8 SGDI...
+[3]  2987 CTTCATGTCA...GCTGCCTCAT YAL003W EFB1 SGDI...
+[4]  3929 CACTCATATC...GAAAAAGTAC YAL005C SSA1 SGDI...
+[5]  2648 AGAGAAAGAG...GTGAACATAG YAL007C ERP2 SGDI...
+[6]  2597 GTGTCCGGGC...ATGTACTTTT YAL008W FUN14 SGD...
+[7]  2780 CAAGATAATG...AAAAAATCAC YAL009W SPO7 SGDI...</span></pre>
+
+<div class="breakout">These seven sequences contain the open reading frame plus 1,000 nucleotides to either side. We can remove these flanking nucleotides with subseq.</div>
+
+<pre><span class="codebox"><span class="line">ORFs &lt;- <span class='functs'>subseq</span>&#40;ORFs, <span class='numbers'>1001</span>, <span class='numbers'>-1001</span>&#41;</span>
+&gt; ORFs
+  A DNAStringSet instance of length 7
+    width seq                     names               
+[1]  3573 ATGGTACTGA...ATCTACATAA YAL001C TFC3 SGDI...
+[2]  3825 ATGGAGCAAA...AATAGTATAA YAL002W VPS8 SGDI...
+[3]   987 ATGGCATCCA...AAAATTATAA YAL003W EFB1 SGDI...
+[4]  1929 ATGTCAAAAG...AGTTGATTAA YAL005C SSA1 SGDI...
+[5]   648 ATGATCAAAT...TTACGTTTAA YAL007C ERP2 SGDI...
+[6]   597 ATGACTTTGG...TAACAAATGA YAL008W FUN14 SGD...
+[7]   780 ATGGAGCCAG...ATCAGAATGA YAL009W SPO7 SGDI...</span></pre>
+
+<div class="breakout">We can now translate the open reading frames to convert the nucleotides into amino acid sequences.</div>
+
+<pre><span class="codebox"><span class="line">aa &lt;- <span class='functs'>translate</span>&#40;ORFs&#41;</span></pre></span>
+
+<div class="breakout">Open reading frames number 1 and 3 contain introns, so we will find more than the expected stop codon at the very end of the sequence.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>vmatchPattern</span>&#40;<span class='chars'>&quot;*&quot;</span>, aa&#41;</span>
+MIndex object of length 7
+$`YAL001C TFC3 SGDID:S0000001, Chr I from 152168-146596, reverse complement, Verified ORF`
+IRanges object with 3 ranges and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]        44        44         1
+  [2]        49        49         1
+  [3]      1191      1191         1
+<br>
+$`YAL002W VPS8 SGDID:S0000002, Chr I from 142709-148533, Verified ORF`
+IRanges object with 1 range and 0 metadata columns:
+          start       end     width
+      <integer> <integer> <integer>
+  [1]      1275      1275         1
+<br>
+$`YAL003W EFB1 SGDID:S0000003, Chr I from 141176-144162, Verified ORF`
+IRanges object with 10 ranges and 0 metadata columns:
+           start       end     width
+       <integer> <integer> <integer>
+   [1]        32        32         1
+   [2]        36        36         1
+   [3]        55        55         1
+   [4]        67        67         1
+   [5]        68        68         1
+   [6]        70        70         1
+   [7]        77        77         1
+   [8]        85        85         1
+   [9]       147       147         1
+  [10]       329       329         1
+<br>
+...
+ &lt;4 more elements&gt;</span></pre>
+
+<br><br><a style="float:left;" href="RLesson13.html">&lt; Previous Lesson</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

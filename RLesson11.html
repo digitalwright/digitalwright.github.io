@@ -1,0 +1,628 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #11
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #11 - Apply functions</p>
+
+The apply suite of functions provide a way of applying a function to subsets of different data structures. The equivalent is often called a <a href="http://en.wikipedia.org/wiki/Map_(higher-order_function)">Map</a> in other programming languages.<br><br>There is often more than one way to accomplish the same goal using apply functions. The table below describes which Map to use in different situations. Note that there are several other apply functions that are not being described here </span>&#40;e.g., by, eapply, rapply, Map, sweep, aggregate, and vapply&#41;.<br><br>
+
+Three advantages of using a Map over a loop are:  (i) the code is often more compact, (ii) memory is automatically pre-initialized, and (iii) variables inside the function are local in scope.  Loops generally require more lines of code and generate excess variables that persist in the global environment.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># Which map should I use?</span></span>
+&gt; <span class='comments'># INPUT          OUTPUT        MAP</span>
+&gt; <span class='comments'># vector, groups variable      tapply</span>
+&gt; <span class='comments'># vector/list    list          lapply</span>
+&gt; <span class='comments'># vector/list    variable      sapply</span>
+&gt; <span class='comments'># matrix/array   vector/array  apply</span>
+&gt; <span class='comments'># vectors        variable      mapply</span>
+&gt; 
+&gt; <span class='comments'># lapply - the most commonly used map</span>
+&gt; 
+&gt; l &lt;- <span class='functs'>list</span>&#40;x=<span class='numbers'>1</span>, y=<span class='numbers'>-1</span>:<span class='numbers'>-3</span>, z=<span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>6</span>, nrow=<span class='numbers'>2</span>&#41;&#41;
+&gt; l
+$x
+[1] 1
+<br>
+$y
+[1] -1 -2 -3
+<br>
+$z
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+<br>
+&gt; 
+&gt; f &lt;- <span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;x&#41;
++ }
+&gt; <span class='functs'>lapply</span>(l$y, <span class='comments'># vector input</span>
++ &nbsp;&nbsp;&nbsp;f) <span class='comments'># unnamed list output</span>
+[[1]]
+[1] -1
+<br>
+[[2]]
+[1] -2
+<br>
+[[3]]
+[1] -3
+<br>
+&gt; <span class='functs'>lapply</span>(l, <span class='comments'># list input</span>
++ &nbsp;&nbsp;&nbsp;f) <span class='comments'># named list output</span>
+$x
+[1] 1
+<br>
+$y
+[1] -1 -2 -3
+<br>
+$z
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+<br>
+&gt; 
+&gt; <span class='functs'>lapply</span>&#40;l, sum&#41;
+$x
+[1] 1
+<br>
+$y
+[1] -6
+<br>
+$z
+[1] 21
+<br>
+&gt; <span class='functs'>lapply</span>&#40;l, length&#41;
+$x
+[1] 1
+<br>
+$y
+[1] 3
+<br>
+$z
+[1] 6
+<br>
+&gt; <span class='functs'>lapply</span>&#40;l, range&#41;
+$x
+[1] 1 1
+<br>
+$y
+[1] -3 -1
+<br>
+$z
+[1] 1 6</span></pre>
+
+<div class="breakout">The next two Maps, by default, attempt to simplify their output by converting it to a less complex structure whenever possible. If the function always returns a single element, then the output will be a vector. If the function always returns a vector of the same length, then the output will be a matrix. Otherwise, the output will not be simplified and a list will be returned.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># sapply - a user-friendly wrapper for lapply</span></span>
+&gt; <span class='comments'># in many cases equivalent to unlist&#40;lapply&#40;&#41;&#41;</span>
+&gt; 
+&gt; <span class='functs'>sapply</span>(l$y, <span class='comments'># vector input</span>
++ &nbsp;&nbsp;&nbsp;f) <span class='comments'># vector output</span>
+[1] -1 -2 -3
+&gt; <span class='functs'>sapply</span>(l, <span class='comments'># list input</span>
++ &nbsp;&nbsp;&nbsp;f) <span class='comments'># list output</span>
+$x
+[1] 1
+<br>
+$y
+[1] -1 -2 -3
+<br>
+$z
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+<br>
+&gt; <span class='functs'>sapply</span>&#40;l, sum&#41;
+ x  y  z 
+ 1 -6 21 
+&gt; <span class='functs'>sapply</span>&#40;l, length&#41;
+x y z 
+1 3 6 
+&gt; <span class='functs'>sapply</span>&#40;l, range&#41;
+     x  y z
+[1,] 1 -3 1
+[2,] 1 -1 6
+&gt; 
+&gt; <span class='comments'># mapply - same elements of multiple vectors</span>
+&gt; <span class='comments'># essentially a multi-vector version of sapply</span>
+&gt; 
+&gt; <span class='functs'>mapply</span>&#40;rep, x=<span class='numbers'>1</span>:<span class='numbers'>4</span>, times=<span class='numbers'>4</span>:<span class='numbers'>1</span>&#41; <span class='comments'># list output</span>
+[[1]]
+[1] 1 1 1 1
+<br>
+[[2]]
+[1] 2 2 2
+<br>
+[[3]]
+[1] 3 3
+<br>
+[[4]]
+[1] 4
+<br>
+&gt; <span class='functs'>mapply</span>&#40;rep, x=<span class='numbers'>1</span>:<span class='numbers'>4</span>, times=<span class='numbers'>4</span>&#41; <span class='comments'># matrix output</span>
+     [,1] [,2] [,3] [,4]
+[1,]    1    2    3    4
+[2,]    1    2    3    4
+[3,]    1    2    3    4
+[4,]    1    2    3    4
+&gt; <span class='functs'>mapply</span>&#40;seq, from=<span class='numbers'>1</span>:<span class='numbers'>10</span>, to=<span class='numbers'>10</span>:<span class='numbers'>1</span>&#41; <span class='comments'># list output</span>
+[[1]]
+ [1]  1  2  3  4  5  6  7  8  9 10
+<br>
+[[2]]
+[1] 2 3 4 5 6 7 8 9
+<br>
+[[3]]
+[1] 3 4 5 6 7 8
+<br>
+[[4]]
+[1] 4 5 6 7
+<br>
+[[5]]
+[1] 5 6
+<br>
+[[6]]
+[1] 6 5
+<br>
+[[7]]
+[1] 7 6 5 4
+<br>
+[[8]]
+[1] 8 7 6 5 4 3
+<br>
+[[9]]
+[1] 9 8 7 6 5 4 3 2
+<br>
+[[10]]
+ [1] 10  9  8  7  6  5  4  3  2  1
+<br>
+&gt; <span class='functs'>mapply</span>&#40;seq, from=<span class='numbers'>1</span>:<span class='numbers'>10</span>, to=<span class='numbers'>1</span>:<span class='numbers'>10</span>&#41; <span class='comments'># vector output</span>
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; <span class='functs'>mapply</span>&#40;sample, x=<span class='numbers'>10</span>:<span class='numbers'>3</span>, size=<span class='numbers'>3</span>&#41; <span class='comments'># matrix output</span>
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
+[1,]    6    8    5    1    6    1    2    1
+[2,]    5    9    2    7    1    3    1    2
+[3,]    1    6    4    4    3    5    4    3</span></pre>
+
+<div class="breakout">The function apply takes a matrix or array as input, and applies a given function to dimensions of the input. The argument MARGIN determines which dimension</span>&#40;s&#41; to use, the 1st </span>&#40;rows&#41;, 2nd </span>&#40;columns&#41;, ect., or even combinations of dimensions.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># apply - rows or columns of matrices</span></span>
+&gt; l$z
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+&gt; <span class='functs'>apply</span>&#40;l$z, <span class='numbers'>1</span>, sum&#41;
+[1]  9 12
+&gt; <span class='functs'>rowSums</span>&#40;l$z&#41; <span class='comments'># faster</span>
+[1]  9 12
+&gt; <span class='functs'>apply</span>&#40;l$z, <span class='numbers'>2</span>, min&#41; <span class='comments'># there is no colMins function</span>
+[1] 1 3 5
+&gt; <span class='functs'>apply</span>&#40;l$z, <span class='numbers'>2</span>, length&#41;
+[1] 2 2 2
+&gt; <span class='functs'>apply</span>&#40;l$z, <span class='numbers'>1</span>, range&#41; <span class='comments'># returns a matrix</span>
+     [,1] [,2]
+[1,]    1    2
+[2,]    5    6
+&gt; 
+&gt; a &lt;- <span class='functs'>array</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>24</span>, dim=<span class='numbers'>2</span>:<span class='numbers'>4</span>&#41;
+&gt; a
+, , 1
+<br>
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+<br>
+, , 2
+<br>
+     [,1] [,2] [,3]
+[1,]    7    9   11
+[2,]    8   10   12
+<br>
+, , 3
+<br>
+     [,1] [,2] [,3]
+[1,]   13   15   17
+[2,]   14   16   18
+<br>
+, , 4
+<br>
+     [,1] [,2] [,3]
+[1,]   19   21   23
+[2,]   20   22   24
+<br>
+&gt; a[<span class='numbers'>1</span>,,]
+     [,1] [,2] [,3] [,4]
+[1,]    1    7   13   19
+[2,]    3    9   15   21
+[3,]    5   11   17   23
+&gt; zzz &lt;- <span class='functs'>apply</span>&#40;a, <span class='numbers'>1</span>, print&#41;
+     [,1] [,2] [,3] [,4]
+[1,]    1    7   13   19
+[2,]    3    9   15   21
+[3,]    5   11   17   23
+     [,1] [,2] [,3] [,4]
+[1,]    2    8   14   20
+[2,]    4   10   16   22
+[3,]    6   12   18   24
+&gt; <span class='functs'>apply</span>&#40;a, <span class='numbers'>1</span>, sum&#41;
+[1] 144 156
+&gt; a[,, <span class='numbers'>1</span>]
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+&gt; zzz &lt;- <span class='functs'>apply</span>&#40;a, <span class='numbers'>3</span>, print&#41;
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+     [,1] [,2] [,3]
+[1,]    7    9   11
+[2,]    8   10   12
+     [,1] [,2] [,3]
+[1,]   13   15   17
+[2,]   14   16   18
+     [,1] [,2] [,3]
+[1,]   19   21   23
+[2,]   20   22   24
+&gt; <span class='functs'>apply</span>&#40;a, <span class='numbers'>3</span>, min&#41;
+[1]  1  7 13 19
+&gt; 
+&gt; <span class='comments'># combinations of dimensions</span>
+&gt; a[<span class='numbers'>1</span>, <span class='numbers'>1</span>,]
+[1]  1  7 13 19
+&gt; zzz &lt;- <span class='functs'>apply</span>&#40;a, <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;, print&#41;
+[1]  1  7 13 19
+[1]  2  8 14 20
+[1]  3  9 15 21
+[1]  4 10 16 22
+[1]  5 11 17 23
+[1]  6 12 18 24
+&gt; <span class='functs'>apply</span>&#40;a, <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;, sum&#41; <span class='comments'># every combo of row & col</span>
+     [,1] [,2] [,3]
+[1,]   40   48   56
+[2,]   44   52   60
+&gt; zzz &lt;- <span class='functs'>apply</span>&#40;a, <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>3</span>&#41;, print&#41;
+[1] 1 3 5
+[1] 2 4 6
+[1]  7  9 11
+[1]  8 10 12
+[1] 13 15 17
+[1] 14 16 18
+[1] 19 21 23
+[1] 20 22 24
+&gt; <span class='functs'>apply</span>&#40;a, <span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>3</span>&#41;, range&#41; <span class='comments'># output is an array</span>
+, , 1
+<br>
+     [,1] [,2]
+[1,]    1    2
+[2,]    5    6
+<br>
+, , 2
+<br>
+     [,1] [,2]
+[1,]    7    8
+[2,]   11   12
+<br>
+, , 3
+<br>
+     [,1] [,2]
+[1,]   13   14
+[2,]   17   18
+<br>
+, , 4
+<br>
+     [,1] [,2]
+[1,]   19   20
+[2,]   23   24</span></pre>
+
+<div class="breakout">Next, to describe a practical use of lapply, a dataset is required from <a href="data/RLessons/TaxaRanks.txt">here</a>. This dataset contains taxonomic rankings for many organisms </span>&#40;i.e., Kingdom, Order, Class, Family, Genus, Species&#41;. However, the difficulty is that the number of defined rankings changes from organism-to-organism. Therefore, the data is amenable to storage in a list and processing with lapply.</div>
+
+<pre><span class="codebox"><span class="line">r &lt;- <span class='functs'>readLines</span>&#40;<span class='chars'>&quot;&lt;&lt;PATH TO TaxaRanks.txt&gt;&gt;&quot;</span>&#41;</span>
+&gt; <span class='functs'>head</span>&#40;r&#41;
+[1] "root;Viruses;dsDNA viruses, no RNA stage;Caudovirales;Myoviridae;Peduovirinae;Hpunalikevirus;"                  
+[2] "root;Viruses;dsDNA viruses, no RNA stage;Caudovirales;Myoviridae;Peduovirinae;P2likevirus;"                     
+[3] "root;Viruses;dsDNA viruses, no RNA stage;Caudovirales;Siphoviridae;Spbetalikevirus;"                            
+[4] "root;Viruses;dsDNA viruses, no RNA stage;Herpesvirales;Herpesviridae;Betaherpesvirinae;Cytomegalovirus;"        
+[5] "root;cellular organisms;Archaea;Crenarchaeota <phylum>;Thermoprotei;Acidilobales;Acidilobaceae;Acidilobus;"     
+[6] "root;cellular organisms;Archaea;Crenarchaeota <phylum>;Thermoprotei;Acidilobales;Caldisphaeraceae;Caldisphaera;"
+&gt; <span class='functs'>tail</span>&#40;r&#41;
+[1] "root;cellular organisms;Eukaryota;Viridiplantae;Streptophyta;Zygnemophyceae;Zygnematales;Zygnematales incertae sedis;Fottea;"
+[2] "root;cellular organisms;Eukaryota;unclassified eukaryotes;Palpitomonas;"                                                     
+[3] "root;cellular organisms;Eukaryota;unclassified eukaryotes;Picozoa;Picomonadea;Picomonadida;Picomonadidae;Picomonas;"         
+[4] "root;cellular organisms;Eukaryota;unclassified eukaryotes;Telonemida;Telonema;"                                              
+[5] "root;cellular organisms;Eukaryota;unclassified eukaryotes;Trimastix;"                                                        
+[6] "root;cellular organisms;Eukaryota;unclassified eukaryotes;Tsukubamonadidae;Tsukubamonas;"                                    
+&gt; <span class='functs'>length</span>&#40;r&#41;
+[1] 6917
+&gt; <span class='comments'># search for Humans in the taxonomy</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;Homininae&quot;</span>, r, fixed=TRUE, value=TRUE&#41;
+[1] "root;cellular organisms;Eukaryota;Opisthokonta;Metazoa;Eumetazoa;Bilateria;Deuterostomia;Chordata;Craniata <chordata>;Vertebrata <Metazoa>;Gnathostomata <vertebrate>;Teleostomi;Euteleostomi;Sarcopterygii;Dipnotetrapodomorpha;Tetrapoda;Amniota;Mammalia;Theria <Mammalia>;Eutheria;Boreoeutheria;Euarchontoglires;Primates;Haplorrhini;Simiiformes;Catarrhini;Hominoidea;Hominidae;Homininae;Homo;"
+&gt; s &lt;- <span class='functs'>strsplit</span>&#40;r, <span class='chars'>&quot;;&quot;</span>, fixed=TRUE&#41;
+&gt; <span class='functs'>head</span>&#40;s&#41;
+[[1]]
+[1] "root"                       
+[2] "Viruses"                    
+[3] "dsDNA viruses, no RNA stage"
+[4] "Caudovirales"               
+[5] "Myoviridae"                 
+[6] "Peduovirinae"               
+[7] "Hpunalikevirus"             
+<br>
+[[2]]
+[1] "root"                       
+[2] "Viruses"                    
+[3] "dsDNA viruses, no RNA stage"
+[4] "Caudovirales"               
+[5] "Myoviridae"                 
+[6] "Peduovirinae"               
+[7] "P2likevirus"                
+<br>
+[[3]]
+[1] "root"                       
+[2] "Viruses"                    
+[3] "dsDNA viruses, no RNA stage"
+[4] "Caudovirales"               
+[5] "Siphoviridae"               
+[6] "Spbetalikevirus"            
+<br>
+[[4]]
+[1] "root"                       
+[2] "Viruses"                    
+[3] "dsDNA viruses, no RNA stage"
+[4] "Herpesvirales"              
+[5] "Herpesviridae"              
+[6] "Betaherpesvirinae"          
+[7] "Cytomegalovirus"            
+<br>
+[[5]]
+[1] "root"                   "cellular organisms"    
+[3] "Archaea"                "Crenarchaeota <phylum>"
+[5] "Thermoprotei"           "Acidilobales"          
+[7] "Acidilobaceae"          "Acidilobus"            
+<br>
+[[6]]
+[1] "root"                   "cellular organisms"    
+[3] "Archaea"                "Crenarchaeota <phylum>"
+[5] "Thermoprotei"           "Acidilobales"          
+[7] "Caldisphaeraceae"       "Caldisphaera"          
+<br>
+&gt; 
+&gt; l &lt;- <span class='functs'>sapply</span>&#40;s, length&#41;
+&gt; <span class='functs'>all</span>&#40;l==<span class='functs'>lengths</span>&#40;s&#41;&#41;
+[1] TRUE
+&gt; <span class='functs'>hist</span>&#40;l&#41;
+&gt; s[[<span class='functs'>which.min</span>&#40;l&#41;]]
+[1] "root"                   
+[2] "cellular organisms"     
+[3] "Archaea"                
+[4] "Diapherotrites"         
+[5] "Candidatus Iainarchaeum"
+&gt; s[[<span class='functs'>which.max</span>&#40;l&#41;]]
+ [1] "root"                      
+ [2] "cellular organisms"        
+ [3] "Eukaryota"                 
+ [4] "Opisthokonta"              
+ [5] "Metazoa"                   
+ [6] "Eumetazoa"                 
+ [7] "Bilateria"                 
+ [8] "Deuterostomia"             
+ [9] "Chordata"                  
+[10] "Craniata <chordata>"       
+[11] "Vertebrata <Metazoa>"      
+[12] "Gnathostomata <vertebrate>"
+[13] "Teleostomi"                
+[14] "Euteleostomi"              
+[15] "Actinopterygii"            
+[16] "Actinopteri"               
+[17] "Neopterygii"               
+[18] "Teleostei"                 
+[19] "Elopocephala"              
+[20] "Clupeocephala"             
+[21] "Euteleostei"               
+[22] "Neognathi"                 
+[23] "Neoteleostei"              
+[24] "Eurypterygii"              
+[25] "Ctenosquamata"             
+[26] "Acanthomorpha"             
+[27] "Euacanthomorpha"           
+[28] "Holacanthopterygii"        
+[29] "Acanthopterygii"           
+[30] "Euacanthopterygii"         
+[31] "Percomorpha"               
+[32] "Perciformes"               
+[33] "Labroidei"                 
+[34] "Cichlidae"                 
+[35] "African cichlids"          
+[36] "Pseudocrenilabrinae"       
+[37] "Oreochromini"              
+[38] "Oreochromis"               
+&gt; 
+&gt; <span class='comments'># select one level of the ranking from each</span>
+&gt; select &lt;- <span class='functs'>function</span>&#40;x, level&#41; {
++ &nbsp;&nbsp;&nbsp;x[level]
++ }
+&gt; <span class='comments'># note the extra parameter being passed</span>
+&gt; level1 &lt;- <span class='functs'>sapply</span>&#40;s, select, level=<span class='numbers'>1</span>&#41;
+&gt; <span class='functs'>table</span>&#40;level1&#41;
+level1
+root 
+6917 
+&gt; level2 &lt;- <span class='functs'>sapply</span>&#40;s, select, level=<span class='numbers'>2</span>&#41;
+&gt; <span class='functs'>table</span>&#40;level2&#41;
+level2
+cellular organisms            Viruses 
+              6913                  4 
+&gt; level3 &lt;- <span class='functs'>sapply</span>&#40;s, select, level=<span class='numbers'>3</span>&#41;
+&gt; <span class='functs'>table</span>&#40;level3&#41;
+level3
+                    Archaea 
+                         97 
+      Bacteria <prokaryote> 
+                       1212 
+dsDNA viruses, no RNA stage 
+                          4 
+                  Eukaryota 
+                       5604 
+&gt; level4 &lt;- <span class='functs'>sapply</span>&#40;s, select, level=<span class='numbers'>4</span>&#41;
+&gt; <span class='functs'>table</span>&#40;level4&#41;
+level4
+          Actinobacteria &lt;phylum&gt; 
+                              139 
+                        Alveolata 
+                               60 
+                        Amoebozoa 
+                                9 
+                         Apusozoa 
+                                8 
+               Aquificae &lt;phylum&gt; 
+                                9 
+                  Armatimonadetes 
+                                2 
+     Bacteroidetes/Chlorobi group 
+                              186 
+                        Breviatea 
+                                1 
+                      Caldiserica 
+                                1 
+                     Caudovirales 
+                                3 
+                   Centroheliozoa 
+                                3 
+ Chlamydiae/Verrucomicrobia group 
+                               20 
+             Chloroflexi &lt;phylum&gt; 
+                               13 
+          Chrysiogenetes &lt;phylum&gt; 
+                                2 
+           Crenarchaeota &lt;phylum&gt; 
+                               21 
+                      Cryptophyta 
+                                5 
+                    Cyanobacteria 
+                               60 
+         Deferribacteres &lt;phylum&gt; 
+                                6 
+              Deinococcus-Thermus 
+                                6 
+                   Diapherotrites 
+                                1 
+             Dictyoglomi &lt;phylum&gt; 
+                                1 
+           Elusimicrobia &lt;phylum&gt; 
+                                1 
+                       Euglenozoa 
+                               14 
+                    Euryarchaeota 
+                               67 
+Fibrobacteres/Acidobacteria group 
+                                9 
+                       Firmicutes 
+                              171 
+                        Fornicata 
+                                3 
+            Fusobacteria &lt;phylum&gt; 
+                                8 
+        Gemmatimonadetes &lt;phylum&gt; 
+                                1 
+               Glaucocystophyceae 
+                                4 
+                     Haptophyceae 
+                                7 
+                    Herpesvirales 
+                                1 
+                    Heterolobosea 
+                                1 
+                         Jakobida 
+                                5 
+              Katablepharidophyta 
+                                3 
+                     Korarchaeota 
+                                1 
+                  Malawimonadidae 
+                                1 
+                      Nitrospinae 
+                                1 
+                      Nitrospirae 
+                                4 
+                     Opisthokonta 
+                             3868 
+                      Parabasalia 
+                                2 
+                    Parvarchaeota 
+                                2 
+                   Planctomycetes 
+                               14 
+                   Proteobacteria 
+                              508 
+                         Rhizaria 
+                               23 
+                       Rhodophyta 
+                              239 
+            Spirochaetes &lt;phylum&gt; 
+                                8 
+                    Stramenopiles 
+                              117 
+                    Synergistetes 
+                                9 
+                      Tenericutes 
+                                7 
+                   Thaumarchaeota 
+                                5 
+   Thermodesulfobacteria &lt;phylum&gt; 
+                                2 
+             Thermotogae &lt;phylum&gt; 
+                                7 
+            unclassified Bacteria 
+                               17 
+          unclassified eukaryotes 
+                                5 
+                    Viridiplantae 
+                             1226 </span></pre>
+
+<br><br><a style="float:left;" href="RLesson10.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson12.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

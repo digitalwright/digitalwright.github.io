@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Align Profiles
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1sub">Alignment<span class="right">&#9662;</span></a></li>
+<li><a href="AlignSequences.html" class="l2">Align Sequences</a></li>
+<li><a href="AlignTranslation.html" class="l2">Align Translation</a></li>
+<li><a href="AlignSynteny.html" class="l2">Align Synteny</a></li>
+<li><a href="AlignProfiles.html" class="l2sel">Align Profiles</a></li>
+<li><a href="AlignPairs.html" class="l2">Align Pairs</a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Align Profiles</p>
+
+This short example describes how to use DECIPHER to merge two alignments, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2015) "DECIPHER: harnessing local sequence context to improve protein multiple sequence alignment." <i>BMC Bioinformatics</i>, <a href="http://www.biomedcentral.com/1471-2105/16/322">doi:10.1186/s12859-015-0749-z</a>.</p>
+<p class="hanging">ES Wright (2020) "RNAconTest: Comparing Tools for Noncoding RNA Multiple Sequence Alignment Based on Structural Consistency." <i>RNA</i>, <a href="https://rnajournal.cshlp.org/content/26/5/531.long">doi:10.1261/rna.073015.119</a>.</p></div>
+
+For an in-depth tutorial on sequence alignment, see the &quot;The Art of Multiple Sequence Alignment in R&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I align two sets of aligned sequences?</p>
+
+There are two options for merging alignments:
+<ol>
+<li>If the two existing alignments are small enough to fit in memory, then it is simplest to use the function &#39;AlignProfiles&#39;.</li>
+<li>If the two alignments are too large to fit in memory, then it is necessary to load them into a sequence database before they can be efficiently aligned with the function &#39;AlignDB&#39;.</li>
+</ol>
+
+These two options are described separately below. To begin, it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Then for option 1 (below), load the two sequences from separate FASTA files and perform alignment.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to both FASTA files (in quotes&#41;</span>
+&gt; fas1 &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE1&gt;&gt;&quot;</span>
+&gt; fas2 &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE2&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; <span class='comments'># change &quot;DNA&quot; to &quot;RNA&quot; or &quot;AA&quot; if necessary</span>
+&gt; seqs1 &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas1&#41;
+&gt; seqs2 &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas2&#41;
+&gt; 
+&gt; <span class='comments'># perform the alignment</span>
+&gt; aligned &lt;- <span class='functs'>AlignProfiles</span>&#40;seqs1, seqs2&#41;
+&gt; 
+&gt; <span class='comments'># view the alignment in a browser (optional&#41;</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;aligned, highlight=<span class='numbers'>0</span>&#41;
+&gt; 
+&gt; <span class='comments'># write the alignment to a new FASTA file</span>
+&gt; <span class='functs'>writeXStringSet</span>&#40;aligned,
++ &nbsp;&nbsp;&nbsp;file=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO OUTPUT FASTA FILE&gt;&gt;&quot;</span>&#41;</span></pre>
+
+<div class="breakout">For option 2, it is first necessary to construct a sequence database containing both alignments. The alignments must each be named with a unique &#39;identifier&#39;.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to both FASTA files (in quotes&#41;</span>
+&gt; fas1 &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE1&gt;&gt;&quot;</span>
+&gt; fas2 &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE2&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># specify where to create the new sequence database</span>
+&gt; db &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO SEQUENCE DATABASE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas1, <span class='chars'>&quot;FASTA&quot;, db, &quot;Alignment1&quot;</span>&#41;
+Reading FASTA file from line  1 to 1e+05
+<br>
+175 total sequences in table DNA.
+Time difference of 0.11 secs
+<br>
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas2, <span class='chars'>&quot;FASTA&quot;, db, &quot;Alignment2&quot;</span>&#41;
+Reading FASTA file from line  1 to 1e+05
+<br>
+Added 175 new sequences to table DNA.
+350 total sequences in table DNA.
+Time difference of 0.11 secs
+<br>
+&gt; 
+&gt; <span class='comments'># perform the alignment</span>
+&gt; <span class='functs'>AlignDB</span>&#40;db,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='functs'>c</span>&#40;<span class='chars'>&quot;Alignment1&quot;, &quot;Alignment2&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;add2tbl=<span class='chars'>&quot;OutputAlignment&quot;</span>&#41;
+  |============================================| 100%
+Added 350 aligned sequences to table OutputAlignment
+with identifier &#39;Alignment1_Alignment2&#39;.
+&gt; 
+&gt; <span class='comments'># efficiently write the alignment to a new FASTA file</span>
+&gt; <span class='functs'>DB2Seqs</span>&#40;<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO OUTPUT FASTA.gz FILE&gt;&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;db,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;OutputAlignment&quot;</span>,
++ &nbsp;&nbsp;&nbsp;compress=TRUE&#41;
+  |============================================| 100%
+<br>
+Wrote 350 sequences.
+Time difference of 0.26 secs</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

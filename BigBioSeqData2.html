@@ -1,0 +1,411 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Big Biological Data Part #1
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2sel">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Managing big biological sequence data - Workflow part #1</p>
+
+In part #1 of this workflow, the goal is to design optimal primers to differentiate all of the <i>Pythium</i>. Here the Cytochrome c oxidase subunit 1 &#40;COI&#41; gene is used as a phylogenetic marker to identify species. The COI gene is part of the mitochondrial genome of all eukaryotes. The first step is to <a href="data/Downloads/BigBioSeqData.zip">download the COI gene sequences</a> of known <i>Pythium</i> species from the Internet and import them into a sequence database, as shown below.<br><br>
+
+<!--<video width="590" poster="images/Poster2.png" controls><source src="data/Videos/BigBioSeqData_Part1.mp4" type="video/mp4">Your browser does not support this video format.</video><br><br>-->
+<iframe width="590" height="443" src="https://drive.google.com/file/d/1nZVg2jQqS_dHqgHiTHFedAud_OzMA_vp/preview"></iframe>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># all paths are relative to the installed datasets</span></span>
+&gt; data_dir &lt;- <span class='chars'>&quot;&lt;&lt;PATH TO DATA FOLDER&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+Loading required package: Biostrings
+Loading required package: BiocGenerics
+Loading required package: parallel
+<br>
+Attaching package: ‘BiocGenerics’
+<br>
+The following objects are masked from ‘package:parallel’:
+<br>
+    clusterApply, clusterApplyLB, clusterCall,
+    clusterEvalQ, clusterExport, clusterMap,
+    parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply,
+    parSapplyLB
+<br>
+The following objects are masked from ‘package:stats’:
+<br>
+    IQR, mad, xtabs
+<br>
+The following objects are masked from ‘package:base’:
+<br>
+    anyDuplicated, append, as.data.frame,
+    cbind, colnames, do.call, duplicated, eval,
+    evalq, Filter, Find, get, grep, grepl,
+    intersect, is.unsorted, lapply, lengths,
+    Map, mapply, match, mget, order, paste,
+    pmax, pmax.int, pmin, pmin.int, Position,
+    rank, rbind, Reduce, rownames, sapply,
+    setdiff, sort, table, tapply, union,
+    unique, unsplit, which, which.max,
+    which.min
+<br>
+Loading required package: S4Vectors
+Loading required package: stats4
+<br>
+Attaching package: ‘S4Vectors’
+<br>
+The following objects are masked from ‘package:base’:
+<br>
+    colMeans, colSums, expand.grid, rowMeans,
+    rowSums
+<br>
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: RSQLite
+Loading required package: DBI
+&gt; 
+&gt; <span class='comments'># Create a connection to an on-disk SQLite database</span>
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;./COIgenes.sqlite&quot;</span>&#41; <span class='comments'># path to new database file</span>
+&gt; 
+&gt; <span class='comments'># Import sequences from a GenBank formatted file</span>
+&gt; <span class='functs'>Seqs2DB</span>&#40;<span class='functs'>paste</span>&#40;data_dir,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;/Pythium_spp_COI.gb&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;GenBank&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='chars'>&quot;Pythium&quot;</span>&#41;
+Reading GenBank file chunk 1
+<br>
+488 total sequences in table Seqs.
+Time difference of 0.29 secs
+<br>
+&gt; 
+&gt; <span class='comments'># View the database table that was constructed</span>
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn&#41;
+&gt; 
+&gt; <span class='comments'># Retrieve the imported sequences</span>
+&gt; dna &lt;- <span class='functs'>SearchDB</span>&#40;dbConn&#41;
+Search Expression:
+select row_names, sequence from _Seqs where
+row_names in (select row_names from Seqs)
+<br>
+DNAStringSet of length: 488
+Time difference of 0.02 secs
+<br>
+&gt; dna
+  A DNAStringSet instance of length 488
+      width seq                   names               
+  [1]  1277 ATGAATTTT...GTTATTCTT 1
+  [2]  1277 ATGAATTTT...GTTATTTTT 2
+  [3]  1095 TATATAATG...TATTTTTTT 3
+  [4]  1299 ATGAATTTT...ATTACATTT 4
+  [5]  1109 CATCATTTA...TATAGGTGT 5
+  ...   ... ...
+[484]   673 AAATCATAA...TTATTCCAA 484
+[485]   680 AATCATAAA...ACATTTATT 485
+[486]   680 AATCATAAA...ACATTTATT 486
+[487]   680 AATCATAAA...ACATTTATT 487
+[488]   680 AATCATAAA...ACATTTATT 488
+&gt; 
+&gt; <span class='comments'># Align the sequences based on their translations</span>
+&gt; DNA &lt;- <span class='functs'>AlignTranslation</span>&#40;dna&#41;
+Determining distance matrix based on shared 5-mers:
+  |============================================| 100%
+<br>
+Time difference of 0.65 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 1.11 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 2.56 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.27 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.64 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 2.43 secs
+<br>
+&gt; DNA
+  A DNAStringSet instance of length 488
+      width seq                   names               
+  [1]  1299 ATGAATTTT...--------- 1
+  [2]  1299 ATGAATTTT...--------- 2
+  [3]  1299 ---------...--------- 3
+  [4]  1299 ATGAATTTT...ATTACATTT 4
+  [5]  1299 ---------...--------- 5
+  ...   ... ...
+[484]  1299 ---------...--------- 484
+[485]  1299 ---------...--------- 485
+[486]  1299 ---------...--------- 486
+[487]  1299 ---------...--------- 487
+[488]  1299 ---------...--------- 488
+&gt; 
+&gt; <span class='comments'># Display the sequences in a web browser</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA&#41;
+&gt; <span class='comments'># show differences with the first sequence</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA, highlight=<span class='numbers'>1</span>&#41;
+&gt; <span class='comments'># show differences with the consensus sequence</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA, highlight=<span class='numbers'>0</span>&#41;
+&gt; <span class='comments'># change the degree of consensus</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA, highlight=<span class='numbers'>0</span>, threshold=<span class='numbers'>0.2</span>&#41;
+&gt; 
+&gt; <span class='comments'># note the pattern common to most sequences</span>
+&gt; pattern &lt;- <span class='functs'>DNAStringSet</span>&#40;<span class='chars'>&quot;TAGATTTAGCWATTTTTAGTTTACA&quot;</span>&#41;
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA,
++ &nbsp;&nbsp;&nbsp;patterns=pattern&#41;
+&gt; 
+&gt; <span class='comments'># The protein sequences are very similar</span>
+&gt; AA &lt;- <span class='functs'>AlignTranslation</span>&#40;dna, type=<span class='chars'>&quot;AAStringSet&quot;</span>&#41;
+Determining distance matrix based on shared 5-mers:
+  |============================================| 100%
+<br>
+Time difference of 0.66 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.93 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 2.51 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.26 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.61 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 1.96 secs
+<br>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;AA, highlight=<span class='numbers'>1</span>&#41;
+&gt; 
+&gt; <span class='comments'># Choose a reference for frameshift correction</span>
+&gt; REF &lt;- <span class='functs'>translate</span>&#40;dna[<span class='numbers'>11</span>]&#41; <span class='comments'># sequence #11</span>
+&gt; 
+&gt; <span class='comments'># Correct the frameshift in sequence #12</span>
+&gt; correct &lt;- <span class='functs'>CorrectFrameshifts</span>&#40;myXStringSet=dna[<span class='numbers'>12</span>],
++ &nbsp;&nbsp;&nbsp;myAAStringSet=REF,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;both&quot;</span>&#41;
+<br>
+Assessing frameshifts in nucleotide sequences:
+  |============================================| 100%
+<br>
+Time difference of 0.05 secs
+&gt; correct
+$indels
+$indels$`12`
+$indels$`12`$insertions
+integer(0)
+<br>
+$indels$`12`$deletions
+[1] 813
+<br>
+$indels$`12`$distance
+[1] 0
+<br>
+$indels$`12`$index
+[1] 1
+<br>
+<br>
+<br>
+$sequences
+  A DNAStringSet instance of length 1
+    width seq                     names               
+[1]  1089 TATAATGTTG...TTGGTTATTC 12
+<br>
+&gt; dna[<span class='numbers'>12</span>] &lt;- correct$sequence
+&gt; 
+&gt; <span class='comments'># Sequence #11 is now identical to #12</span>
+&gt; DNA &lt;- <span class='functs'>AlignTranslation</span>&#40;dna&#41;
+Determining distance matrix based on shared 5-mers:
+  |============================================| 100%
+<br>
+Time difference of 0.63 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 1.08 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 3.05 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.32 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.67 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 1.88 secs
+<br>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA, highlight=<span class='numbers'>11</span>&#41;
+&gt; 
+&gt; <span class='comments'># Identify clusters for primer design</span>
+&gt; d &lt;- <span class='functs'>DistanceMatrix</span>&#40;DNA&#41;
+  |============================================| 100%
+<br>
+Time difference of 0.37 secs
+<br>
+&gt; <span class='functs'>dim</span>&#40;d&#41; <span class='comments'># a symmetric matrix</span>
+[1] 488 488
+&gt; c &lt;- <span class='functs'>IdClusters</span>&#40;d,
++ &nbsp;&nbsp;&nbsp;method=<span class='chars'>&quot;UPGMA&quot;</span>,
++ &nbsp;&nbsp;&nbsp;cutoff=<span class='numbers'>0.05</span>,
++ &nbsp;&nbsp;&nbsp;show=TRUE&#41;
+  |============================================| 100%
+<br>
+Time difference of 1.66 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;c&#41; <span class='comments'># cluster numbers</span>
+  cluster
+1      21
+2      21
+3      20
+4      32
+5       2
+6      20
+&gt; 
+&gt; <span class='comments'># Identify sequences by cluster name in the database</span>
+&gt; <span class='functs'>Add2DB</span>&#40;<span class='functs'>data.frame</span>&#40;identifier=<span class='functs'>paste</span>&#40;<span class='chars'>&quot;cluster&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c$cluster,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;&quot;</span>&#41;&#41;,
++ &nbsp;&nbsp;&nbsp;dbConn&#41;
+Expression:
+update Seqs set identifier = :identifier where
+row_names = :row_names
+<br>
+Added to table Seqs:  "identifier".
+Time difference of 0.02 secs
+<br>
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn&#41;
+&gt; 
+&gt; <span class='comments'># Design primers for next-generation sequencing</span>
+&gt; primers &lt;- <span class='functs'>DesignSignatures</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;sequence&quot;</span>,
++ &nbsp;&nbsp;&nbsp;resolution=<span class='numbers'>5</span>,
++ &nbsp;&nbsp;&nbsp;levels=<span class='numbers'>5</span>,
++ &nbsp;&nbsp;&nbsp;minProductSize=<span class='numbers'>400</span>,
++ &nbsp;&nbsp;&nbsp;maxProductSize=<span class='numbers'>800</span>,
++ &nbsp;&nbsp;&nbsp;annealingTemp=<span class='numbers'>55</span>,
++ &nbsp;&nbsp;&nbsp;maxPermutations=<span class='numbers'>8</span>&#41;
+Tallying 8-mers for 48 groups:
+  |============================================| 100%
+<br>
+Time difference of 2.15 secs
+<br>
+Designing primer sequences based on the group 'cluster2':
+  |============================================| 100%
+<br>
+Time difference of 130.93 secs
+<br>
+Selecting the most common primer sequences:
+  |============================================| 100%
+<br>
+Time difference of 48.39 secs
+<br>
+Determining PCR products from each group:
+  |============================================| 100%
+<br>
+Time difference of 110.41 secs
+<br>
+Scoring primer pair combinations:
+  |============================================| 100%
+<br>
+Time difference of 11.17 secs
+<br>
+Choosing optimal forward and reverse pairs:
+  |============================================| 100%
+<br>
+Time difference of 64.59 secs
+&gt; primers[<span class='numbers'>1</span>,] <span class='comments'># the top scoring primer set</span>
+        forward_primer    reverse_primer        score
+1 KCRCAACCWGGTAATCAAAT AAWCCWGGWGCTCTCAT 0.047509....
+      coverage products
+1 0.916666....      424
+                                                                                                similar_signatures
+1 (cluster32, cluster6); (cluster36, cluster24); (cluster21, cluster20, cluster2, cluster12, cluster18, cluster44)
+                         missing_signatures
+1 cluster46, cluster45, cluster8, cluster41
+&gt; 
+&gt; <span class='comments'># Highlight the primers' target sites</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;DNA,
++ &nbsp;&nbsp;&nbsp;patterns=<span class='functs'>c</span>&#40;<span class='functs'>DNAStringSet</span>&#40;primers[<span class='numbers'>1</span>, <span class='numbers'>1</span>]&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>reverseComplement</span>&#40;<span class='functs'>DNAStringSet</span>&#40;primers[<span class='numbers'>1</span>, <span class='numbers'>2</span>]&#41;&#41;&#41;&#41;</span></pre>
+
+<br><br><a style="float:left;" href="BigBioSeqData1.html">&lt; Previous Part</a><a style="float:right;" href="BigBioSeqData3.html">Next Part &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

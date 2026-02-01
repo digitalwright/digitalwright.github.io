@@ -1,0 +1,421 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #12
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #12 - Loops</p>
+
+This lesson describes for and while loops, which can be used to repeatedly apply a block of code. In R, for loops iterate through a vector - typically an index. In contrast, while loops repeat until a condition is FALSE.<br><br>There are three main reasons to prefer a loop over an apply function: </span>&#40;1&#41; When subsets are dependent </span>&#40;i.e., iteration i + 1 depends on i&#41;, </span>&#40;2&#41; When modifying part of a structure in place, and </span>&#40;3&#41; With tasks that might terminate before completion.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># basic constructors:</span></span>
+&gt; for (i in <span class='functs'>seq_len</span>&#40;n)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># do something</span>
++ }
+&gt; 
+&gt; while (condition) { <span class='comments'># execute if TRUE</span>
++ &nbsp;&nbsp;&nbsp;<span class='comments'># do something</span>
++ }
+&gt; 
+&gt; for (i in <span class='functs'>seq_len</span>&#40;<span class='numbers'>10</span>)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;i&#41;
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+&gt; 
+&gt; i &lt;- <span class='numbers'>0L</span>
+&gt; while (i &lt; <span class='numbers'>10</span>) {
++ &nbsp;&nbsp;&nbsp;i &lt;- i + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;i&#41;
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10</span></pre>
+
+<div class="breakout">When initializing a for loop, seq_along and seq_len are preferable to using seq or 1:n, because they properly handle the case when n is zero.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>10</span>&#41;</span>
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; <span class='numbers'>1</span>:<span class='numbers'>10</span>
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; <span class='functs'>seq_len</span>&#40;<span class='numbers'>10</span>&#41;
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; <span class='functs'>seq_along</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>10</span>&#41;
+ [1]  1  2  3  4  5  6  7  8  9 10
+&gt; 
+&gt; a &lt;- <span class='functs'>sample</span>&#40;<span class='numbers'>10</span>, <span class='numbers'>100</span>, replace=TRUE&#41;
+&gt; w &lt;- <span class='functs'>which</span>&#40;a==<span class='numbers'>5</span>&#41;
+&gt; <span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='functs'>length</span>&#40;w&#41;&#41;
+[1] 1 2 3 4 5 6 7 8 9
+&gt; <span class='numbers'>1</span>:<span class='functs'>length</span>&#40;w&#41;
+[1] 1 2 3 4 5 6 7 8 9
+&gt; for (i in <span class='numbers'>1</span>:<span class='functs'>length</span>&#40;w)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;a[&quot;</span>, w[i], <span class='chars'>&quot;] = &quot;</span>, a[w[i]], <span class='chars'>&quot;\n&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
++ }
+a[7] = 5
+a[17] = 5
+a[22] = 5
+a[24] = 5
+a[29] = 5
+a[35] = 5
+a[70] = 5
+a[78] = 5
+a[87] = 5
+&gt; <span class='functs'>seq_along</span>&#40;w&#41;
+[1] 1 2 3 4 5 6 7 8 9
+&gt; <span class='functs'>seq_len</span>&#40;<span class='functs'>length</span>&#40;w&#41;&#41;
+[1] 1 2 3 4 5 6 7 8 9
+&gt; for (i in <span class='functs'>seq_along</span>&#40;w)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;a[&quot;</span>, w[i], <span class='chars'>&quot;] = &quot;</span>, a[w[i]], <span class='chars'>&quot;\n&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
++ }
+a[7] = 5
+a[17] = 5
+a[22] = 5
+a[24] = 5
+a[29] = 5
+a[35] = 5
+a[70] = 5
+a[78] = 5
+a[87] = 5
+&gt; 
+&gt; <span class='comments'># seq and 1:n fail when n is an empty set:</span>
+&gt; w &lt;- <span class='functs'>which</span>&#40;a==<span class='numbers'>0</span>&#41;
+&gt; <span class='functs'>seq</span>&#40;<span class='numbers'>1</span>, <span class='functs'>length</span>&#40;w&#41;&#41;
+[1] 1 0
+&gt; <span class='numbers'>1</span>:<span class='functs'>length</span>&#40;w&#41;
+[1] 1 0
+&gt; for (i in <span class='numbers'>1</span>:<span class='functs'>length</span>&#40;w)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;a[&quot;</span>, w[i], <span class='chars'>&quot;] = &quot;</span>, a[w[i]], <span class='chars'>&quot;\n&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
++ }
+a[NA] = NA
+a[] = 
+&gt; <span class='comments'># seq_along and seq_len give an empty set:</span>
+&gt; <span class='functs'>seq_along</span>&#40;w&#41;
+integer(0)
+&gt; <span class='functs'>seq_len</span>&#40;<span class='functs'>length</span>&#40;w&#41;&#41;
+integer(0)
+&gt; for (i in <span class='functs'>seq_along</span>&#40;w)&#41; { <span class='comments'># never executes</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;a[&quot;</span>, w[i], <span class='chars'>&quot;] = &quot;</span>, a[w[i]], <span class='chars'>&quot;\n&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
++ }</span></pre>
+
+<div class="breakout">Example: calculating the cumulative sum of a vector. The sum at any index in the resulting vector is the sum of all elements in the original vector up to that point.</div>
+<pre><span class="codebox"><span class="line">y &lt;- <span class='numbers'>-10</span>:<span class='numbers'>10</span></span>
+&gt; <span class='functs'>cumsum</span>&#40;y&#41;
+ [1]  -10 -19 -27 -34 -40 -45 -49 -52 -54 -55 -55 -54
+ [13] -52 -49 -45 -40 -34 -27 -19 -10   0
+&gt; 
+&gt; result &lt;- <span class='functs'>integer</span>&#40;<span class='functs'>length</span>&#40;y&#41;&#41;
+&gt; for (i in <span class='functs'>seq_along</span>&#40;y)&#41; {
++ &nbsp;&nbsp;&nbsp;if (i==<span class='numbers'>1</span>) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result[i] &lt;- y[i]
++ &nbsp;&nbsp;&nbsp;} else {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result[i] &lt;- y[i] + result[i - <span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;}
++ }
+&gt; result
+ [1]  -10 -19 -27 -34 -40 -45 -49 -52 -54 -55 -55 -54
+ [13] -52 -49 -45 -40 -34 -27 -19 -10   0</span></pre>
+
+<div class="breakout">A loop is useful for calculating an exponentially weighted moving average, where each iteration is dependent on the past iterations. See <a href="http://en.wikipedia.org/wiki/Exponential_smoothing">Wikipedia</a> for an explanation of the formulas below.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># example - exponentially weighted moving average</span></span>
+&gt; x &lt;- <span class='functs'>rnorm</span>&#40;<span class='numbers'>100L</span>&#41; <span class='comments'># input vector</span>
+&gt; s &lt;- <span class='functs'>numeric</span>&#40;<span class='functs'>length</span>&#40;x&#41;&#41; <span class='comments'># initialize smoothed vector</span>
+&gt; a &lt;- <span class='numbers'>0.1</span> <span class='comments'># alpha (smoothing parameter)</span>
+&gt; 
+&gt; for (i in <span class='functs'>seq_along</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;if (i == <span class='numbers'>1</span>) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[i] &lt;- x[i]
++ &nbsp;&nbsp;&nbsp;} else {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[i] &lt;- a*x[i] + (<span class='numbers'>1</span> - a)*s[i - <span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;}
++ }
+&gt; 
+&gt; <span class='functs'>plot</span>(x, type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;value&quot;</span>)
+&gt; <span class='functs'>points</span>(s, type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;blue&quot;</span>)
+&gt; <span class='functs'>legend</span>(<span class='chars'>&quot;topleft&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='chars'>&quot;x&quot;</span>, <span class='chars'>&quot;s&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>1</span>, bg=<span class='chars'>&quot;white&quot;</span>,
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>c</span>&#40;<span class='chars'>&quot;black&quot;</span>, <span class='chars'>&quot;blue&quot;</span>)&#41;
+&gt; 
+&gt; <span class='comments'># the same task can be done with a while loop:</span>
+&gt; i &lt;- <span class='numbers'>0L</span>
+&gt; while (i &lt; <span class='functs'>length</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;i &lt;- i + <span class='numbers'>1L</span> <span class='comments'># same as the for loop iterator</span>
++ &nbsp;&nbsp;&nbsp;if (i == <span class='numbers'>1</span>) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[i] &lt;- x[i]
++ &nbsp;&nbsp;&nbsp;} else {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[i] &lt;- a*x[i] + (<span class='numbers'>1</span> - a)*s[i - <span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;}
++ }
+&gt; <span class='functs'>points</span>&#40;s, col=<span class='chars'>&quot;red&quot;</span>, type=<span class='chars'>&quot;l&quot;</span>, lty=<span class='numbers'>2</span>&#41;</span></pre>
+
+<div class="breakout">All for loops can be easily converted into while loops but the opposite is not as simple. To convert a while loop into a for loop it may be necessary to use control-flow statements, such as next and break. The next statement will jump to the next iteration, and the break statement will jump out of the current loop.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># example - find the first occurrence > 2</span></span>
+&gt; i &lt;- <span class='numbers'>1L</span>
+&gt; while (x[i] &lt; <span class='numbers'>2</span>) {
++ &nbsp;&nbsp;&nbsp;i &lt;- i + <span class='numbers'>1L</span>
++ }
+&gt; <span class='functs'>print</span>&#40;i&#41;
+[1] 19
+&gt; <span class='functs'>print</span>&#40;x[i]&#41;
+[1] 2.34534
+&gt; 
+&gt; <span class='comments'># to accomplish this using a for loop it is</span>
+&gt; <span class='comments'># necessary to use a control flow statement</span>
+&gt; for (i in <span class='functs'>seq_along</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;if (x[i] &gt;= <span class='numbers'>2</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break <span class='comments'># jump out of the loop</span>
++ }
+&gt; <span class='functs'>print</span>&#40;i&#41;
+[1] 19
+&gt; <span class='functs'>print</span>&#40;x[i]&#41;
+[1] 2.34534
+&gt; 
+&gt; <span class='comments'>it is also possible to loop over the elements</span>
+&gt; <span class='comments'>without using any index directly</span>
+&gt; for (i in x) { <span class='comments'># note: no seq_along</span>
++ &nbsp;&nbsp;&nbsp;if (i &gt;= <span class='numbers'>2</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break
++ }
+&gt; <span class='functs'>print</span>&#40;i&#41;
+[1] 2.34534
+&gt; <span class='comments'># but now `i` means something different:</span>
+&gt; <span class='functs'>print</span>&#40;x[i]&#41; <span class='comments'># `i` gets truncated into an index!</span>
+[1] -1.214965
+&gt; 
+&gt; <span class='comments'># an alternative control-flow statement is `next`</span>
+&gt; I &lt;- <span class='numbers'>0</span> <span class='comments'># uppercase `i`</span>
+&gt; for (i in <span class='functs'>seq_along</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;if (x[i] &lt; <span class='numbers'>2</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next <span class='comments'># jump to the next iteration</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;I &lt;- i
++ }
+&gt; <span class='comments'># this is an inefficient way of finding the last</span>
+&gt; <span class='comments'># element of x that meets the condition (>= 2)</span>
+&gt; <span class='functs'>print</span>&#40;I&#41;
+[1] 90
+&gt; <span class='functs'>print</span>&#40;x[I]&#41;
+[1] 2.225347</span></pre>
+
+<div class="breakout">Note that the for loop is fixed from the beginning. This behavior differs between programming languages, but the looping vector cannot be altered in R after initialization.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># the iterator cannot be changed after initialization</span></span>
+&gt; for (i in <span class='numbers'>1</span>:<span class='numbers'>10</span>) {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;i&#41;
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+&gt; for (i in <span class='numbers'>1</span>:<span class='numbers'>10</span>) {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;i&#41;
++ &nbsp;&nbsp;&nbsp;i &lt;- <span class='numbers'>5</span>
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+&gt; 
+&gt; z &lt;- <span class='numbers'>1</span>:<span class='numbers'>10</span>
+&gt; for (i in z) {
++ &nbsp;&nbsp;&nbsp;z[] &lt;- <span class='numbers'>5</span> <span class='comments'># all elements of z are now 5</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;i&#41; <span class='comments'># but the original z is still printed</span>
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+&gt; <span class='comments'># the loop keeps going as if z was not changed</span>
+&gt; z <span class='comments'># note that z was changed outside the loop!</span>
+ [1] 5 5 5 5 5 5 5 5 5 5
+&gt; <span class='comments'># what happens inside the loop does not stay inside</span></pre></span>
+
+<div class="breakout">It is also easy to create an infinite loop. If this happens, it is sometimes possible to exit by pressing 'control' + 'c' or the 'ESC' key.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># an infinite loop</span></span>
+&gt; <span class='comments'>#while (TRUE) {</span>
+&gt; &nbsp;&nbsp;&nbsp;<span class='comments'># do something</span>
+&gt; <span class='comments'>#}</span></span></pre>
+
+<div class="breakout">Just to reiterate (no pun intended), it is important to initialize the total amount of memory that will be required. The small example below reveals the big difference in speed that memory initialization makes.</div>
+
+<pre><span class="codebox"><span class="line">reps &lt;- <span class='numbers'>20000</span></span>
+&gt; a &lt;- <span class='functs'>numeric</span>&#40;&#41;
+&gt; <span class='functs'>system.time</span>({
++ &nbsp;&nbsp;&nbsp;for (i in <span class='numbers'>1</span>:reps) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a &lt;- <span class='functs'>c</span>&#40;a, i&#41;
++ &nbsp;&nbsp;&nbsp;}
++ })
+   user  system elapsed 
+  0.864   0.578   1.446 
+&gt; b &lt;- <span class='functs'>numeric</span>&#40;reps&#41;
+&gt; <span class='functs'>system.time</span>({
++ &nbsp;&nbsp;&nbsp;for (i in <span class='numbers'>1</span>:reps) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b[i] &lt;- i
++ &nbsp;&nbsp;&nbsp;}
++ })
+   user  system elapsed 
+  0.042   0.004   0.044 </span></pre>
+
+<div class="breakout">The next example is of <a href="http://en.wikipedia.org/wiki/Robust_regression">robust regression</a> using a while loop. Here, points are weighted by the inverse of their residuals, which are iteratively calculated. The plot shows how the trendline adapts on each iteration in order to find the best fit line.</div>
+
+<pre><span class="codebox"><span class="line">y &lt;- x &lt;- <span class='numbers'>1.7</span>^(<span class='numbers'>1</span>:<span class='numbers'>10</span>)</span>
+&gt; y[<span class='numbers'>10</span>] &lt;- <span class='numbers'>1</span> <span class='comments'># extreme outlier</span>
+&gt; <span class='functs'>plot</span>&#40;x, y&#41;
+&gt; l &lt;- <span class='functs'>lm</span>&#40;y~x&#41;
+&gt; Y &lt;- <span class='functs'>coef</span>&#40;l&#41;[<span class='numbers'>1</span>] + <span class='functs'>coef</span>&#40;l&#41;[<span class='numbers'>2</span>]*x
+&gt; <span class='functs'>points</span>&#40;x, Y, type=<span class='chars'>&quot;l&quot;</span>&#41;
+&gt; 
+&gt; residuals &lt;- l$residuals
+&gt; delta &lt;- Inf
+&gt; cols &lt;- <span class='functs'>rainbow</span>&#40;<span class='numbers'>50</span>&#41;
+&gt; count &lt;- <span class='numbers'>0L</span>
+&gt; <span class='functs'>while</span>&#40;delta &gt; <span class='numbers'>0.01</span>&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># linear regression</span>
++ &nbsp;&nbsp;&nbsp;l &lt;- <span class='functs'>lm</span>(y~x,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weights=<span class='functs'>abs</span>&#40;residuals&#41;^<span class='numbers'>-1</span>)
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># find change in residuals</span>
++ &nbsp;&nbsp;&nbsp;delta &lt;- <span class='functs'>sum</span>&#40;<span class='functs'>abs</span>&#40;residuals - l$residuals&#41;&#41;
++ &nbsp;&nbsp;&nbsp;residuals &lt;- l$residuals
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># plot the line</span>
++ &nbsp;&nbsp;&nbsp;count &lt;- count + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;Y &lt;- <span class='functs'>coef</span>&#40;l&#41;[<span class='numbers'>1</span>] + <span class='functs'>coef</span>&#40;l&#41;[<span class='numbers'>2</span>]*x
++ &nbsp;&nbsp;&nbsp;<span class='functs'>points</span>&#40;x, Y, type=<span class='chars'>&quot;l&quot;</span>, col=cols[count]&#41;
++ }
+&gt; count
+[1] 45
+&gt; <span class='functs'>coef</span>&#40;l&#41;
+ (Intercept)            x 
+0.0006922342 0.9999176688 </span></pre>
+
+<div class="breakout">It is also possible to nest loops. Conventionally, the first loop iterator is named 'i', the second 'j', and the third 'k'.</div>
+
+<pre><span class="codebox"><span class="line">d &lt;- <span class='functs'>matrix</span>&#40;nrow=<span class='numbers'>10</span>, ncol=<span class='numbers'>5</span>&#41;</span>
+&gt; for (i in <span class='functs'>seq_len</span>&#40;<span class='functs'>dim</span>&#40;d&#41;[<span class='numbers'>1</span>])&#41; {
++ &nbsp;&nbsp;&nbsp;for (j in <span class='functs'>seq_len</span>&#40;<span class='functs'>dim</span>&#40;d&#41;[<span class='numbers'>2</span>])&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d[i, j] &lt;- i*j
++ &nbsp;&nbsp;&nbsp;}
++ }
+&gt; d
+      [,1] [,2] [,3] [,4] [,5]
+ [1,]    1    2    3    4    5
+ [2,]    2    4    6    8   10
+ [3,]    3    6    9   12   15
+ [4,]    4    8   12   16   20
+ [5,]    5   10   15   20   25
+ [6,]    6   12   18   24   30
+ [7,]    7   14   21   28   35
+ [8,]    8   16   24   32   40
+ [9,]    9   18   27   36   45
+[10,]   10   20   30   40   50
+&gt; <span class='functs'>outer</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>10</span>, <span class='numbers'>1</span>:<span class='numbers'>5</span>, <span class='chars'>&quot;*&quot;</span>&#41; <span class='comments'># equilvalent</span>
+      [,1] [,2] [,3] [,4] [,5]
+ [1,]    1    2    3    4    5
+ [2,]    2    4    6    8   10
+ [3,]    3    6    9   12   15
+ [4,]    4    8   12   16   20
+ [5,]    5   10   15   20   25
+ [6,]    6   12   18   24   30
+ [7,]    7   14   21   28   35
+ [8,]    8   16   24   32   40
+ [9,]    9   18   27   36   45
+[10,]   10   20   30   40   50</span></pre>
+
+<div class="breakout">Finally, lots of times it is nice to have a progress bar if the loop is slow.</div>
+
+<pre><span class="codebox"><span class="line">pBar &lt;- <span class='functs'>txtProgressBar</span>&#40;style=<span class='numbers'>3</span>, max=<span class='numbers'>100</span>&#41;</span>
+  |                                            |   0%
+&gt; for (i in <span class='functs'>seq_len</span>&#40;<span class='numbers'>100</span>)&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>Sys.sleep</span>&#40;<span class='numbers'>0.05</span>&#41; <span class='comments'># pause for 1/20 seconds</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>setTxtProgressBar</span>&#40;pBar, i&#41;
++ }
+  |============================================| 100%
+&gt; <span class='functs'>close</span>&#40;pBar&#41;</span></pre>
+
+<br><br><a style="float:left;" href="RLesson11.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson13.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

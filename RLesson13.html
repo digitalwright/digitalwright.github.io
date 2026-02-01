@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #13
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #13 - Fitting parameters</p>
+
+This lesson showcases the optim function, which can be used to find the input parameter values that minimize the output of another function. The optim function works by adaptively changing the input parameters until it has optimized the objective function.<br><br>Every optimization has at least three parts: (1) a set of one or more input parameters stored inside a vector, (2) a score or metric for goodness-of-fit, and (3) a function that returns goodness-of-fit.<br><br>For the first example, the goal is to fit a line to a set of points. The equation for a line is y = <i>m</i>*x + <i>b</i>, where <i>m</i> and <i>b</i> are the parameters being optimized. Their optimal values should equal the coefficients found by lm</span>&#40;&#41;. Note that the sum-of-squared error decreases with each additional iteration.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line">X &lt;- <span class='numbers'>1</span>:<span class='numbers'>6</span></span>
+&gt; Y &lt;- <span class='functs'>c</span>&#40;<span class='numbers'>12</span>, <span class='numbers'>1</span>, <span class='numbers'>44</span>, <span class='numbers'>17</span>, <span class='numbers'>95</span>, <span class='numbers'>11</span>&#41; <span class='comments'># randomly selected values</span>
+&gt; <span class='functs'>plot</span>&#40;X, Y&#41;
+&gt; 
+&gt; fitMe &lt;- <span class='functs'>function</span>&#40;params&#41; {
++ &nbsp;&nbsp;&nbsp;b &lt;- params[<span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;m &lt;- params[<span class='numbers'>2</span>]
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>points</span>&#40;X, m*X + b, type=<span class='chars'>&quot;l&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>Sys.sleep</span>&#40;<span class='numbers'>0.1</span>&#41; <span class='comments'># slow it down to watch progress</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;error &lt;- <span class='functs'>sum</span>&#40;(Y - (m*X + b)&#41;^<span class='numbers'>2</span>)
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;error&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;error&#41;
++ }
+&gt; 
+&gt; o &lt;- <span class='functs'>optim</span>&#40;<span class='functs'>c</span>&#40;b=<span class='numbers'>0</span>, m=<span class='numbers'>10</span>&#41;, fitMe&#41;
+[1] 5516
+[1] 5582
+[1] 5917
+[1] 5321
+[1] 5237.5
+[1] 5249.5
+[1] 5256.219
+[1] 5540
+[1] 5307.5
+[1] 5319.5
+[1] 5256.875
+[1] 5262.875
+[1] 5244.969
+[1] 5247.969
+[1] 5242.451
+[1] 5234.217
+[1] 5230.281
+[1] 5229.285
+[1] 5230.532
+[1] 5224.18
+[1] 5223.279
+[1] 5226.742
+[1] 5224.447
+[1] 5229.278
+[1] 5224.903
+[1] 5224.906
+[1] 5223.81
+[1] 5225.205
+[1] 5223.613
+[1] 5223.197
+[1] 5223.466
+[1] 5223.421
+[1] 5223.201
+[1] 5223.334
+[1] 5223.171
+[1] 5223.287
+[1] 5223.151
+[1] 5223.355
+[1] 5223.147
+[1] 5223.164
+[1] 5223.147
+[1] 5223.181
+[1] 5223.143
+&gt; o$par <span class='comments'># optimal parameters</span>
+       b        m 
+5.002281 7.142624 
+&gt; 
+&gt; <span class='functs'>coef</span>&#40;<span class='functs'>lm</span>&#40;Y~X&#41;&#41; <span class='comments'># same as o$par</span>
+(Intercept)           X 
+   5.000000    7.142857 </span></pre>
+
+<div class="breakout">In the next example the goal is to find the x-value where a function is minimized. Here only one parameter, <i>x</i>, is being optimized.</div>
+
+<pre><span class="codebox"><span class="line">it &lt;- <span class='numbers'>0</span> <span class='comments'># global variable</span></span>
+&gt; cols &lt;- <span class='functs'>rainbow</span>&#40;<span class='numbers'>100</span>&#41;
+&gt; 
+&gt; f &lt;- <span class='functs'>function</span>&#40;x, plot=TRUE&#41; {
++ &nbsp;&nbsp;&nbsp;it &lt;&lt;- it + <span class='numbers'>1L</span> <span class='comments'># globally iterate</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># calculate the sum of three functions</span>
++ &nbsp;&nbsp;&nbsp;y1 &lt;- <span class='numbers'>-50</span>*(x - <span class='numbers'>2</span>)^<span class='numbers'>2</span> + <span class='numbers'>1</span>
++ &nbsp;&nbsp;&nbsp;y2 &lt;- <span class='functs'>abs</span>&#40;x&#41; - <span class='numbers'>1</span>
++ &nbsp;&nbsp;&nbsp;y3 &lt;- <span class='numbers'>2</span>*x^<span class='numbers'>4</span> - <span class='numbers'>20</span>*x^<span class='numbers'>3</span>
++ &nbsp;&nbsp;&nbsp;Y &lt;- y1 + y2 + y3
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;if (plot && it &lt;= <span class='numbers'>100</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>points</span>&#40;x, Y, col=cols[it]&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;Y&#41;
++ }
+&gt; 
+&gt; t &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>-10</span>, <span class='numbers'>15</span>, <span class='numbers'>0.01</span>&#41;
+&gt; <span class='functs'>plot</span>&#40;t, <span class='functs'>f</span>&#40;t, plot=FALSE&#41;, type=<span class='chars'>&quot;l&quot;</span>&#41;
+&gt; 
+&gt; o &lt;- <span class='functs'>optim</span>(<span class='numbers'>0</span>, <span class='comments'># initial parameter value</span>
++ &nbsp;&nbsp;&nbsp;f, <span class='comments'># function to find minimum value</span>
++ &nbsp;&nbsp;&nbsp;method=<span class='chars'>&quot;SANN&quot;</span>) <span class='comments'># optimization method</span>
+&gt; 
+&gt; <span class='functs'>print</span>&#40;it&#41; <span class='comments'># number of iterations</span>
+[1] 10001
+&gt; <span class='functs'>points</span>&#40;o$par, <span class='functs'>f</span>&#40;o$par&#41;&#41;</span></pre>
+
+<div class="breakout">For the next part of this lesson, it is necessary to download the weather dataset available <a href="data/RLessons/Madison_Weather.RData">here</a>. This dataset is in RData format, and was originally created using the save function in R. After loading the 'Weather' object, the data.frame contains weather information for Madison, Wisconsin going back to the year 1948.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>load</span>&#40;<span class='chars'>&quot;&lt;&lt;PATH TO Madison_Weather.RData&gt;&gt;&quot;</span>&#41;</span>
+&gt; 
+&gt; time &lt;- Weather$Year - <span class='numbers'>1900</span> +
++ &nbsp;&nbsp;&nbsp;Weather$Day/<span class='numbers'>365</span> +
++ &nbsp;&nbsp;&nbsp;Weather$Hour/(<span class='numbers'>365</span>*<span class='numbers'>24</span>) +
++ &nbsp;&nbsp;&nbsp;Weather$Min/(<span class='numbers'>365</span>*<span class='numbers'>24</span>*<span class='numbers'>60</span>)
+&gt; Weather &lt;- <span class='functs'>cbind</span>&#40;Weather, Time=time&#41;
+&gt; 
+&gt; max_points &lt;- <span class='numbers'>1e5</span>
+&gt; <span class='functs'>plot</span>&#40;Weather$Time[<span class='functs'>seq_len</span>(max_points&#41;],
++ &nbsp;&nbsp;&nbsp;Weather$Temp[<span class='functs'>seq_len</span>&#40;max_points&#41;],
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Temperature (degrees Fahrenheit)&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Time&quot;</span>)</span></pre>
+
+<div class="breakout">Here, the objective is to fit a sine wave to Temp over time. A sine wave has four parameters:  (1) amplitude, (2) phase, (3) frequency, and (4) offset. The goodness-of-fit function will be sum of squared error. Note that this requires optimizing multiple parameters ('params') simultaneously.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># sum of squared errors (SSE)</span></span>
+&gt; SSE &lt;- <span class='functs'>function</span>&#40;estimated, actual&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>sum</span>&#40;(estimated - actual&#41;^<span class='numbers'>2</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;na.rm=TRUE)
++ }
+&gt; 
+&gt; iteration &lt;- <span class='numbers'>0L</span> <span class='comments'># used as a global variable</span>
+&gt; cols &lt;- <span class='functs'>rep</span>&#40;<span class='functs'>rainbow</span>&#40;<span class='numbers'>100</span>&#41;, <span class='numbers'>100</span>&#41; <span class='comments'># colors to plot</span>
+&gt; plot_sine &lt;- <span class='functs'>function</span>&#40;params, ...&#41; {
++ &nbsp;&nbsp;&nbsp;amp &lt;- params[<span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;phase &lt;- params[<span class='numbers'>2</span>]
++ &nbsp;&nbsp;&nbsp;freq &lt;- params[<span class='numbers'>3</span>]
++ &nbsp;&nbsp;&nbsp;off &lt;- params[<span class='numbers'>4</span>]
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;x &lt;- Weather$Time[<span class='functs'>seq_len</span>&#40;max_points&#41;]
++ &nbsp;&nbsp;&nbsp;y &lt;- amp*<span class='functs'>sin</span>&#40;freq*(x - phase)&#41; + off
++ &nbsp;&nbsp;&nbsp;<span class='functs'>points</span>(x,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...)
++ }
+&gt; 
+&gt; <span class='comments'># function being passed to optim:</span>
+&gt; goodFit &lt;- <span class='functs'>function</span>&#40;params, plot=FALSE&#41; {
++ &nbsp;&nbsp;&nbsp;iteration &lt;&lt;- iteration + <span class='numbers'>1L</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;amp &lt;- params[<span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;phase &lt;- params[<span class='numbers'>2</span>]
++ &nbsp;&nbsp;&nbsp;freq &lt;- params[<span class='numbers'>3</span>]
++ &nbsp;&nbsp;&nbsp;off &lt;- params[<span class='numbers'>4</span>]
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;sine &lt;- amp*<span class='functs'>sin</span>&#40;freq*(Weather$Time - phase)&#41; + off
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;error &lt;- <span class='functs'>SSE</span>(sine,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Weather$Temp)
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;if (plot)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>plot_sine</span>(params,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lwd=<span class='numbers'>0.5</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col=cols[iteration])
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;error&#41;
++ }
+&gt; 
+&gt; o &lt;- <span class='functs'>optim</span>&#40;<span class='functs'>c</span>(<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>1</span>&#41;, <span class='comments'># params</span>
++ &nbsp;&nbsp;&nbsp;goodFit, <span class='comments'># function</span>
++ &nbsp;&nbsp;&nbsp;plot=TRUE) <span class='comments'># function arguments</span>
+&gt; 
+&gt; <span class='functs'>print</span>&#40;iteration&#41;
+[1] 79
+&gt; o <span class='comments'># the output is a list</span>
+$par
+[1] -25.48035 -27.69295  16.78735  38.93353
+<br>
+$value
+[1] 510106022
+<br>
+$counts
+function gradient 
+      79       NA 
+<br>
+$convergence
+[1] 10
+<br>
+$message
+NULL
+<br>
+&gt; 
+&gt; <span class='functs'>plot_sine</span>(o$par,
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;darkred&quot;</span>, lwd=<span class='numbers'>3</span>)</span></pre>
+
+<div class="breakout">Note that optim did not converge because it is sensitive to the starting parameters, especially when the method is "Nelder-Mead" (the default). However, in this case the other methods also fail to find the optimal combination of parameters because the initial values are too far off. The best option is always to provide reasonable starting parameters and then let optim fine tune, as shown below.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># re-initialize the plot</span></span>
+&gt; <span class='functs'>plot</span>&#40;Weather$Time[<span class='functs'>seq_len</span>(max_points&#41;],
++ &nbsp;&nbsp;&nbsp;Weather$Temp[<span class='functs'>seq_len</span>&#40;max_points&#41;],
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Temperature (degrees Fahrenheit)&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Time&quot;</span>)
+&gt; 
+&gt; iteration &lt;- <span class='numbers'>0L</span> <span class='comments'># used as a global variable</span>
+&gt; o &lt;- <span class='functs'>optim</span>(<span class='functs'>c</span>(amp=<span class='numbers'>20</span>, <span class='comments'># +/- 20 from mean temp</span>
++ &nbsp;&nbsp;&nbsp;phase=<span class='numbers'>0.3</span>, <span class='comments'># guess and check</span>
++ &nbsp;&nbsp;&nbsp;freq=<span class='numbers'>2</span>*pi, <span class='comments'># one cycle per year</span>
++ &nbsp;&nbsp;&nbsp;off=<span class='numbers'>50</span>), <span class='comments'># mean temp in Madison</span>
++ &nbsp;&nbsp;&nbsp;goodFit,
++ &nbsp;&nbsp;&nbsp;plot=TRUE)
+&gt; 
+&gt; <span class='functs'>print</span>&#40;iteration&#41;
+[1] 419
+&gt; o
+$par
+       amp      phase       freq        off 
+26.2572068  0.3034806  6.2834491 46.9456483 
+<br>
+$value
+[1] 74467278
+<br>
+$counts
+function gradient 
+     419       NA 
+<br>
+$convergence
+[1] 0
+<br>
+$message
+NULL
+<br>
+&gt; 
+&gt; <span class='functs'>plot_sine</span>(o$par,
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;darkred&quot;</span>, lwd=<span class='numbers'>3</span>)</span></pre>
+
+<div class="breakout">For the rest of this lesson, it is necessary to download the zipped folder of images from <a href="data/RLessons/single_colony.zip">here</a> and unzip it. This directory contains a set of images taken every four hours of a bacterial colony growing. In order to read in the images one-by-one, it is first necessary to define the path to the unzipped directory. The average brightness of each image will be used as a proxy for the degree of bacterial growth.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># note that the final '/' is required:</span></span>
+&gt; path &lt;- <span class='chars'>&quot;&lt;&lt;PATH TO ../single_colony/&gt;&gt;&quot;</span>
+&gt; images &lt;- <span class='functs'>list.files</span>&#40;path&#41; <span class='comments'># list files</span>
+&gt; <span class='functs'>head</span>&#40;images&#41;
+[1] "Test5S01_001_2.jpg" "Test5S01_002_2.jpg"
+[3] "Test5S01_003_2.jpg" "Test5S01_004_2.jpg"
+[5] "Test5S01_005_2.jpg" "Test5S01_006_2.jpg"
+&gt; 
+&gt; <span class='comments'>#install.packages&#40;"jpeg"&#41; # only need to run this once</span>
+&gt; <span class='functs'>library</span>&#40;jpeg&#41;
+&gt; intensity &lt;- <span class='functs'>numeric</span>&#40;<span class='functs'>length</span>&#40;images&#41;&#41;
+&gt; <span class='comments'># loop though the images in the directory:</span>
+&gt; for (i in <span class='functs'>seq_along</span>&#40;images)&#41; {
++ &nbsp;&nbsp;&nbsp;img &lt;- <span class='functs'>readJPEG</span>(<span class='functs'>paste0</span>(path,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;images[i]))
++ &nbsp;&nbsp;&nbsp;intensity[i] &lt;- <span class='functs'>mean</span>&#40;img&#41;
++ }
+&gt; 
+&gt; x &lt;- (<span class='numbers'>0</span>:(<span class='functs'>length</span>&#40;intensity&#41; - <span class='numbers'>1</span>))*<span class='numbers'>4</span>
+&gt; <span class='functs'>plot</span>(x,
++ &nbsp;&nbsp;&nbsp;intensity,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Average Intensity&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Hours of Growth&quot;</span>)</span></pre>
+
+<div class="breakout">Now the goal is to fit a sigmoidal function to the points. A sigmoid is a s-shaped curve that can be obtained with a function of four parameters: (1) amplitude, (2) vertical offset, (3) slope, and (4) horizontal shift. As always, it is best to provide a reasonable set of starting values for optim, as determined below:</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># parameters determined through guess-and-check</span></span>
+&gt; offset &lt;- <span class='functs'>min</span>&#40;intensity&#41;
+&gt; amp &lt;- <span class='functs'>diff</span>&#40;<span class='functs'>range</span>&#40;intensity&#41;&#41;
+&gt; slope &lt;- <span class='numbers'>5</span>
+&gt; shift &lt;- <span class='numbers'>4</span>*<span class='functs'>which.min</span>&#40;<span class='functs'>abs</span>&#40;intensity - <span class='functs'>mean</span>&#40;intensity&#41;&#41;&#41;
+&gt; 
+&gt; <span class='comments'># the sigmoidal function of four parameters</span>
+&gt; y &lt;- amp/(<span class='numbers'>1</span> + <span class='functs'>exp</span>&#40;-slope*(<span class='functs'>log</span>&#40;x&#41; - <span class='functs'>log</span>&#40;shift&#41;&#41;)) + offset
+&gt; 
+&gt; <span class='functs'>points</span>&#40;x, y, type=<span class='chars'>&quot;l&quot;</span>&#41; <span class='comments'># plot the initial curve</span>
+&gt; 
+&gt; <span class='comments'># optimize the parameters</span>
+&gt; f &lt;- <span class='functs'>function</span>&#40;params, plot=FALSE&#41; {
++ &nbsp;&nbsp;&nbsp;offset &lt;- params[<span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;amp &lt;- params[<span class='numbers'>2</span>]
++ &nbsp;&nbsp;&nbsp;slope &lt;- params[<span class='numbers'>3</span>]
++ &nbsp;&nbsp;&nbsp;shift &lt;- params[<span class='numbers'>4</span>]
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;y &lt;- amp/(<span class='numbers'>1</span> + <span class='functs'>exp</span>&#40;-slope*(<span class='functs'>log</span>&#40;x&#41; - <span class='functs'>log</span>&#40;shift&#41;&#41;)) + offset
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;error &lt;- <span class='functs'>sum</span>&#40;(intensity - y&#41;^<span class='numbers'>2</span>) <span class='comments'># SSE</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;if (plot)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>points</span>&#40;x, y, type=<span class='chars'>&quot;l&quot;</span>, col=<span class='chars'>&quot;red&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>invisible</span>&#40;error&#41;
++ }
+&gt; 
+&gt; <span class='comments'># simultaneously optimize the parameters</span>
+&gt; o &lt;- <span class='functs'>optim</span>(<span class='functs'>c</span>(offset,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;amp,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slope,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shift),
++ &nbsp;&nbsp;&nbsp;f)
+&gt; <span class='comments'># display the parameters</span>
+&gt; <span class='functs'>cat</span>(<span class='chars'>&quot;offset =&quot;</span>, o$par[<span class='numbers'>1</span>],
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;\namp =&quot;</span>, o$par[<span class='numbers'>2</span>],
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;\nslope =&quot;</span>, o$par[<span class='numbers'>3</span>],
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;\nshift =&quot;</span>, o$par[<span class='numbers'>4</span>])
+offset = 0.1183825 
+amp = 0.2141441 
+slope = 3.971287 
+shift = 120.7618
+&gt; 
+&gt; <span class='comments'># plot the optimized sigmoidal</span>
+&gt; <span class='functs'>f</span>&#40;o$par, plot=TRUE&#41;
+&gt; <span class='functs'>legend</span>(<span class='chars'>&quot;topleft&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='chars'>&quot;Initial&quot;</span>, <span class='chars'>&quot;Optimal&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>1</span>,
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>c</span>&#40;<span class='chars'>&quot;black&quot;</span>, <span class='chars'>&quot;red&quot;</span>)&#41;</span></pre>
+
+<br><br><a style="float:left;" href="RLesson12.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson14.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

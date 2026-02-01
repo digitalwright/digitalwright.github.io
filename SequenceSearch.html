@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Sequence Search
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1sub">Homology<span class="right">&#9662;</span></a></li>
+<li><a href="Clusterize.html" class="l2">Clusterize</a></li>
+<li><a href="DetectRepeats.html" class="l2">Detect Repeats</a></li>
+<li><a href="FindChimeras.html" class="l2">Find Chimeras</a></li>
+<li><a href="SequenceSearch.html" class="l2sel">Sequence Search</a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Sequence Search</p>
+
+This short example describes how to use DECIPHER to search biological sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2024) "Fast and Flexible Search for Homologous Biological Sequences with DECIPHER v3." <i>The R Journal</i>, <a href="https://journal.r-project.org/articles/RJ-2024-022/RJ-2024-022.pdf">16(2), 191-200</a>.</p></div>
+
+Searching has applications ranging from short-read and long-read mapping to detecting remote protein homology.  For an in-depth tutorial on searching, see the &quot;Search for Biological Research&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I search for sequences?</p>
+
+Searching is split into two main functions: <i>IndexSeqs</i> and <i>SearchIndex</i>.  The <i>IndexSeqs</i> function builds an inverted index of the target sequences to accelerate querying.  The <i>SearchIndex</i> function searches the inverted index for homologs to the input query sequences.
+
+<br><br>
+
+DECIPHER's search functions find local homology, similarly to the BLAST program.  They can be configured for ultra-fast or sensitive search depending on the chosen k-mer size (<i>K</i>).  For nucleotides, typical values of <i>K</i> range from 8 (sensitive) to 13 (ultra-fast).  For proteins, <i>K</i> is usually 4 (sensitive) to 6 (ultra-fast).
+
+<br><br>
+
+To begin, first it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, import the query and target sequences that will be searched.
+
+<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># load the target sequences from a file</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO TARGET SEQUENCES&gt;&gt;&quot;</span>
+&gt; target &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; target
+DNAStringSet object of length 1:
+      width seq               names               
+[1] 1042519 GCGGCCG...CGGGGTA NC_000117.1 Chlam...
+&gt; 
+&gt; <span class='comments'># construct an inverted index</span>
+&gt; index &lt;- <span class='functs'>IndexSeqs</span>&#40;target,
++ K=<span class='numbers'>9</span>, <span class='comments'># set an appropriate k-mer size</span>
++ processors=NULL&#41; <span class='comments'># use all CPUs</span>
+  |========================================| 100%
+<br>
+Time difference of 0.36 secs
+<br>
+&gt; 
+&gt; <span class='comments'># load the query sequences from a file</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO QUERY SEQUENCES&gt;&gt;&quot;</span>
+&gt; query &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; query
+DNAStringSet object of length 317:
+      width seq               names               
+  [1]   819 ATGGCTT...AAGAAAA Rickettsia prowaz...
+  [2]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [3]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [4]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [5]   819 ATGGCTA...TGGTAAA Pasteurella multo...
+  ...   ... ...
+[313]   819 ATGGCAA...TACTAAA Pectobacterium at...
+[314]   822 ATGCCTA...CGTCAAG Acinetobacter sp....
+[315]   864 ATGGGCA...TCAGTCT Thermosynechococc...
+[316]   831 ATGGCAC...GAAGAAG Bradyrhizobium ja...
+[317]   840 ATGGGCA...GCGAGGT Gloeobacter viola...
+&gt; 
+&gt; <span class='comments'># search for homologs of the query</span>
+&gt; hits &lt;- <span class='functs'>SearchIndex</span>&#40;query,
++ index, <span class='comments'># target sequences</span>
++ processors=NULL&#41; <span class='comments'># use all CPUs</span>
+  |========================================| 100%
+<br>
+Time difference of 0.02 secs
+<br>
+&gt; 
+&gt; <span class='functs'>head</span>&#40;hits&#41;
+  Pattern Subject     Score     Position
+1       1       1 2.0656499 365, 381....
+2       2       1 0.9781966 353, 367....
+3       3       1 0.9781966 353, 367....
+4       4       1 0.9781966 353, 367....
+5       5       1 0.9506100 276, 285....
+6       6       1 0.9506100 276, 285....
+&gt; 
+&gt; <span class='comments'># optionally, locally align the hits</span>
+&gt; aligned &lt;- <span class='functs'>AlignPairs</span>&#40;query, target, hits&#41;
+  |========================================| 100%
+<br>
+Time difference of 0.18 secs
+<br>
+&gt; 
+&gt; <span class='functs'>head</span>&#40;aligned&#41;
+  Pattern PatternStart PatternEnd Subject
+1       1          266        389       1
+2       2          341        397       1
+3       3          341        397       1
+4       4          341        397       1
+5       5          217        601       1
+6       6          217        601       1
+  SubjectStart SubjectEnd Matches Mismatches
+1       978502     978623      60         62
+2       165465     165521      34         23
+3       165465     165521      34         23
+4       165465     165521      34         23
+5        82935      83316     149        233
+6        82935      83316     149        233
+  AlignmentLength Score PatternGapPosition
+1             124  40.8                   
+2              57  45.0                   
+3              57  45.0                   
+4              57  45.0                   
+5             385  31.8                   
+6             385  31.8                   
+  PatternGapLength SubjectGapPosition
+1                                  84
+2                                    
+3                                    
+4                                    
+5                             72, 171
+6                             72, 171
+  SubjectGapLength
+1                2
+2                 
+3                 
+4                 
+5             1, 2
+6             1, 2</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

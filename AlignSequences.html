@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Align Sequences
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1sub">Alignment<span class="right">&#9662;</span></a></li>
+<li><a href="AlignSequences.html" class="l2sel">Align Sequences</a></li>
+<li><a href="AlignTranslation.html" class="l2">Align Translation</a></li>
+<li><a href="AlignSynteny.html" class="l2">Align Synteny</a></li>
+<li><a href="AlignProfiles.html" class="l2">Align Profiles</a></li>
+<li><a href="AlignPairs.html" class="l2">Align Pairs</a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Align Sequences</p>
+
+This short example describes how to use DECIPHER to align sets of homologous DNA, RNA, or amino acid sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2015) "DECIPHER: harnessing local sequence context to improve protein multiple sequence alignment." <i>BMC Bioinformatics</i>, <a href="http://www.biomedcentral.com/1471-2105/16/322">doi:10.1186/s12859-015-0749-z</a>.</p>
+<p class="hanging">ES Wright (2020) "RNAconTest: Comparing Tools for Noncoding RNA Multiple Sequence Alignment Based on Structural Consistency." <i>RNA</i>, <a href="https://rnajournal.cshlp.org/content/26/5/531.long">doi:10.1261/rna.073015.119</a>.</p></div>
+
+For an in-depth tutorial on sequence alignment, see the &quot;The Art of Multiple Sequence Alignment in R&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I align sequences?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of unaligned sequences (e.g., &quot;~/mySeqs.fas&quot;). Then load the sequences according to their type: DNA, RNA, or amino acids (AA) and proceed with alignment.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file (in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; <span class='comments'># change &quot;DNA&quot; to &quot;RNA&quot; or &quot;AA&quot; if necessary</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># look at some of the sequences (optional&#41;</span>
+&gt; seqs
+  A DNAStringSet instance of length 4
+    width seq                     names               
+[1]  1359 ATGGCCGGCT...CAGGCAGTAG 1
+[2]  1359 ATGGCCGGCT...CAGGCAGTAG 2
+[3]  1359 ATGGCCGGCT...CAGGCAGTAG 3
+[4]  1359 ATGGCCGGCT...CAGGCAGTAG 4
+&gt; 
+&gt; <span class='comments'># perform the alignment</span>
+&gt; aligned &lt;- <span class='functs'>AlignSeqs</span>&#40;seqs&#41;
+Determining distance matrix based on shared 8-mers:
+  |============================================| 100%
+<br>
+Time difference of 0.01 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.1 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 0.07 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.01 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.1 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 0.09 secs
+<br>
+Refining the alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the alignment in a browser (optional&#41;</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;aligned, highlight=<span class='numbers'>0</span>&#41;
+&gt; 
+&gt; <span class='comments'># write the alignment to a new FASTA file</span>
+&gt; <span class='functs'>writeXStringSet</span>&#40;aligned,
++ &nbsp;&nbsp;&nbsp;file=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO OUTPUT FASTA FILE&gt;&gt;&quot;</span>&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

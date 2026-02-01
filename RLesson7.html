@@ -1,0 +1,400 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #7
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #7 - Searching characters</p>
+
+This lesson describes how to search for a pattern inside of a character vector. R has several functions that accept search patterns known as regular expressions. The different search functions are detailed below.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># FUNCTION  OUTPUT_TYPE  DESCRIPTION</span></span>
+&gt; <span class='comments'># strsplit  list         explode string at matches</span>
+&gt; <span class='comments'># gsub      character    replace matches</span>
+&gt; <span class='comments'># grep      integer      return index of matches</span>
+&gt; <span class='comments'># grepl     logical      TRUE if matched</span>
+&gt; <span class='comments'># gregexpr  list         position/length of match&#40;es&#41;</span>
+&gt; 
+&gt; x &lt;- <span class='chars'>&quot;The quick brown fox jumps over the lazy dog.&quot;</span>
+&gt; y &lt;- <span class='functs'>strsplit</span>&#40;x, <span class='chars'>&quot; &quot;</span>&#41;
+&gt; y
+[[1]]
+[1] "The"   "quick" "brown" "fox"   "jumps" "over" 
+[7] "the"   "lazy"  "dog." 
+<br>
+&gt; y &lt;- y[[<span class='numbers'>1</span>]]
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;u&quot;</span>, y&#41; <span class='comments'># find &quot;u&quot;</span>
+[1] 2 5
+&gt; <span class='functs'>gsub</span>&#40;<span class='chars'>&quot;o&quot;</span>, <span class='chars'>&quot;OOOO&quot;</span>, y&#41; <span class='comments'># replace &quot;o&quot; with &quot;OOOO&quot;</span>
+[1] "The"      "quick"    "brOOOOwn" "fOOOOx"  
+[5] "jumps"    "OOOOver"  "the"      "lazy"    
+[9] "dOOOOg." 
+&gt; <span class='functs'>grepl</span>&#40;<span class='chars'>&quot;u&quot;</span>, y&#41; <span class='comments'># find &quot;u&quot;</span>
+[1] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
+[9] FALSE
+&gt; <span class='functs'>which</span>&#40;<span class='functs'>grepl</span>&#40;<span class='chars'>&quot;u&quot;</span>, y&#41;&#41; <span class='comments'># equivalent to grep</span>
+[1] 2 5
+&gt; <span class='functs'>strsplit</span>&#40;y, <span class='chars'>&quot;u&quot;</span>&#41; <span class='comments'># returns a list</span>
+[[1]]
+[1] "The"
+<br>
+[[2]]
+[1] "q"   "ick"
+<br>
+[[3]]
+[1] "brown"
+<br>
+[[4]]
+[1] "fox"
+<br>
+[[5]]
+[1] "j"   "mps"
+<br>
+[[6]]
+[1] "over"
+<br>
+[[7]]
+[1] "the"
+<br>
+[[8]]
+[1] "lazy"
+<br>
+[[9]]
+[1] "dog."
+<br>
+&gt; 
+&gt; <span class='comments'># to figure out where the match occurred,</span>
+&gt; <span class='comments'># we can use gregexpr, which returns a</span>
+&gt; <span class='comments'># somewhat complicated list structure</span>
+&gt; g &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;u&quot;</span>, y&#41; <span class='comments'># returns a list</span>
+&gt; <span class='functs'>str</span>&#40;g&#41;
+List of 9
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] 2
+  ..- attr(*, "match.length")= int 1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] 2
+  ..- attr(*, "match.length")= int 1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+ $ : atomic [1:1] -1
+  ..- attr(*, "match.length")= int -1
+  ..- attr(*, "useBytes")= logi TRUE
+&gt; g <span class='comments'># position of matches or -1 &#40;no match&#41;</span>
+[[1]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[2]]
+[1] 2
+attr(,"match.length")
+[1] 1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[3]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[4]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[5]]
+[1] 2
+attr(,"match.length")
+[1] 1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[6]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[7]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[8]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+[[9]]
+[1] -1
+attr(,"match.length")
+[1] -1
+attr(,"useBytes")
+[1] TRUE
+<br>
+&gt; <span class='functs'>attributes</span>&#40;g[[<span class='numbers'>2</span>]]&#41;$match.length
+[1] 1
+&gt; <span class='functs'>regmatches</span>&#40;y, g&#41; <span class='comments'># get back the matches</span>
+[[1]]
+character(0)
+<br>
+[[2]]
+[1] "u"
+<br>
+[[3]]
+character(0)
+<br>
+[[4]]
+character(0)
+<br>
+[[5]]
+[1] "u"
+<br>
+[[6]]
+character(0)
+<br>
+[[7]]
+character(0)
+<br>
+[[8]]
+character(0)
+<br>
+[[9]]
+character(0)</span></pre>
+
+<div class="breakout">Finding an exact pattern, also known as literal matching, is very fast. Depending on the input parameters, the grep function can return the indices of matches, the indices of non-matches, or the match value.</div>
+
+<pre><span class="codebox"><span class="line">test1 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;abc&quot;</span>, <span class='chars'>&quot;Abc&quot;</span>, <span class='chars'>&quot;ABC&quot;</span>, <span class='chars'>&quot;ABCD&quot;</span>&#41;</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test1&#41; <span class='comments'># with the default arguments</span>
+[1] 1
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test1, value=TRUE&#41;
+[1] "abc"
+&gt; <span class='comments'># with only letters the behavior is as expected,</span>
+&gt; <span class='comments'># special characters will be interpreted as</span>
+&gt; <span class='comments'># regular expressions &#40;unless fixed=TRUE&#41;</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test1, fixed=TRUE&#41; <span class='comments'># search exactly &#40;fast&#41;</span>
+[1] 1
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test1, ignore.case=TRUE&#41;
+[1] 1 2 3 4
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test1, invert=TRUE&#41;
+[1] 2 3 4</span></pre>
+
+<div class="breakout">A regular expression is a grammer specifying the syntax for flexible pattern matching. Only the basics of regular expressions are described here.</div>
+
+<pre><span class="codebox"><span class="line">?regex</span>
+&gt; <span class='comments'># these can get very advanced, for example:</span>
+&gt; <span class='comments'># "/^&#40;[a-z0-9_\.-]+&#41;@&#40;[\da-z\.-]+&#41;\.&#40;[a-z\.]{2,6}&#41;$/"</span>
+&gt; <span class='comments'># can be used to match any email address</span>
+&gt; 
+&gt; <span class='comments'># Repetition qualifiers:</span>
+&gt; <span class='comments'># "." matches anything once</span>
+&gt; <span class='comments'># "+" suffix means one or more times</span>
+&gt; <span class='comments'># "*" suffix means zero or more times</span>
+&gt; <span class='comments'># "?" suffix means zero or one time</span>
+&gt; test2 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;m+n&quot;</span>, <span class='chars'>&quot;man&quot;</span>, <span class='chars'>&quot;moon&quot;</span>, <span class='chars'>&quot;mn&quot;</span>, <span class='chars'>&quot;mooon&quot;</span>, <span class='chars'>&quot;mon&quot;</span>&#41;
+&gt; <span class='comments'># zero or more 'o' characters between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;mo*n&quot;</span>, test2, value=TRUE&#41;
+[1] "moon"  "mn"    "mooon" "mon"  
+&gt; <span class='comments'># one or more 'o' characters between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;mo+n&quot;</span>, test2, value=TRUE&#41;
+[1] "moon"  "mooon" "mon"  
+&gt; <span class='comments'># anything between m and n once</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m.n&quot;</span>, test2, value=TRUE&#41;
+[1] "m+n" "man" "mon"
+&gt; <span class='comments'># zero or more characters between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m.*n&quot;</span>, test2, value=TRUE&#41;
+[1] "m+n"   "man"   "moon"  "mn"    "mooon" "mon"  
+&gt; <span class='comments'># zero or one 'o' characters between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;mo?n&quot;</span>, test2, value=TRUE&#41;
+[1] "mn"  "mon"
+&gt; 
+&gt; <span class='comments'># special cases:</span>
+&gt; <span class='comments'># search for a special character &#40;+&#41; as is</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m+n&quot;</span>, test2, value=TRUE&#41;
+[1] "mn"
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m\\+n&quot;</span>, test2, value=TRUE&#41;
+[1] "m+n"
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m+n&quot;</span>, test2, fixed=TRUE, value=TRUE&#41;
+[1] "m+n"
+&gt; <span class='comments'># 2, 3 or 4 'o' characters between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;mo{2,4}n&quot;</span>, test2, value=TRUE&#41;
+[1] "moon"  "mooon"
+&gt; 
+&gt; <span class='comments'># Anchoring:  beginning and ending</span>
+&gt; <span class='comments'># "^" means must start at the beginning</span>
+&gt; <span class='comments'># "$" means must finish at the end</span>
+&gt; test3 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;abc&quot;</span>, <span class='chars'>&quot;abc d&quot;</span>, <span class='chars'>&quot;abcd&quot;</span>, <span class='chars'>&quot;fabc&quot;</span>&#41;
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc&quot;</span>, test3, value=TRUE&#41;
+[1] "abc"   "abc d" "abcd"  "fabc" 
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;^abc&quot;</span>, test3, value=TRUE&#41;
+[1] "abc"   "abc d" "abcd" 
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;abc$&quot;</span>, test3, value=TRUE&#41;
+[1] "abc"  "fabc"
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;^abc$&quot;</span>, test3, value=TRUE&#41;
+[1] "abc"
+&gt; 
+&gt; <span class='comments'># Alternation constructs - either/or</span>
+&gt; test4 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;men&quot;</span>, <span class='chars'>&quot;man&quot;</span>, <span class='chars'>&quot;women&quot;</span>, <span class='chars'>&quot;moon&quot;</span>, <span class='chars'>&quot;maan&quot;</span>, <span class='chars'>&quot;mn&quot;</span>&#41;
+&gt; <span class='comments'># the pipe "|" means OR</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;e|a&quot;</span>, test4, value=TRUE&#41;
+[1] "men"   "man"   "women" "maan" 
+&gt; <span class='comments'># combining multiple special characters together</span>
+&gt; <span class='comments'># use parentheses to group part of the expression</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m&#40;e|a&#41;+n&quot;</span>, test4, value=TRUE&#41;
+[1] "men"   "man"   "women" "maan" 
+&gt; <span class='comments'># parentheses can also group multiple characters</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;&#40;en|an&#41;&quot;</span>, test4, value=TRUE&#41;
+[1] "men"   "man"   "women" "maan" 
+&gt; 
+&gt; <span class='comments'># Character classes - matching in a group</span>
+&gt; test5 &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;moon&quot;</span>, <span class='chars'>&quot;maan&quot;</span>, <span class='chars'>&quot;mn&quot;</span>, <span class='chars'>&quot;myn&quot;</span>, <span class='chars'>&quot;m_n&quot;</span>, <span class='chars'>&quot;mDn&quot;</span>&#41;
+&gt; <span class='comments'># square brackets "[]" define a "character class":</span>
+&gt; <span class='comments'># only vowels located between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m[aeiou]*n&quot;</span>, test5, value=TRUE&#41;
+[1] "moon" "maan" "mn"  
+&gt; <span class='comments'># the "^" in a character class means NOT</span>
+&gt; <span class='comments'># anything but a vowel located between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m[^aeiou]*n&quot;</span>, test5, value=TRUE&#41;
+[1] "mn"  "myn" "m_n" "mDn"
+&gt; <span class='comments'># the "-" in a character class defines a range</span>
+&gt; <span class='comments'># only lowercase consonants located between m and n</span>
+&gt; <span class='functs'>grep</span>&#40;<span class='chars'>&quot;m[b-df-hj-np-tv-z]*n&quot;</span>, test5, value=TRUE&#41;
+[1] "mn"  "myn"</span></pre>
+
+<div class="breakout">There are also built-in pattern classes that will match multiple digits, words, or other pre-defined patterns.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># Built-in classes: \d, \w</span></span>
+&gt; sentence &lt;- <span class='chars'>&quot;pi is approximately equal to 3.14 or 22/7.&quot;</span>
+&gt; <span class='comments'># match numbers without escaping "."</span>
+&gt; nlist_matches1 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;\\d+.\\d+&quot;</span>, sentence&#41;
+&gt; nlist1 &lt;- <span class='functs'>regmatches</span>&#40;sentence, nlist_matches1&#41;
+&gt; nlist1
+[[1]]
+[1] "3.14" "22/7"
+<br>
+&gt; <span class='comments'># match numbers while escaping "."</span>
+&gt; nlist_matches2 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;\\d+\\.\\d+&quot;</span>, sentence&#41;
+&gt; nlist2 &lt;- <span class='functs'>regmatches</span>&#40;sentence, nlist_matches2&#41;
+&gt; nlist2
+[[1]]
+[1] "3.14"
+<br>
+&gt; <span class='comments'># list of all words</span>
+&gt; wlist_matches1 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;\\w+&quot;</span>, sentence&#41;
+&gt; wlist1 &lt;- <span class='functs'>regmatches</span>&#40;sentence, wlist_matches1&#41;
+&gt; wlist1
+[[1]]
+ [1] "pi"            "is"            "approximately"
+ [4] "equal"         "to"            "3"            
+ [7] "14"            "Also"          "22"           
+[10] "7"            
+<br>
+&gt; <span class='comments'># words with only letters</span>
+&gt; wlist_matches2 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;[[:alpha:]]+&quot;</span>, sentence&#41;
+&gt; wlist2 &lt;- <span class='functs'>regmatches</span>&#40;sentence, wlist_matches2&#41;
+&gt; wlist2
+[[1]]
+[1] "pi"            "is"            "approximately"
+[4] "equal"         "to"            "Also"         
+<br>
+&gt; <span class='comments'># words starting with an Upper case letter</span>
+&gt; wlist_matches3 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;[[:upper:]][[:alpha:]]+&quot;</span>,
++ &nbsp;&nbsp;&nbsp;sentence&#41;
+&gt; wlist3 &lt;- <span class='functs'>regmatches</span>&#40;sentence, wlist_matches3&#41;
+&gt; wlist3
+[[1]]
+[1] "Also"
+<br>
+&gt; 
+&gt; <span class='comments'># Word boundaries</span>
+&gt; <span class='comments'># words starting with an "a"</span>
+&gt; wlist_matches4 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;\\&lt;&#40;a|A&#41;[[:alpha:]]+&quot;</span>,
++ &nbsp;&nbsp;&nbsp;sentence&#41;
+&gt; wlist4 &lt;- <span class='functs'>regmatches</span>&#40;sentence, wlist_matches4&#41;
+&gt; wlist4
+[[1]]
+[1] "approximately" "Also"         
+<br>
+&gt; <span class='comments'># words ending in a vowel</span>
+&gt; wlist_matches5 &lt;- <span class='functs'>gregexpr</span>&#40;<span class='chars'>&quot;[[:alpha:]]+[aeiou]\\&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;sentence&#41;
+&gt; wlist5 &lt;- <span class='functs'>regmatches</span>&#40;sentence, wlist_matches5&#41;
+&gt; wlist5
+[[1]]
+[1] "pi"   "to"   "Also"</span></pre>
+
+<br><br><a style="float:left;" href="RLesson6.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson8.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>
