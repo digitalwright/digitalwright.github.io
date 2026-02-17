@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #4
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #4 - Structured objects</p>
+
+So far only basic ('atomic') vectors have been described. Recall that there are four basic types that are very common: logical, integer, numeric, and character. This lesson delves into structures that have extended properties beyond basic vectors.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># some tricky R behavior</span></span>
+&gt; x &lt;- <span class='functs'>numeric</span>&#40;<span class='numbers'>20</span>&#41; <span class='comments'># initialize a length 20 numeric vector</span>
+&gt; x[] <span class='comments'># select all elements by leaving index empty</span>
+ [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+&gt; x[<span class='functs'>integer</span>&#40;&#41;] <span class='comments'># select no elements with zero length index</span>
+numeric(0)
+&gt; x[] &lt;- <span class='numbers'>1</span>:<span class='numbers'>5</span> <span class='comments'># fill x with 1:5 repeated (recycling)</span>
+&gt; x
+ [1] 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5 1 2 3 4 5
+&gt; x &lt;- <span class='numbers'>1</span>:<span class='numbers'>5</span> <span class='comments'># replaces x</span>
+&gt; x
+[1] 1 2 3 4 5</span></pre><br>
+
+
+<div class="breakout">R will allow adding elements outside the current length of an object, as shown below. However, it is bad practice to continually extend objects because this requires re-writing the entire object to memory. Always try to initialize the length of object that will ultimately be required.</div>
+
+<pre><span class="codebox"><span class="line">x[<span class='numbers'>25</span>] &lt;- <span class='numbers'>200</span> <span class='comments'># fills remainder with NA</span></span>
+&gt; x
+ [1]   1   2   3   4   5  NA  NA  NA  NA  NA  NA  NA
+[13]  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA
+[25] 200
+&gt; x + <span class='numbers'>5</span> <span class='comments'># NA values do not participate</span>
+ [1]   6   7   8   9  10  NA  NA  NA  NA  NA  NA  NA
+[13]  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA  NA
+[25] 205
+&gt; <span class='functs'>is.na</span>&#40;x&#41;
+ [1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE
+ [9]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[17]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[25] FALSE
+&gt; 
+&gt; x[<span class='functs'>length</span>&#40;x&#41; + <span class='numbers'>1</span>] &lt;- <span class='numbers'>5</span> <span class='comments'># this is very slow</span>
+&gt; <span class='comments'># it is better to initialize the required size</span>
+&gt; x &lt;- <span class='functs'>numeric</span>&#40;<span class='numbers'>26</span>&#41; <span class='comments'># then we can fill elements</span>
+&gt; x[<span class='numbers'>26</span>] &lt;- <span class='numbers'>5</span> <span class='comments'># much faster</span></pre></span>
+
+<div class="breakout">The first structure that will be described is the matrix. A matrix can store any of the four basic types that were previously described, so long as the entire matrix is composed of one type. Matrices are stored as vectors, column-by-column, but have the additional property of dimension (number of rows and columns). This increased level of organization is often useful, as seen below:</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># structured class:  matrix - two dimensions</span></span>
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;<span class='numbers'>0L</span>&#41;
+&gt; m
+     [,1]
+[1,]    0
+&gt; <span class='functs'>typeof</span>&#40;m&#41;
+[1] "integer"
+&gt; <span class='functs'>class</span>&#40;m&#41;
+[1] "matrix"
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>4</span>, nrow=<span class='numbers'>2</span>&#41;
+&gt; m <span class='comments'># R stores matrices by column-first order</span>
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+&gt; m[<span class='numbers'>3</span>] <span class='comments'># matrices can be accessed like vectors</span>
+[1] 3
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>4</span>, nrow=<span class='numbers'>2</span>, byrow=TRUE&#41;
+&gt; m <span class='comments'># but you  can force it to initialize by rows first</span>
+     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+&gt; m[<span class='numbers'>3</span>] <span class='comments'># still gives you the same position</span>
+[1] 2
+&gt; 
+&gt; m[<span class='numbers'>1</span>, <span class='numbers'>1</span>] <span class='comments'># select an element</span>
+[1] 1
+&gt; m[<span class='numbers'>1</span>,] <span class='comments'># no column index means every column</span>
+[1] 1 2
+&gt; m[<span class='numbers'>-1</span>,] <span class='comments'># select everything but the first row</span>
+[1] 3 4
+&gt; <span class='functs'>class</span>&#40;m[, <span class='numbers'>-1</span>]&#41; <span class='comments'># not a matrix anymore!</span>
+[1] "integer"
+&gt; m[, <span class='numbers'>-1</span>, drop=FALSE] <span class='comments'># don&#39;t drop matrix class</span>
+     [,1]
+[1,]    2
+[2,]    4
+&gt; <span class='functs'>class</span>&#40;m[, <span class='numbers'>-1</span>, drop=FALSE]&#41;
+[1] "matrix"
+&gt; m[, <span class='numbers'>2</span>]
+[1] 2 4
+&gt; 
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>10</span>, nrow=<span class='numbers'>5</span>&#41;
+&gt; <span class='functs'>dim</span>&#40;m&#41; <span class='comments'># dimensions of the matrix</span>
+[1] 5 2
+&gt; <span class='functs'>which</span>&#40;m==<span class='numbers'>7</span>&#41;
+[1] 7
+&gt; <span class='functs'>which</span>&#40;m==<span class='numbers'>7</span>, arr.ind=TRUE&#41; <span class='comments'># result is a matrix</span>
+     row col
+[1,]   2   2
+&gt; w &lt;- <span class='functs'>which</span>&#40;m &gt; <span class='numbers'>7</span> | m &lt; <span class='numbers'>3</span>&#41;
+&gt; w
+[1]  1  2  8  9 10
+&gt; m[w]
+[1]  1  2  8  9 10
+&gt; <span class='functs'>which.max</span>&#40;m&#41;
+[1] 10
+&gt; <span class='functs'>which</span>&#40;m==<span class='functs'>max</span>&#40;m&#41;, arr.ind=T&#41;
+     row col
+[1,]   5   2
+&gt; 
+&gt; <span class='comments'># common functions for matrices:</span>
+&gt; <span class='functs'>sum</span>&#40;m&#41;
+[1] 55
+&gt; <span class='functs'>rowSums</span>&#40;m&#41;
+[1]  7  9 11 13 15
+&gt; <span class='functs'>colSums</span>&#40;m&#41;
+[1] 15 40
+&gt; <span class='functs'>mean</span>&#40;m&#41;
+[1] 5.5
+&gt; <span class='functs'>rowMeans</span>&#40;m&#41;
+[1] 3.5 4.5 5.5 6.5 7.5
+&gt; <span class='functs'>colMeans</span>&#40;m&#41;
+[1] 3 8
+&gt; <span class='functs'>diag</span>&#40;m&#41; <span class='comments'># note this works with any rectangular matrix</span>
+[1] 1 7</span></pre>
+
+<div class="breakout">An array is a generalization of the matrix. It maintains many of the same properties as the matrix, but allows for more than two dimensions.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># structured class:  array - arbitrary dimensions</span></span>
+&gt; a &lt;- <span class='functs'>array</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>27</span>, dim=<span class='functs'>c</span>&#40;<span class='numbers'>3</span>, <span class='numbers'>3</span>, <span class='numbers'>3</span>&#41;&#41;
+&gt; a <span class='comments'># note how the first dimensions are filled in order</span>
+, , 1
+<br>
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+<br>
+, , 2
+<br>
+     [,1] [,2] [,3]
+[1,]   10   13   16
+[2,]   11   14   17
+[3,]   12   15   18
+<br>
+, , 3
+<br>
+     [,1] [,2] [,3]
+[1,]   19   22   25
+[2,]   20   23   26
+[3,]   21   24   27
+<br>
+&gt; a[<span class='numbers'>1</span>, <span class='numbers'>2</span>, <span class='numbers'>3</span>]
+[1] 22
+&gt; a[<span class='numbers'>1</span>, <span class='numbers'>1</span>,]
+[1]  1 10 19
+&gt; <span class='functs'>class</span>&#40;a[<span class='numbers'>1</span>, <span class='numbers'>1</span>,]&#41;
+[1] "integer"
+&gt; <span class='functs'>class</span>&#40;a[<span class='numbers'>1</span>, <span class='numbers'>1</span>,, drop=F]&#41;
+[1] "array"
+&gt; a[<span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>]
+     [,1] [,2]
+[1,]    1    4
+[2,]    2    5
+&gt; <span class='functs'>class</span>&#40;a[<span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>]&#41; <span class='comments'># becomes a matrix</span>
+[1] "matrix"
+&gt; <span class='functs'>class</span>&#40;a[<span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>:<span class='numbers'>2</span>, <span class='numbers'>1</span>, drop=F]&#41; <span class='comments'># still an array</span>
+[1] "array"
+&gt; <span class='functs'>colMeans</span>&#40;a&#41; <span class='comments'># returns a matrix</span>
+     [,1] [,2] [,3]
+[1,]    2   11   20
+[2,]    5   14   23
+[3,]    8   17   26
+&gt; <span class='functs'>rowSums</span>&#40;a&#41;
+[1] 117 126 135
+&gt; <span class='functs'>which</span>&#40;a==<span class='numbers'>17</span>, arr.ind=TRUE&#41; <span class='comments'># result is a matrix</span>
+     dim1 dim2 dim3
+[1,]    2    3    2</span></pre>
+
+<div class="breakout">A list is a particularly useful structure. Unlike the other structures, it permits the storage of multiple objects of mixed type. A list is analogous to a train, where each train car can store an object of a single type. One car can store characters, another numerics, another logicals. A list can even store other lists, resulting in a nested list structure.<br><br>There are two ways to access a list with a numeric index: double or single square brackets. Double square brackets access one element, and return the object inside. By analogy, double square brackets could be used to obtain the second train car's contents.<br><br>In contrast, single brackets are used to access the list itself, which allows the selection of multiple elements. For example, single brackets could be used to obtain the entire second train car as a list - not just its contents. They could also be used to obtain the first and second train cars together as a list, even though these two train cars may contain objects of different types.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># structured class:  list - data of different types</span></span>
+&gt; l &lt;- <span class='functs'>list</span>&#40;&#41; <span class='comments'># initialize a list</span>
+&gt; l <span class='comments'># empty list</span>
+list()
+&gt; l[[<span class='numbers'>1</span>]] &lt;- <span class='chars'>&quot;hello&quot;</span> <span class='comments'># note double brackets</span>
+&gt; l
+[[1]]
+[1] "hello"
+<br>
+&gt; l &lt;- <span class='functs'>list</span>&#40;<span class='numbers'>0L</span>&#41;
+&gt; l <span class='comments'># not length zero!</span>
+[[1]]
+[1] 0
+<br>
+&gt; l[[<span class='numbers'>2</span>]] &lt;- <span class='numbers'>10</span>:<span class='numbers'>12</span>
+&gt; l
+[[1]]
+[1] 0
+<br>
+[[2]]
+[1] 10 11 12
+<br>
+&gt; l[[<span class='numbers'>3</span>]] &lt;- <span class='chars'>&quot;some characters&quot;</span>
+&gt; l <span class='comments'># different data types</span>
+[[1]]
+[1] 0
+<br>
+[[2]]
+[1] 10 11 12
+<br>
+[[3]]
+[1] "some characters"
+<br>
+&gt; 
+&gt; l[<span class='numbers'>1</span>] <span class='comments'># select the first element as a list</span>
+[[1]]
+[1] 0
+<br>
+&gt; <span class='functs'>typeof</span>&#40;l[<span class='numbers'>1</span>]&#41;
+[1] "list"
+&gt; l[[<span class='numbers'>1</span>]] <span class='comments'># select contents of the first element</span>
+[1] 0
+&gt; <span class='functs'>typeof</span>&#40;l[[<span class='numbers'>1</span>]]&#41;
+[1] "integer"
+&gt; l[[<span class='numbers'>4</span>]] &lt;- m <span class='comments'># keep adding to the list</span>
+&gt; <span class='functs'>length</span>&#40;l&#41; <span class='comments'># number of list elements</span>
+[1] 4
+&gt; l[<span class='numbers'>1</span>:<span class='numbers'>2</span>]
+[[1]]
+[1] 0
+<br>
+[[2]]
+[1] 10 11 12
+<br>
+&gt; l[[<span class='numbers'>1</span>:<span class='numbers'>2</span>]] <span class='comments'># cannot do this (might be different types)</span>
+Error in l[[1:2]] : subscript out of bounds
+&gt; <span class='functs'>unlist</span>&#40;l&#41; <span class='comments'># coerced to one type</span>
+ [1] "0"               "10"             
+ [3] "11"              "12"             
+ [5] "some characters" "1"              
+ [7] "2"               "3"              
+ [9] "4"               "5"              
+[11] "6"               "7"              
+[13] "8"               "9"              
+[15] "10"             
+&gt; 
+&gt; <span class='comments'># list can be nested with as many layers as desired</span>
+&gt; l &lt;- <span class='functs'>list</span>&#40;<span class='functs'>list</span>&#40;<span class='numbers'>1</span>&#41;, <span class='functs'>list</span>&#40;<span class='functs'>list</span>&#40;<span class='numbers'>2</span>&#41;&#41;, <span class='functs'>list</span>&#40;<span class='functs'>list</span>&#40;<span class='numbers'>3</span>&#41;, <span class='functs'>list</span>&#40;<span class='numbers'>4</span>&#41;&#41;&#41;
+&gt; <span class='functs'>str</span>&#40;l&#41; <span class='comments'># look at the structure</span>
+List of 3
+ $ :List of 1
+  ..$ : num 1
+ $ :List of 1
+  ..$ :List of 1
+  .. ..$ : num 2
+ $ :List of 2
+  ..$ :List of 1
+  .. ..$ : num 3
+  ..$ :List of 1
+  .. ..$ : num 4
+&gt; l[[<span class='numbers'>1</span>]][[<span class='numbers'>1</span>]]
+[1] 1
+&gt; l[[<span class='numbers'>2</span>]][[<span class='numbers'>1</span>]][[<span class='numbers'>1</span>]]
+[1] 2
+&gt; l[[<span class='numbers'>3</span>]][[<span class='numbers'>2</span>]][[<span class='numbers'>1</span>]]
+[1] 4</span></pre>
+
+<div class="breakout">A special class of list is the data.frame. It is similar to a list, but is required to be rectangular in shape, such that each list element (column) contains the same number of elements (rows) of some type. This is analogous to a spreadsheet, where there are multiple columns of different types (letters, numbers, etc.), and each entry is a row.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># structured class:  data.frame - rectangular list</span></span>
+&gt; X &lt;- <span class='numbers'>1</span>:<span class='numbers'>10</span>
+&gt; Y &lt;- <span class='functs'>as.character</span>&#40;<span class='numbers'>11</span>:<span class='numbers'>20</span>&#41;
+&gt; d &lt;- <span class='functs'>data.frame</span>&#40;X, Y, stringsAsFactors=FALSE&#41;
+&gt; <span class='functs'>typeof</span>&#40;d&#41;
+[1] "list"
+&gt; <span class='functs'>class</span>&#40;d&#41;
+[1] "data.frame"
+&gt; d[[<span class='numbers'>2</span>]]
+ [1] "11" "12" "13" "14" "15" "16" "17" "18" "19" "20"
+&gt; <span class='comments'># can be accessed in the same manner as a matrix</span>
+&gt; d[<span class='numbers'>1</span>, <span class='numbers'>2</span>]
+[1] "11"
+&gt; d[<span class='numbers'>1</span>,]
+  X  Y
+1 1 11
+&gt; <span class='functs'>typeof</span>&#40;d[<span class='numbers'>1</span>,]&#41;
+[1] "list"
+&gt; <span class='comments'># similar to a spreadsheet:  one type per column</span>
+&gt; <span class='functs'>typeof</span>&#40;d[, <span class='numbers'>1</span>]&#41;
+[1] "integer"
+&gt; <span class='functs'>typeof</span>&#40;d[, <span class='numbers'>2</span>]&#41;
+[1] "character"</span></pre>
+
+<br><br><a style="float:left;" href="RLesson3.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson5.html">Next Lesson &gt;</a>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

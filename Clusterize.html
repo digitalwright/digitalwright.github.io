@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Clusterize
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1sub">Homology<span class="right">&#9662;</span></a></li>
+<li><a href="Clusterize.html" class="l2sel">Clusterize</a></li>
+<li><a href="DetectRepeats.html" class="l2">Detect Repeats</a></li>
+<li><a href="FindChimeras.html" class="l2">Find Chimeras</a></li>
+<li><a href="SequenceSearch.html" class="l2">Sequence Search</a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Clusterize</p>
+
+This short example describes how to use Clusterize to cluster sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2024) "Accurately clustering biological sequences in linear time by relatedness sorting." <i>Nature Communications</i>, <a href="https://www.nature.com/articles/s41467-024-47371-9">doi:10.1038/s41467-024-47371-9</a>.</p></div>
+
+For an in-depth tutorial on clustering, see the &quot;Upsize Your Clustering with Clusterize&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page. Also, watch the video explaining Clusterize <a href="Video3.html">here</a>.
+
+<p class="c1">How do I cluster sequences by similarity?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of unaligned sequences (e.g., &quot;~/mySeqs.fas&quot;).  Then you can choose a distance cutoff for clustering the sequences.  Clusterize will output a cluster number for each input sequence and print an estimate of the clustering effectiveness.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file &#40;in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; <span class='comments'># change "DNA" to "RNA" or "AA" as needed</span>
+&gt; seqs &lt;- <span class='functs'>readAAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># look at some of the sequences &#40;optional&#41;</span>
+&gt; seqs
+AAStringSet object of length 18976:
+        width seq             names               
+    [1]   567 MPYMGV...RRVPPK Seq1
+    [2]   749 MRYIDD...MNQIES Seq2
+    [3]   849 MLGILK...FGEKGT Seq3
+    [4]   742 MLFSFS...IKEQNS Seq4
+    [5]   499 MSSFTL...SAVSSL Seq5
+    ...   ... ...
+[18972]   927 MSRKVL...RGTDNE Seq18972
+[18973]   465 MTFEER...GDDASF Seq18973
+[18974]   502 MRTPKS...PHKTSV Seq18974
+[18975]   527 MFFVPR...PGAAHS Seq18975
+[18976]   475 MNRGRR...DLPARL Seq18976
+&gt; 
+&gt; <span class='comments'># cluster the sequences</span>
+&gt; clusters &lt;- <span class='functs'>Clusterize</span>&#40;seqs,
++ cutoff=<span class='numbers'>0.5</span>, <span class='comments'># &lt; 50% distant</span>
++ minCoverage=<span class='numbers'>0.5</span>, <span class='comments'># &gt; 50% coverage</span>
++ processors=NULL&#41; <span class='comments'># use all CPUs</span>
+Partitioning sequences by 4-mer similarity:
+  |========================================| 100%
+<br>
+Time difference of 6.05 secs
+<br>
+Sorting by relatedness within 15809 groups:
+iteration 7 of up to 24 (100.0% stability) 
+<br>
+Time difference of 1.46 secs
+<br>
+Clustering sequences by 4-mer to 6-mer similarity:
+  |========================================| 100%
+<br>
+Time difference of 52.73 secs
+<br>
+Clusters via relatedness sorting: 86.8% (0.3% exclusively)
+Clusters via rare 4-mers: 99.7% (13.2% exclusively)
+Estimated clustering effectiveness: 99.2%
+<br>
+&gt; 
+&gt; <span class='comments'># view the cluster numbers</span>
+&gt; <span class='functs'>head</span>&#40;clusters&#41;
+     cluster
+Seq1    6306
+Seq2    1957
+Seq3    3093
+Seq4    4164
+Seq5    7527
+Seq6    1944
+&gt; 
+&gt; <span class='comments'># compute cluster statistics</span>
+&gt; <span class='functs'>max</span>&#40;clusters&#41; <span class='comments'># number of clusters</span>
+[1] 12559
+&gt; t &lt;- <span class='functs'>table</span>&#40;clusters&#41;
+&gt; <span class='functs'>mean</span>&#40;t&#41; <span class='comments'># average cluster size</span>
+[1] 1.510948
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t&#41;&#41; <span class='comments'># biggest clusters</span>
+cluster
+7451 8479 6757 2279 3414    6 
+  47   49   51   52   64  110 </span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

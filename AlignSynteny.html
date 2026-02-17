@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Align Synteny
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1sub">Alignment<span class="right">&#9662;</span></a></li>
+<li><a href="AlignSequences.html" class="l2">Align Sequences</a></li>
+<li><a href="AlignTranslation.html" class="l2">Align Translation</a></li>
+<li><a href="AlignSynteny.html" class="l2sel">Align Synteny</a></li>
+<li><a href="AlignProfiles.html" class="l2">Align Profiles</a></li>
+<li><a href="AlignPairs.html" class="l2">Align Pairs</a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Align Synteny</p>
+
+This short example describes how to use DECIPHER to align genomes. For an in-depth tutorial on sequence alignment, see &quot;The Art of Multiple Sequence Alignment in R&quot;, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I align genomes?</p>
+
+First <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, it is necessary to build a sequence database using DECIPHER. A sequence database is simply another type of file, but it contains all of the genomes organized in such a way that they can be efficiently accessed by their unique name &#40;&#39;identifier&#39;&#41;.<br><br>
+
+Individual genomes can be composed of one sequence or many thousands of sequences. Here it is assumed that each genome is in its own FASTA file when initializing the database, although there are other ways to build a sequence database. For an alternative example, where the genomes are downloaded from NCBI GenBank directly, see the <a href="Screenshots/Example6.html">Examples Gallery</a>.<br><br>
+
+Once the sequence database is constructed, the process of mapping syntenic regions and aligning them only requires two lines of code. Plotting of the synteny map is also described here, but is an optional step. Note that there are many more options available, as described in the help <a href="Documentation.html">documentation</a>.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to each FASTA file (in quotes&#41;</span>
+&gt; <span class='comments'># each genome must be given a unique identifier here</span>
+&gt; <span class='comments'># for example: Genome1, Genome2, etc.</span>
+&gt; fas &lt;- <span class='functs'>c</span>&#40;Genome1=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE 1&gt;&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;Genome2=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE 2&gt;&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;Genome3=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE 3&gt;&gt;&quot;</span>&#41;
+&gt; 
+&gt; <span class='comments'># specify where to create the new sequence database</span>
+&gt; db &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO SEQUENCE DATABASE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file in a loop</span>
+&gt; for (i in <span class='functs'>seq_along</span>&#40;fas&#41;&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>Seqs2DB</span>&#40;fas[i], <span class='chars'>&quot;FASTA&quot;</span>, db, <span class='functs'>names</span>&#40;fas[i]&#41;&#41;
++ }
+Reading FASTA file from line  1 to 1e+05
+<br>
+Added 1 new sequence to table DNA.
+1 total sequence in table DNA.
+Time difference of 1 secs
+<br>
+Reading FASTA file from line  1 to 1e+05
+<br>
+Added 1 new sequence to table DNA.
+2 total sequences in table DNA.
+Time difference of 1 secs
+<br>
+Reading FASTA file from line  1 to 1e+05
+<br>
+Added 1 new sequence to table DNA.
+3 total sequences in table DNA.
+Time difference of 1 secs
+<br>
+&gt; 
+&gt; <span class='comments'># map the syntenic regions between each genome pair</span>
+&gt; synteny &lt;- <span class='functs'>FindSynteny</span>&#40;db&#41;
+  |============================================| 100%
+<br>
+Time difference of 26.3 secs
+<br>
+&gt; 
+&gt; <span class='comments'># print a summary of the syntenic map (optional&#41;</span>
+&gt; synteny
+          Genome1   Genome2  Genome3
+Genome1     1 seq  49% hits 62% hits
+Genome2 39 blocks     1 seq 50% hits
+Genome3 19 blocks 25 blocks    1 seq
+&gt; 
+&gt; <span class='comments'># view the syntenic regions (optional&#41;</span>
+&gt; <span class='functs'>pairs</span>&#40;synteny&#41; <span class='comments'># displays a dot plot of all pairs</span>
+&gt; <span class='functs'>plot</span>&#40;synteny&#41; <span class='comments'># displays a bar plot of adjacent pairs</span>
+&gt; 
+&gt; <span class='comments'># perform alignments of all pairs of genomes</span>
+&gt; DNA &lt;- <span class='functs'>AlignSynteny</span>&#40;synteny, db&#41;
+  |============================================| 100%
+<br>
+Time difference of 62.18 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the aligned syntenic blocks for each pair</span>
+&gt; <span class='functs'>unlist</span>&#40;DNA[[<span class='numbers'>1</span>]]&#41; <span class='comments'># Genomes 1 and 2</span>
+  A DNAStringSet instance of length 78
+      width seq                   names               
+ [1] 345520 AATTTCGAA...AACTGCATC 1.Genome1
+ [2] 345520 AATTTCGAA...AACTGCCTC 1.Genome2
+ [3] 332175 TATTTCTTT...AGTTATGAT 2.Genome1
+ [4] 332175 TATTTCTTC...AGCTATGAT 2.Genome2
+ [5] 152776 AAGTACACA...GTAGCGGAT 3.Genome1
+ ...    ... ...
+[74]   2570 ACTGTCACA...GATAAAAAA 37.Genome2
+[75]   5479 TACTGCGTT...TAATAACAA 38.Genome1
+[76]   5479 TAGTAGGTA...TCAAAATAA 38.Genome2
+[77]   1219 AGCAAAAAA...TGCAAAAAA 39.Genome1
+[78]   1219 AGAAAAAAA...TGCAAAAAA 39.Genome2
+&gt; <span class='functs'>unlist</span>&#40;DNA[[<span class='numbers'>2</span>]]&#41; <span class='comments'># Genomes 1 and 3</span>
+  A DNAStringSet instance of length 38
+      width seq                   names               
+ [1] 420181 AAGTACACA...TATAGCAAA 1.Genome1
+ [2] 420181 AGGTACACA...TGTAGCAAA 1.Genome3
+ [3] 413750 ATCATTATT...TTTTCACAT 2.Genome1
+ [4] 413750 ATAATTATT...TTTTTACAT 2.Genome3
+ [5] 282526 ATGCCCTCG...TATTTTAAA 3.Genome1
+ ...    ... ...
+[34]  42624 TCACTATAA...ATATAAAAC 17.Genome3
+[35]  25576 GGACGTAAA...AAAAAAACA 18.Genome1
+[36]  25576 GGACGCAAA...AAAAAATCA 18.Genome3
+[37]  15118 TTAATTAAG...TACTGAAAT 19.Genome1
+[38]  15118 TTAAATAAG...TACTAAAAT 19.Genome3
+&gt; <span class='functs'>unlist</span>&#40;DNA[[<span class='numbers'>3</span>]]&#41; <span class='comments'># Genomes 2 and 3</span>
+  A DNAStringSet instance of length 50
+      width seq                   names               
+ [1] 676200 TTTTCATTT...TTAATAGAA 1.Genome2
+ [2] 676200 TTTTTATTT...TTAAGAAAA 1.Genome3
+ [3] 422433 TTGTCCATT...AACTGCCTC 2.Genome2
+ [4] 422433 TCGTTTTTT...AACTGCATC 2.Genome3
+ [5] 238313 ACTGTCACA...TTAAATGCT 3.Genome2
+ ...    ... ...
+[46]  10690 TAGAAAATA...AGAAAATGG 23.Genome3
+[47]   1400 CATATCCTC...AGCAAAAAA 24.Genome2
+[48]   1400 CATATCATT...AGCCTAAAA 24.Genome3
+[49]   1637 CGAATTAAA...AAAATAAAA 25.Genome2
+[50]   1637 CAAAAAAAA...AAAATAAAA 25.Genome3</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

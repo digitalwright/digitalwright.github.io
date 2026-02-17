@@ -1,0 +1,30 @@
+<pre style="font-family:monospace;">
+<span style="color: #003399; font-weight: bold;">library</span>&#40;DECIPHER&#41;
+
+<span style="color: #666666; font-style: italic;"># import a GenBank sequence file</span>
+gen &lt;- <span style="color: #003399; font-weight: bold;">system.file</span>&#40;<span style="color: DarkRed;">&quot;extdata&quot;</span>,
+	<span style="color: DarkRed;">&quot;Bacteria_175seqs.gen&quot;</span>,
+	package=<span style="color: DarkRed;">&quot;DECIPHER&quot;</span>&#41;
+dbConn &lt;- <span style="color: #003399; font-weight: bold;">dbConnect</span>&#40;<span style="color: #003399; font-weight: bold;">SQLite</span>&#40;&#41;,
+	<span style="color: DarkRed;">&quot;:memory:&quot;</span>&#41;
+<span style="color: #003399; font-weight: bold;">Seqs2DB</span>&#40;gen,
+	<span style="color: DarkRed;">&quot;GenBank&quot;</span>,
+	dbConn,
+	<span style="color: DarkRed;">&quot;&quot;</span>&#41;
+
+<span style="color: #666666; font-style: italic;"># add rank information to the database</span>
+ids &lt;- <span style="color: #003399; font-weight: bold;">IdentifyByRank</span>&#40;dbConn,
+	level=<span style="color: DarkGreen;">10</span>,
+	add2tbl=TRUE&#41;
+
+<span style="color: #666666; font-style: italic;"># add length information to the database</span>
+lns &lt;- <span style="color: #003399; font-weight: bold;">IdLengths</span>&#40;dbConn,
+	add2tbl=TRUE&#41;
+
+<span style="color: #666666; font-style: italic;"># view the database table in a browser</span>
+<span style="color: #003399; font-weight: bold;">BrowseDB</span>&#40;dbConn,
+	maxChars=<span style="color: DarkGreen;">25</span>&#41;
+
+<span style="color: #003399; font-weight: bold;">dbDisconnect</span>&#40;dbConn&#41;
+
+</pre>

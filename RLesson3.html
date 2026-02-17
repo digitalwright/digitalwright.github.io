@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #3
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #3 - Logicals operations</p>
+
+Both integers and logicals require 32 bits per element in R. The primary difference is that logicals can only be TRUE, FALSE, or NA. Logicals are ubiquitous, as they are the output of many comparisons and other functions, as demonstrated below.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># coercing a numeric to integer</span></span>
+&gt; <span class='functs'>as.integer</span>&#40;<span class='numbers'>1.2</span>&#41; <span class='comments'># truncated toward zero</span>
+[1] 1
+&gt; <span class='functs'>as.integer</span>&#40;<span class='numbers'>-1.2</span>&#41; <span class='comments'># truncated toward zero</span>
+[1] -1
+&gt; 
+&gt; <span class='comments'># several useful functions that return doubles</span>
+&gt; <span class='functs'>floor</span>&#40;<span class='numbers'>1.2</span>&#41;
+[1] 1
+&gt; <span class='functs'>ceiling</span>&#40;<span class='numbers'>1.2</span>&#41;
+[1] 2
+&gt; <span class='functs'>round</span>&#40;<span class='numbers'>1.2</span>, digits=<span class='numbers'>2</span>&#41;
+[1] 1.2
+&gt; 
+&gt; <span class='comments'># is.numeric is different than is.double</span>
+&gt; <span class='functs'>is.numeric</span>&#40;<span class='numbers'>1.2</span>&#41; <span class='comments'># interpretable as number</span>
+[1] TRUE
+&gt; <span class='functs'>is.numeric</span>&#40;<span class='numbers'>1L</span>&#41; <span class='comments'># integers are also TRUE</span>
+[1] TRUE
+&gt; <span class='functs'>is.double</span>&#40;<span class='numbers'>1.2</span>&#41;
+[1] TRUE
+&gt; <span class='functs'>is.double</span>&#40;<span class='numbers'>1L</span>&#41;
+[1] FALSE
+&gt; 
+&gt; <span class='comments'># coercion to logical: 0 = FALSE, otherwise TRUE</span>
+&gt; <span class='functs'>as.logical</span>&#40;<span class='numbers'>0</span>&#41;
+[1] FALSE
+&gt; <span class='functs'>is.logical</span>&#40;<span class='numbers'>1.2</span>&#41;
+[1] FALSE
+&gt; <span class='functs'>as.logical</span>&#40;<span class='numbers'>1.2</span>&#41;
+[1] TRUE
+&gt; <span class='functs'>is.logical</span>&#40;<span class='functs'>as.logical</span>&#40;<span class='numbers'>1.2</span>&#41;&#41;
+[1] TRUE
+&gt; 
+&gt; <span class='comments'># comparisons return a logical vector</span>
+&gt; x &lt;- <span class='numbers'>1</span>
+&gt; y &lt;- <span class='numbers'>2</span>
+&gt; x &gt; y
+[1] FALSE
+&gt; x &gt;= y
+[1] FALSE
+&gt; x == y
+[1] FALSE
+&gt; <span class='numbers'>2</span>*x == y <span class='comments'># multiplication before equality</span>
+[1] TRUE
+&gt; 
+&gt; <span class='comments'># accessing help for any function</span>
+&gt; ?Syntax <span class='comments'># order of operations</span>
+&gt; ?round <span class='comments'># obtain help for any function</span>
+&gt; ?`+` <span class='comments'># some functions require back ticks</span>
+&gt; 
+&gt; <span class='comments'># initialize a logical vector</span>
+&gt; z &lt;- <span class='functs'>logical</span>&#40;<span class='numbers'>100</span>&#41;
+&gt; <span class='functs'>object.size</span>&#40;z&#41;/<span class='functs'>length</span>&#40;z&#41;
+4.4 bytes
+&gt; <span class='comments'># Note that each logical element is stored in 4 bytes</span></pre></span>
+
+<div class="breakout">Several special names, such as "TRUE", are reserved in R and cannot be used as variable names. Other names are very common, such as "c", and it is good practice not to use these names as variable names even though it is allowed.</div>
+
+<pre><span class="codebox"><span class="line">z[<span class='numbers'>2</span>:<span class='numbers'>3</span>] &lt;- TRUE</span>
+&gt; <span class='functs'>head</span>&#40;z&#41;
+[1] FALSE  TRUE  TRUE FALSE FALSE FALSE
+&gt; z[<span class='numbers'>5</span>] &lt;- T <span class='comments'># T is a reserved word</span>
+&gt; <span class='functs'>head</span>&#40;z&#41;
+[1] FALSE  TRUE  TRUE FALSE  TRUE FALSE
+&gt; 
+&gt; <span class='comments'># common names should not be changed</span>
+&gt; T &lt;- <span class='chars'>&quot;hello&quot;</span> <span class='comments'># Never do this!</span>
+&gt; z[<span class='numbers'>5</span>] &lt;- T
+&gt; <span class='functs'>head</span>&#40;z&#41; <span class='comments'># characters now!</span>
+[1] "FALSE" "TRUE"  "TRUE"  "FALSE" "hello" "FALSE"
+&gt; <span class='functs'>rm</span>&#40;T&#41; <span class='comments'># remove the variable `T`</span>
+&gt; T <span class='comments'># everything is back to normal</span>
+[1] TRUE
+&gt; 
+&gt; <span class='comments'># Reserved names do not permit assignment</span>
+&gt; ?Reserved
+&gt; TRUE &lt;- <span class='chars'>&quot;hello&quot;</span> <span class='comments'># Error</span>
+Error in TRUE <- "hello" : invalid (do_set) left-hand side to assignment
+&gt; <span class='comments'># common names to avoid overwriting:</span>
+&gt; c <span class='comments'># function names</span>
+function (..., recursive = FALSE)  .Primitive("c")
+&gt; T <span class='comments'># TRUE shorthand</span>
+[1] TRUE
+&gt; F <span class='comments'># FALSE shorthand</span>
+[1] FALSE
+&gt; letters <span class='comments'># lower-case letters</span>
+ [1] "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l"
+[13] "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x"
+[25] "y" "z"
+&gt; LETTERS <span class='comments'># upper-case letters</span>
+ [1] "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L"
+[13] "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X"
+[25] "Y" "Z"
+&gt; pi <span class='comments'># 3.14...</span>
+[1] 3.141593</span></pre>
+
+<div class="breakout">When performing comparisons, it is important to keep in mind that doubles are stored with finite precision. Therefore, comparisons between seemingly identical numbers may give an unexpected result. This is rarely encountered, but can be a nuisance when it happens. One solution is to use the all.equal function, which test for near equality. Another work-around is to use integers in comparisons, because integers are stored exactly.</div>
+
+<pre><span class="codebox"><span class="line">x1 &lt;- <span class='numbers'>0.5</span> - <span class='numbers'>0.3</span></span>
+&gt; x2 &lt;- <span class='numbers'>0.3</span> - <span class='numbers'>0.1</span>
+&gt; x1 == x2 <span class='comments'># comparison of numerics</span>
+[1] FALSE
+&gt; x1 != x2
+[1] TRUE
+&gt; <span class='functs'>print</span>&#40;x1, digits=<span class='numbers'>22</span>&#41;
+[1] 0.2000000000000000111022
+&gt; <span class='functs'>print</span>&#40;x2, digits=<span class='numbers'>22</span>&#41;
+[1] 0.1999999999999999833467
+&gt; <span class='functs'>all.equal</span>&#40;x1, x2&#41; <span class='comments'># TRUE</span>
+[1] TRUE
+&gt; <span class='comments'># but most of the time equality works as expected</span>
+&gt; <span class='numbers'>2</span>/<span class='numbers'>3</span> == <span class='numbers'>2</span>*&#40;<span class='numbers'>1</span>/<span class='numbers'>3</span>&#41; <span class='comments'># TRUE</span>
+[1] TRUE</span></pre>
+
+<div class="breakout">The double and single logical operators are illustrated below. Single operators compare the inputs in pairs of elements. Double operators only use the first element of each input, and therefore are preferred in situations where only one logical is required.</div>
+
+<pre><span class="codebox"><span class="line">a &lt;- <span class='functs'>c</span>&#40;T, T, F, F&#41;</span>
+&gt; a
+[1]  TRUE  TRUE FALSE FALSE
+&gt; !a
+[1] FALSE FALSE  TRUE  TRUE
+&gt; b &lt;- <span class='functs'>c</span>&#40;T, F, T, F&#41;
+&gt; a & b <span class='comments'># Truth table for AND operation</span>
+[1]  TRUE FALSE FALSE FALSE
+&gt; a | b <span class='comments'># Truth table for OR operation</span>
+[1]  TRUE  TRUE  TRUE FALSE
+&gt; a && b <span class='comments'># only uses the first element with no Warning!</span>
+[1] TRUE
+&gt; a || b <span class='comments'># only uses the first element with no Warning!</span>
+[1] TRUE
+&gt; a[<span class='numbers'>2</span>] && b[<span class='numbers'>2</span>]
+[1] FALSE
+&gt; a[<span class='numbers'>2</span>] || b[<span class='numbers'>2</span>]
+[1] TRUE
+&gt; <span class='functs'>xor</span>&#40;a, b&#41; <span class='comments'># Exclusive OR (XOR)</span>
+[1] FALSE  TRUE  TRUE FALSE</span></pre>
+
+<div class="breakout">The which function is very useful. It takes a logical input and returns the indices that are TRUE. The which.max function is a variant that returns the index of the first maximum element. Here, some of the functions for generating random numbers are introduced: runif for drawing from a <u>unif</u>orm distribution, and rnorm for drawing from a <u>norm</u>al distribution.</div>
+
+<pre><span class="codebox"><span class="line">r &lt;- <span class='functs'>runif</span>&#40;<span class='numbers'>100</span>&#41; <span class='comments'># 100 random numbers</span></span>
+&gt; r <span class='comments'># roughly uniformly distributed between 0 and 1</span>
+  [1] 0.85667156 0.34026964 0.44424143 0.48037833
+  [5] 0.87667115 0.65841114 0.92110802 0.21177947
+  [9] 0.30524428 0.12875139 0.46554814 0.73656323
+ [13] 0.78056957 0.35762074 0.07626947 0.03351947
+ [17] 0.77606616 0.06700093 0.52778631 0.48712420
+ [21] 0.66335777 0.56610838 0.44025036 0.63570422
+ [25] 0.99940558 0.20624952 0.31441187 0.77470678
+ [29] 0.63578651 0.65580460 0.86104108 0.37896363
+ [33] 0.76623888 0.22145695 0.25397960 0.07959553
+ [37] 0.72126320 0.69776325 0.09309901 0.56508622
+ [41] 0.25661917 0.82514489 0.56554523 0.06238280
+ [45] 0.96626279 0.74489289 0.13250879 0.46242389
+ [49] 0.96865750 0.74094259 0.38335198 0.66505184
+ [53] 0.47497121 0.03714927 0.69987399 0.13834235
+ [57] 0.68731832 0.18809398 0.60494391 0.33094660
+ [61] 0.80798206 0.44554323 0.07992541 0.93656027
+ [65] 0.06502416 0.78303341 0.94759327 0.06641417
+ [69] 0.48330766 0.24743624 0.96726025 0.52037367
+ [73] 0.17429884 0.33773523 0.02584235 0.13105126
+ [77] 0.23764974 0.98281393 0.77911002 0.19064267
+ [81] 0.58837599 0.94003876 0.39637532 0.38549449
+ [85] 0.36373678 0.61239700 0.72690764 0.37245687
+ [89] 0.92261563 0.46138683 0.89940080 0.87923886
+ [93] 0.30293246 0.57432447 0.68368253 0.75951094
+ [97] 0.99441555 0.13772023 0.65303211 0.92292185
+&gt; r &lt; <span class='numbers'>0.5</span>
+  [1] FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE
+  [9]  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+ [17] FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE
+ [25] FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE
+ [33] FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE
+ [41]  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE
+ [49] FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE
+ [57] FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE FALSE
+ [65]  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE
+ [73]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE
+ [81] FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE
+ [89] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
+ [97] FALSE  TRUE FALSE FALSE
+&gt; <span class='comments'># `which` takes a logical input</span>
+&gt; w &lt;- <span class='functs'>which</span>&#40;r &lt; <span class='numbers'>0.5</span>&#41;
+&gt; w <span class='comments'># indices that are TRUE, where r &lt; 0.5</span>
+ [1]  2  3  4  8  9 10 11 14 15 16 18 20 23 26 27 32
+[17] 34 35 36 39 41 44 47 48 51 53 54 56 58 60 62 63
+[33] 65 68 69 70 73 74 75 76 77 80 83 84 85 88 90 93
+[49] 98
+&gt; r[w]
+ [1] 0.34026964 0.44424143 0.48037833 0.21177947
+ [5] 0.30524428 0.12875139 0.46554814 0.35762074
+ [9] 0.07626947 0.03351947 0.06700093 0.48712420
+[13] 0.44025036 0.20624952 0.31441187 0.37896363
+[17] 0.22145695 0.25397960 0.07959553 0.09309901
+[21] 0.25661917 0.06238280 0.13250879 0.46242389
+[25] 0.38335198 0.47497121 0.03714927 0.13834235
+[29] 0.18809398 0.33094660 0.44554323 0.07992541
+[33] 0.06502416 0.06641417 0.48330766 0.24743624
+[37] 0.17429884 0.33773523 0.02584235 0.13105126
+[41] 0.23764974 0.19064267 0.39637532 0.38549449
+[45] 0.36373678 0.37245687 0.46138683 0.30293246
+[49] 0.13772023
+&gt; 
+&gt; <span class='comments'># all returns TRUE if all inputs are TRUE</span>
+&gt; <span class='functs'>all</span>&#40;r[w]==r[r &lt; <span class='numbers'>0.5</span>]&#41;
+[1] TRUE
+&gt; <span class='comments'># any returns TRUE if any input is TRUE</span>
+&gt; <span class='functs'>any</span>&#40;r &gt; <span class='numbers'>1</span>&#41;
+[1] FALSE
+&gt; 
+&gt; <span class='functs'>min</span>&#40;r&#41;
+[1] 0.02584235
+&gt; <span class='functs'>max</span>&#40;r&#41;
+[1] 0.9994056
+&gt; <span class='functs'>mean</span>&#40;r&#41;
+[1] 0.5178385
+&gt; <span class='functs'>which.min</span>&#40;r&#41;
+[1] 75
+&gt; <span class='functs'>which</span>&#40;r==<span class='functs'>min</span>&#40;r&#41;&#41;
+[1] 75
+&gt; r &lt;- <span class='functs'>c</span>&#40;r, r&#41; <span class='comments'># repeat `r` twice</span>
+&gt; <span class='functs'>which.max</span>&#40;r&#41; <span class='comments'># first occurrence only</span>
+[1] 25
+&gt; <span class='functs'>which</span>&#40;r==<span class='functs'>max</span>&#40;r&#41;&#41; <span class='comments'># all occurrences</span>
+[1]  25 125</span></pre>
+
+<div class="breakout">It is also possible to set the random number generator's seed. This results in the same series of random numbers every time, which is useful in some cases.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>set.seed</span>&#40;<span class='numbers'>123L</span>&#41;</span>
+&gt; r1 &lt;- <span class='functs'>rnorm</span>&#40;<span class='numbers'>100</span>&#41; <span class='comments'># 100 randomly distributed numbers</span>
+&gt; <span class='functs'>set.seed</span>&#40;<span class='numbers'>123L</span>&#41;
+&gt; r2 &lt;- <span class='functs'>rnorm</span>&#40;<span class='numbers'>100</span>&#41; <span class='comments'># restart from the same point</span>
+&gt; <span class='functs'>all</span>&#40;r1 == r2&#41; <span class='comments'># the same set of random numbers</span>
+[1] TRUE
+&gt; r3 &lt;- <span class='functs'>rnorm</span>&#40;<span class='numbers'>100</span>&#41; <span class='comments'># continue without restarting</span>
+&gt; <span class='functs'>any</span>&#40;r1 == r3&#41; <span class='comments'># all different random numbers</span>
+[1] FALSE
+&gt; <span class='functs'>length</span>&#40;<span class='functs'>which</span>&#40;r1 &gt; r3&#41;&#41;/<span class='functs'>length</span>&#40;r3&#41; <span class='comments'># about half</span>
+[1] 0.58
+&gt; <span class='functs'>set.seed</span>&#40;NULL&#41; <span class='comments'># re-initializes the seed</span></span></pre>
+
+<br><br><a style="float:left;" href="RLesson2.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson4.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

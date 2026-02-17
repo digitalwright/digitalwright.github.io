@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - News
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1sel">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">News</p>
+
+Updates to DECIPHER are released every six months via Bioconductor. Here is a list of changes in past releases.
+
+<p class="c1">Version 3.6</p>
+
+<ul><li>General changes</li>
+<ul><li>TrimDNA() has optimized defaults based on a larger training dataset.
+</li></ul>
+</ul>
+
+<p class="c1">Version 3.4</p>
+
+<ul><li>General changes</li>
+<ul><li>DetectRepeats()'s default parameters were retrained on an expanded empirical dataset.
+</li><li>FindSynteny() was improved and its default parameters were retrained.
+</li><li>Manual pages and vignettes were revised substantially in some cases.
+</li><li>Clusterize() now supports any measure of distance offered by DistanceMatrix().
+</li></ul>
+
+<li>Phylogenetics improvements</li>
+<ul><li>Treeline() is faster, especially for constructing maximum likelihood trees.
+</li><li>DistanceMatrix() supports amino acid models and more nucleotide models of evolution.
+</li><li>DistanceMatrix() determines maximum likelihood distances given a rate matrix and frequencies.
+</li><li>DistanceMatrix() allows non-uniform costs through specification of a substitution matrix.
+</li><li>DistanceMatrix() can now incorporate distance due to indels into any model of evolution.
+</li></ul>
+
+<li>Population genetics functionality</li>
+<ul><li>New InferDemography() function for fitting demographic histories to site frequency spectra.
+</li><li>New InferRecombination() function for fitting recombination parameters to correlation profiles.
+</li><li>New InferSelection() function for estimating Ka/Ks (dN/dS; omega) from aligned coding sequences.
+</li><li>New "Population Genetics Inference in R" vignette describing these functions.
+</li></ul>
+
+<li>Alignment improvements</li>
+<ul><li>AlignPairs() now outputs a consensus sequence along with aligned pairs when type is "sequences".
+</li><li>AlignPairs() now accepts QualityScaledXStringSet inputs, allowing for merging paired-end reads.
+</li><li>AlignProfiles() parameters were retrained for RNA inputs, affecting other alignment functions.
+</li></ul>
+</ul>
+
+<p class="c1">Version 3.2</p>
+
+<ul><li>General changes</li>
+<ul><li>DetectRepeats() is slightly more accurate and has retrained parameters.
+</li><li>Clusterize() is faster when using multiple processors.
+</li><li>Clusterize() allows masking repeats and low complexity regions.
+</li><li>FindSynteny() parameters were retrained.
+</li><li>There is a new as.dist() method for objects of class Synteny.
+</li></ul>
+
+<li>Phylogenetics improvements</li>
+<ul><li>Treeline() now supports balanced minimum evolution (i.e., method="ME") that is accurate, fast, scalable, and the new default method.
+</li><li>The Treeline() function is faster, requires less memory, and has new arguments allowing greater control.
+</li><li>Treeline() now accepts an alignment and/or distance matrix for some methods.
+</li><li>Treeline() uses parsimony to perform ancestral state reconstruction unless method is "ML", in which case it still uses likelihood.
+</li><li>Examples in the vignette and manual page for Treeline() are revised and expanded.
+</li><li>ReadDendrogram() and WriteDendrogram() have `quote` arguments.
+</li><li>Cophenetic() is more scalable.
+</li><li>DistanceMatrix() has a new Poisson correction method.
+</li></ul>
+
+<li>Search improvements</li>
+<ul><li>SearchIndex() can iterate to find more remote homologs.
+</li><li>SearchIndex() performs compositional adjustment of the substitution matrix.
+</li><li>SearchIndex() parameters are retrained.
+</li></ul>
+
+<li>Alignment improvements</li>
+<ul><li>Align*() parameters for AAStringSets were retrained using multiple benchmarks to mitigate overfitting to a single benchmark.
+</li><li>Align*() parameters for RNAStringSets were retrained on a larger set of ncRNA alignments to further improve accuracy.
+</li><li>Some PredictHEC() arguments allow vectorized inputs and the defaults are retrained.
+</li></ul>
+</ul>
+
+<p class="c1">Version 3.0</p>
+
+<ul><li>General changes</li>
+<ul><li>AA_REDUCED contains more reduced amino acid alphabets.
+</li><li>BLOSUM and PAM substitution matrices are now included in DECIPHER.
+</li><li>PFASUM and MMLSUM substitution matrices can now be specified conveniently (e.g., "PFASUM50").
+</li><li>Browse*() functions now open new html files for each function call by default.
+</li><li>Browse*() functions now include a `title` argument that adds a title to the output.
+</li><li>DECIPHER no longer depends on the the parallel package.
+</li><li>ScoreAlignment() can return column scores or the sum of column scores.
+</li><li>The "Getting started DECIPHERing" vignette is now more of a general overview.
+</li><li>Parameters perfectMatch and misMatch are trained to best match protein coding (nucleotide) to amino acid sequence alignments.
+</li></ul>
+
+<li>Sequence database improvements</li>
+<ul><li>DECIPHER is now SQL agnostic and works with other SQL drivers (e.g., RMariaDB, RPostgres).
+</li><li>DECIPHER suggests, rather than depends, on RSQLite. This requires running library(RSQLite) separately, if desired.
+</li><li>DECIPHER v3 should be able to read databases built with v2 but not vice versa.
+</li><li>The Add2DB() function should be faster at adding/updating database fields.
+</li></ul>
+
+<li>Homology finding functionality</li>
+<ul><li>New IndexSeqs(subject, ...), SearchIndex(pattern, index, subject=NULL, ...), and AlignPairs(pattern, subject, pairs=NULL, ...) functions.
+</li><li>New vignette, "Searching Biological Sequences for Research".
+</li><li>There is a new `InvertedIndex` class with a print.InvertedIndex() function.
+</li><li>DECIPHER now uses AlignPairs() instead of pairwiseAlignmnent() from Biostrings.
+</li></ul>
+
+<li>Clusterize improvements</li>
+<ul><li>Clusterize() is faster for high distance cutoffs (i.e., low similarity) and more efficiently parallelized.
+</li><li>Clusterize() employs variable length k-mers when comparing sequences. This allows it to maintain sensitivity for sets of input sequences with highly variable lengths.
+</li><li>Clusterize() performs extension of k-mer matches when predicting anchors and estimating similarity.
+</li><li>Clusterize() uses a new reduced amino acid alphabet for rare k-mers.
+</li><li>Clusterize() allows up to 2^31 - 1 (2,147,483,647) input sequences given sufficient memory (and time).
+</li><li>Clusterize() better reports clustering effectiveness, typically resulting in lower estimates.
+</li><li>The "Upsize Your Clustering with Clusterize" vignette is expanded and includes an example of clustering both DNA strands.
+</li></ul>
+
+<li>DetectRepeats improvements</li>
+<ul><li>DetectRepeats() is (re)calibrated to make probability of discovery by chance approximately exp(-Score).
+</li><li>DetectRepeats() has multiple internal improvements to scoring accuracy.
+</li><li>DetectRepeats() uses a different reduced amino acid alphabet.
+</li><li>DetectRepeats() has a new `maxCopies` argument, which allows it to run in cases where there are (very) many repeats (e.g., the complete human genome).
+</li><li>DetectRepeats() corrects the substitution matrix for each sequence's background by default.
+</li></ul>
+
+<li>FindSynteny improvements</li>
+<ul><li>FindSynteny()'s scoring formula is revised, adding `sepPower` and `gapPower` arguments.
+</li><li>FindSynteny() masks low complexity regions in addition to repeats.
+</li><li>FindSynteny() extends k-mer matches to both sides whenever possible.
+</li><li>FindSynteny() has all parameters (re)optimized using a synthetic orthology benchmark.
+</li><li>FindSynteny() uses a new reduced amino acid alphabet when useFrames=TRUE (the default).
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.30</p>
+
+<ul><li>Alignment improvements</li>
+<ul><li>AlignSeqs() on RNAStringSet inputs will now compute single-sequence free energies to improve alignment accuracy.
+</li><li>Align*() parameters were retrained using Rfam seed (ncRNAs) and mTM-align (AAs) structural alignments.
+</li><li>Added MMLSUM amino acid substitution matrices, although PFASUM is still used by default.
+</li></ul>
+
+<li>Clusterize improvements</li>
+<ul><li>Clusterize() has a modified algorithm that improves accuracy for approximately the same speed.
+</li><li>Clusterize() has newly trained parameters that balance accuracy and speed.
+</li><li>The "Upsize Your Clustering with Clusterize" vignette has a new figure to help with understanding important parameters.
+</li></ul>
+
+<li>TreeLine improvements</li>
+<ul><li>TreeLine() is faster, more scalable, and more accurate by a modest amount.
+</li><li>TreeLine() now uses SIMD instructions if MAKEVARS is configured (by adding  " -O3 -march=native" to PKG_CFLAGS). When enabled, SIMD is not portable and requires recompiling on every machine where used.
+</li><li>TreeLine() outputs a `substitutions` attribute when method="MP".
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.28</p>
+
+<ul><li>General changes</li>
+<ul><li>PredictDBN() uses new empirical pseudoenergy rules for RNA folding.
+</li><li>New `deltaGrulesRNA` object containing pseudoenergy rules.
+</li><li>AA_REDUCED includes condensations of PFASUM40.
+</li><li>DetectRepeats() has a `useEmpirical=TRUE` argument controlling whether to use empirically-derived scores to improve detection of tandem repeats.
+</li><li>IdTaxa() is somewhat faster in a subset of classification scenarios.
+</li><li>MapCharacters() works on dendrograms with amino acid ancestral states, not just nucleotides.
+</li></ul>
+
+<li>Clusterize improvements</li>
+<ul><li>Clusterize() has many changes that make it faster, more scalable, and more accurate.
+</li><li>Clusterize() now has a `singleLinkage=FALSE` argument.
+</li><li>The "Upsize Your Clustering with Clusterize" vignette is slightly improved.
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.26</p>
+
+<ul><li>General changes</li>
+<ul><li>Clusterize() is a new inexact clustering algorithm with linear time complexity, which replaces IdClusters().
+</li><li>New "Upsize Your Clustering with Clusterize" vignette.
+</li><li>DistanceMatrix() now has multiple methods ("overlap", "shortest", and "longest"). The `peanlizeGapLetterMatches` argument now accepts NA, and there is a new `minCoverage` argument.
+</li><li>Cophenetic() is now faster.
+</li><li>IdLengths() is faster and allows type="AAStringSet".
+</li><li>DetectRepeats() uses empirical signals to improve accuracy when detecting tandem repeats.
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.24</p>
+
+<ul><li>General changes</li>
+<ul><li>DistanceMatrix() has an option correction="F81" to correct for unequal state frequencies.
+</li><li>RemoveGaps() has an argument `includeMask=TRUE` that controls how masking ("+") characters are handled.
+</li></ul>
+
+<li>Alignment improvements</li>
+<ul><li>AlignProfiles() has a `standardize=TRUE` argument that will score relative to length rather than absolute scoring.
+</li><li>Align*() functions have re-optimized parameters resulting in relatively small changes.
+</li><li>New ScoreAlignment() function to consolidate scoring alignments across different functions.
+</li></ul>
+
+<li>DetectRepeats improvements</li>
+<ul><li>DetectRepeats() scores solely using a substitution matrix with sum-of-(adjacent-)pairs scoring.
+</li><li>DetectRepeats() underwent parameter (re)optimization.
+</li><li>DetectRepeats() now scores secondary structures in addition to primary sequence.
+</li><li>There is a new vignette showing how to use DetectRepeats(), and new example files of human proteins with tandem repeats.
+</li></ul>
+
+<li>TreeLine function</li>
+<ul><li>New function TreeLine() to build exact phylogenetic trees, which was previously a feature of IdClusters().
+</li><li>TreeLine() now computes correct likelihoods, unlike the original method="ML" implementation in IdClusters().
+</li><li>TreeLine() returns a method="ML" tree (type="dendrogram") by default, unlike the type="clusters" default in IdClusters().
+</li><li>TreeLine() has a new method="MP" for constructing maximum parsimony trees using Sankoff parsimony with a costMatrix (by default binary, which is equivalent to Fitch parsimony).
+</li><li>TreeLine() will accept myXStringSet without `myDistMatrix` when method is "ML" or "MP".
+</li><li>TreeLine() can compute "ML" and "MP" trees for both nucleotides and amino acids.
+</li><li>TreeLine() automatically returns "support" (for "ML" and "MP") and "probability" (for "ML") values as attributes, providing confidences for internal nodes.
+</li><li>MODELS now includes all common time-reversible nucleotide models and 37 time-reversible amino acid models from the literature.  It also allows empirical (rather than optimized) state frequencies to be used (with "+F").  It allows for an additional insertion/deletion (gap) state (with "+Indels").
+</li><li>TreeLine() has an argument `quadrature=FALSE` to specify whether the Laguerre quadrature is used to calculate the discrete Gamma ("+G#") distribution of rates across sites.  The default is equal binning for equivalence with other tree building programs.
+</li><li>TreeLine() will perform ancestral state reconstruction if reconstruct=TRUE and also provide per site likelihoods (for method="ML") as attributes on each node.  For "MP" trees, ancestral states come from the most parsimonious state, whereas for all other tree types the ancestral state is derived from the (marginal) likelihoods at each node.
+</li><li>TreeLine() performs automatic model selection based on the provided model's `informationCriterion` specified by the user (either "AICc" by default, or "BIC").
+</li><li>TreeLine() automatically determines the optimal number of processors when processors is set to a value greater than 1.
+</li><li>TreeLine() supports SIMD when compiled for native architectures that support AVX2 and FMA3 (Intel and AMD chips since ~2013).
+</li><li>TreeLine() has a `maxTime` argument that will return a tree at the next available opportunity after the elapsed time.
+</li><li>TreeLine() returns trees with attributes() showing their score, model parameters, and other information.
+</li><li>There is a new vignette showing how to grow trees with TreeLine().
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.20</p>
+
+<ul><li>General changes</li>
+<ul><li>There is a new DetectRepeats() function that will detect tandem and/or interspersed repeats in a sequence.
+</li><li>FindSynteny() will allow the finding of syntenic regions between a genome and itself while blocking the trivial solution of exact matching.
+</li><li>Improvements to the speed of collapsing trees to multi-furcating in IdClusters().
+</li><li>MaskAlignment() now allows specification of whether to use a random (uniform) background rather than inferring the background from the input sequences when calculating entropy.
+</li></ul>
+
+<li>Non-coding RNA functionality</li>
+<ul><li>There is a new LearnNonCoding() function that will train a `NonCoding` model given a set of RNA sequences. This `NonCoding` model can be given to the new FindNonCoding() function along with a genome to find new instances of the RNA sequences.
+</li><li>New vignette named "The Double Life of RNA: Uncovering Non-Coding RNAs".
+</li><li>PredictDBN() now uses free energy predictions when calculating structure, improving accuracy when there is insufficient signal of compensatory mutations.
+</li></ul>
+
+<li>FindGenes improvements</li>
+<ul><li>FindGenes() now accepts an argument `includeGenes` to incorporate the output of FindNonCoding() into the protein coding gene calls.
+</li><li>FindGenes() now trains many codon models, rather than only a few, and uses them all to find genes.  This improves the accuracy and consistency of results.
+</li><li>FindGenes() no longer fails to correctly find protein coding genes in high-GC genomes.
+</li><li>FindGenes() now extracts the Shine-Delgarno motif automatically to accommodate genomes with a non-standard motif.
+</li><li>It is now possible to color genes by a property when plotting a Genes object using the `colorBy` argument.
+</li><li>Changes to "The Magic of Gene Calling" vignette to show how to incorporate non-coding RNAs and annotate genes.
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.18</p>
+
+<ul><li>General changes</li>
+<ul><li>AmplifyDNA() outputs the name/index of the amplified sequence with its predicted amplicons.
+</li><li>IdClusters() is simplified to be completely k-mer based so it is faster (and more approximate).
+</li><li>IdClusters() has a new `root` argument allowing specification of an outgroup sequence as the root.
+</li><li>New `deltaHrulesRNA` and `deltaSrulesRNA` objects for predicting RNA folding from free energies.
+</li><li>ReadDendrogram() now numbers tree labels in alphabetical order of their labels upon dendrogram import.
+</li></ul>
+
+<li>Gene calling functionality</li>
+<ul><li>New gene finder, FindGenes(), that outputs objects of class `Genes`.
+</li><li>New methods for `Genes` objects, including `[`, `plot`, and `print`.
+</li><li>New ExtractGenes() function for pulling the genes or proteins out of a genome.
+</li><li>New WriteGenes() function for exporting gene predictions in gbk or gff format.
+</li><li>New vignette entitled, "The Magic of Gene Finding".
+</li><li>New genome, that of <i>Chlamydia trachomatis</i>, included for examples.
+</li><li>New named set genes, belonging to the Planctobacteria phylum, included for examples.
+</li></ul>
+
+<li>IDTAXA improvements</li>
+<ul><li>Changes to IdTaxa() to make it faster and work better with amino acid sequences, including a `fullLength` argument to pre-filter classifications based on length.
+</li><li>Changes to LearnTaxa() to make it faster and automatically choose bigger values of K (k-mer length) by default.
+</li><li>AA_REDUCED includes 17 new reduced alphabets optimized for protein classification.
+</li><li>New section of the "Classifying Sequences" vignette to describe the functional classification of protein sequences.
+</li><li>Taxa objects can be subset by rank level and higher values of `threshold` than were used in IdTaxa().
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.12</p>
+
+<ul><li>General changes</li>
+<ul><li>AlignTranslation() now accepts multiple genetic codes.
+</li><li>BrowseSeqs() now has an example for how to color codons by amino acid.
+</li><li>PredictDBN() now has an example of how to plot RNA arc diagrams.
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.10</p>
+
+<ul><li>General changes</li>
+<ul><li>PredictDBN() has a new type of output ("evidence").
+</li><li>FindSynteny() default parameters are (re)optimized.
+</li><li>Includes the ability to plot pie charts of IdTaxa outputs with different "n" per group.  Genus and species names are now italicized.
+</li><li>New default parameters for TrimDNA() trained on Illumina sequences.
+</li></ul>
+</ul>
+
+<p class="c1">Version 2.8</p>
+
+<ul><li>General changes</li>
+<ul><li>New reduced amino acid alphabets included in AA_REDUCED.
+</li><li>FindSynteny() default parameters are (re)optimized.
+</li><li>New option of searching for additional RNA secondary structure with PredictDBN(..., type="search").
+</li><li>DistanceMatrix() and IdClusters() now can return/use (respectively) objects of class "dist" and unlimited size.
+</li><li>Speed and efficiency improvments to IdClusters().
+</li><li>plot.Taxa() now makes prettier plots of objects of class "Taxa" "Test".
+</li><li>Improvements to FormGroups() to better work with FindChimeras().
+</li></ul>
+</ul>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Gallery Example 2
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2sel">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Gallery - Example 2</p>
+
+Below is the <a href="http://www.r-project.org/">R</a> code to reproduce the example:<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; 
+&gt; <span class='comments'># read in sequences from a FASTA file</span>
+&gt; fas &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;IDH2.fas&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;DECIPHER&quot;</span>&#41;
+&gt; dna &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># simulate melting the DNA sequences</span>
+&gt; temps &lt;- <span class='functs'>seq</span>&#40;<span class='numbers'>80</span>, <span class='numbers'>95</span>, <span class='numbers'>0.1</span>&#41;
+&gt; melts &lt;- <span class='functs'>MeltDNA</span>&#40;<span class='functs'>subseq</span>&#40;dna,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start=<span class='numbers'>492</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end=<span class='numbers'>542</span>&#41;,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;derivative&quot;</span>,
++ &nbsp;&nbsp;&nbsp;temps=temps&#41;
+&gt; 
+&gt; <span class='comments'># plot the melt curves&#39; derivatives</span>
+&gt; <span class='functs'>matplot</span>&#40;x=temps,
++ &nbsp;&nbsp;&nbsp;y=melts,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Temperature &#40;\u00B0C&#41;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;-d&#40;\u03F4&#41;/dTemp&quot;</span>&#41;
+&gt; <span class='functs'>legend</span>&#40;<span class='chars'>&quot;topright&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='chars'>&quot;IDH2 common allele&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;R172K SNP allele&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;R172G SNP allele&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;R172M SNP allele&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;col=<span class='numbers'>1:4</span>,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>1:4</span>,
++ &nbsp;&nbsp;&nbsp;cex=<span class='numbers'>0.8</span>&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #1
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #1 - Introduction</p>
+
+R is an open source software environment for computing. It can be downloaded for free from <a href="https://www.r-project.org">r-project.org</a>. There are a number of graphical user interfaces for R, or it can be accessed from the command line. R scripts, such as the one below, are typically stored in plain text files with a &#39;.R&#39; extension.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"># this is a comment</span>
+&gt; <span class='functs'>print</span>&#40;<span class='chars'>&quot;Hello, World!&quot;</span>&#41;
+[1] &quot;Hello, World!&quot;
+&gt; 
+&gt; x &lt;- <span class='chars'>&quot;Hello, World!&quot;</span> <span class='comments'># `&lt;-` is left assignment</span>
+&gt; <span class='functs'>print</span>&#40;x&#41;
+[1] &quot;Hello, World!&quot;
+&gt; x <span class='comments'># equivalent to print&#40;x&#41;</span>
+[1] &quot;Hello, World!&quot;
+&gt; 
+&gt; <span class='chars'>&quot;Hello, World!&quot;</span> -&gt; x <span class='comments'># `-&gt;` is right assignment (rare&#41;</span>
+&gt; x
+[1] &quot;Hello, World!&quot;
+&gt; 
+&gt; x = <span class='chars'>&quot;Hello, World!&quot;</span> <span class='comments'># `=` is always left assignment</span>
+&gt; x
+[1] &quot;Hello, World!&quot;
+&gt; <span class='chars'>&quot;Hello, World!&quot;</span> = x <span class='comments'># R allows this left assignment!</span>
+&gt; 
+&gt; <span class='comments'># R contains many functions, such as `length`</span>
+&gt; <span class='functs'>length</span>&#40;x&#41; <span class='comments'># said &quot;length &#39;of&#39; x&quot;</span>
+[1] 1
+&gt; 
+&gt; x[<span class='numbers'>1</span>] <span class='comments'># same as above, since length 1</span>
+[1] &quot;Hello, World!&quot;
+&gt; x[<span class='numbers'>2</span>] <span class='comments'># NA since it does not exist</span>
+[1] NA
+&gt; 
+&gt; X &lt;- <span class='chars'>&quot;Good bye, world!&quot;</span>
+&gt; x <span class='comments'># R code is case sensitive</span>
+[1] &quot;Hello, World!&quot;
+&gt; X
+[1] &quot;Good bye, world!&quot;</span></pre>
+
+<br><br><a style="float:right;" href="RLesson2.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

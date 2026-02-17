@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Align Pairs
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1sub">Alignment<span class="right">&#9662;</span></a></li>
+<li><a href="AlignSequences.html" class="l2">Align Sequences</a></li>
+<li><a href="AlignTranslation.html" class="l2">Align Translation</a></li>
+<li><a href="AlignSynteny.html" class="l2">Align Synteny</a></li>
+<li><a href="AlignProfiles.html" class="l2">Align Profiles</a></li>
+<li><a href="AlignPairs.html" class="l2sel">Align Pairs</a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Align Pairs</p>
+
+This short example shows how to use DECIPHER for pairwise alignment, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2024) "Fast and Flexible Search for Homologous Biological Sequences with DECIPHER v3." <i>The R Journal</i>, <a href="">doi:in Press</a>.</p></div>
+
+For an in-depth tutorial on <i>AlignPairs</i>, see the &quot;Searching for Biological Research&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I align pairs of sequences?</p>
+
+The <i>AlignPairs</i> function takes as input pattern and subject sequences, as well as an optional data frame with indices of the sequence pairs to be aligned.
+
+To begin, it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file &#40;in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; <span class='comments'># change "DNA" to "RNA" or "AA" if necessary</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># look at some of the sequences &#40;optional&#41;</span>
+&gt; seqs
+DNAStringSet object of length 317:
+      width seq                         names               
+  [1]   819 ATGGCTTTAAAA...AAAAAAAGAAAA Rickettsia prowaz...
+  [2]   822 ATGGGAATACGT...AGAAGGAAAAAG Porphyromonas gin...
+  [3]   822 ATGGGAATACGT...AGAAGGAAAAAG Porphyromonas gin...
+  [4]   822 ATGGGAATACGT...AGAAGGAAAAAG Porphyromonas gin...
+  [5]   819 ATGGCTATCGTT...CGTCGTGGTAAA Pasteurella multo...
+  ...   ... ...
+[313]   819 ATGGCAATTGTT...CGCCGTACTAAA Pectobacterium at...
+[314]   822 ATGCCTATTCAA...CGTCGCGTCAAG Acinetobacter sp....
+[315]   864 ATGGGCATTCGC...GGTCGTCAGTCT Thermosynechococc...
+[316]   831 ATGGCACTGAAG...AAGCGGAAGAAG Bradyrhizobium ja...
+[317]   840 ATGGGCATTCGC...TCCGGGCGAGGT Gloeobacter viola...
+&gt; 
+&gt; <span class='comments'># specify which sequence pairs to align</span>
+&gt; Pattern &lt;- <span class='numbers'>1</span> <span class='comments'># align first to the rest</span>
+&gt; Subject &lt;- <span class='functs'>seq_along</span>&#40;seqs&#41;
+&gt; pairs &lt;- <span class='functs'>data.frame</span>&#40;Pattern, Subject&#41;
+&gt; 
+&gt; <span class='comments'># view the first few pairs to be aligned</span>
+&gt; <span class='functs'>head</span>&#40;pairs&#41;
+  Pattern Subject
+1       1       1
+2       1       2
+3       1       3
+4       1       4
+5       1       5
+6       1       6
+&gt; 
+&gt; <span class='comments'># use the same set of sequences for pattern and subject</span>
+&gt; aligned &lt;- <span class='functs'>AlignPairs</span>&#40;pattern=seqs,
++ subject=seqs,
++ pairs=pairs,
++ type=<span class='chars'>&quot;both&quot;</span>,
++ processors=NULL&#41;
+  |==================================================| 100%
+<br>
+Time difference of 0.09 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the output metadata</span>
+&gt; <span class='functs'>head</span>&#40;aligned[[<span class='numbers'>1</span>]]&#41;
+  Pattern PatternStart PatternEnd Subject SubjectStart
+1       1            1        819       1            1
+2       1            1        819       2            1
+3       1            1        819       3            1
+4       1            1        819       4            1
+5       1            1        819       5            1
+6       1            1        819       6            1
+  SubjectEnd Matches Mismatches AlignmentLength  Score
+1        819     819          0             819 1638.0
+2        822     442        374             822  473.2
+3        822     443        373             822  476.2
+4        822     442        374             822  473.2
+5        819     487        329             819  626.6
+6        819     487        329             819  626.6
+  PatternGapPosition PatternGapLength SubjectGapPosition
+1                                                       
+2           777, 820             3, 3                728
+3           777, 820             3, 3                728
+4           777, 820             3, 3                728
+5                820                3                723
+6                820                3                723
+  SubjectGapLength
+1                 
+2                3
+3                3
+4                3
+5                3
+6                3
+&gt; 
+&gt; <span class='comments'># view the aligned patterns</span>
+&gt; <span class='functs'>head</span>&#40;aligned[[<span class='numbers'>2</span>]]&#41;
+DNAStringSet object of length 6:
+    width seq                           names               
+[1]   819 ATGGCTTTAAAAA...AAAAAAAAGAAAA Rickettsia prowaz...
+[2]   825 ATGGCTTTAAAAA...AAAAAGAAAA--- Rickettsia prowaz...
+[3]   825 ATGGCTTTAAAAA...AAAAAGAAAA--- Rickettsia prowaz...
+[4]   825 ATGGCTTTAAAAA...AAAAAGAAAA--- Rickettsia prowaz...
+[5]   822 ATGGCTTTAAAAA...AAAAAGAAAA--- Rickettsia prowaz...
+[6]   822 ATGGCTTTAAAAA...AAAAAGAAAA--- Rickettsia prowaz...
+&gt; 
+&gt; <span class='comments'># view the aligned subjects</span>
+&gt; <span class='functs'>head</span>&#40;aligned[[<span class='numbers'>3</span>]]&#41;
+DNAStringSet object of length 6:
+    width seq                           names               
+[1]   819 ATGGCTTTAAAAA...AAAAAAAAGAAAA Rickettsia prowaz...
+[2]   825 ATGGGAATACGTA...GAGAAGGAAAAAG Porphyromonas gin...
+[3]   825 ATGGGAATACGTA...GAGAAGGAAAAAG Porphyromonas gin...
+[4]   825 ATGGGAATACGTA...GAGAAGGAAAAAG Porphyromonas gin...
+[5]   822 ATGGCTATCGTTA...TCGTCGTGGTAAA Pasteurella multo...
+[6]   822 ATGGCTATCGTTA...TCGTCGTGGTAAA Pasteurella multo...
+&gt; 
+&gt; <span class='comments'># view the first aligned pair in a browser &#40;optional&#41;</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;<span class='functs'>c</span>&#40;aligned[[<span class='numbers'>2</span>]][<span class='numbers'>1</span>], aligned[[<span class='numbers'>3</span>]][<span class='numbers'>1</span>]&#41;&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Detect Repeats
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1sub">Homology<span class="right">&#9662;</span></a></li>
+<li><a href="Clusterize.html" class="l2">Clusterize</a></li>
+<li><a href="DetectRepeats.html" class="l2sel">Detect Repeats</a></li>
+<li><a href="FindChimeras.html" class="l2">Find Chimeras</a></li>
+<li><a href="SequenceSearch.html" class="l2">Sequence Search</a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Detect Repeats</p>
+
+The DetectRepeats function can find tandem or interspersed repeats in gene, protein, or genome sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">Cho, S.-T. & Wright, E. S. (2025) "Accurate detection of tandem repeats exposes ubiquitous reuse of biological sequences." <i>Nucleic Acids Research</i>, <a href="http://doi.org/10.1093/nar/gkaf866">doi:10.1093/nar/gkaf866</a>.</p></div>
+
+For an in-depth tutorial on DetectRepeats, see the &quot;Detecting Obscure Tandem Repeats in Sequences&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I detect tandem repeats?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, upload sequences and run DetectRepeats to identify any tandem repeats.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>options</span>&#40;width=<span class='numbers'>50</span>&#41;
+&gt; 
+&gt; <span class='comments'># load the DECIPHER library in R</span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file &#40;in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; <span class='comments'># change "DNA" to "RNA" or "AA" as needed</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># look at some of the sequences &#40;optional&#41;</span>
+&gt; seqs
+DNAStringSet object of length 11:
+      width seq               names               
+ [1] 107976 ATGACAA...CATTTAA titin isoform IC
+ [2]  26778 ATGGATC...GCGCTGA obscurin isoform c
+ [3]  16908 ATGATTT...ATACTAA hemicentin-1 prec...
+ [4]   5847 ATGGCGC...AACCTAA receptor-type tyr...
+ [5]   5745 ATGGGGG...AGAGTGA myosin light chai...
+ ...    ... ...
+ [7]   3825 ATGCCTG...TCAGTGA myosin-binding pr...
+ [8]   1497 ATGTTTA...ACTTTAA myotilin isoform a
+ [9]   1263 ATGCTCA...CCTCTGA mannose-1-phospha...
+[10]   1101 ATGGTGC...TATCTAA inhibin alpha cha...
+[11]    717 ATGTCTA...GGCCTGA SPEG neighbor pro...
+&gt; 
+&gt; <span class='comments'># detect tandem repeats</span>
+&gt; TRs &lt;- <span class='functs'>DetectRepeats</span>&#40;seqs&#41;
+  |========================================| 100%
+<br>
+Time difference of 68.85 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the first tandem repeats</span>
+&gt; <span class='functs'>head</span>&#40;TRs&#41;
+  Index Begin   End         Left        Right
+1     1   844   972 844, 865.... 864, 897....
+2     1  1287  2114 1287, 14.... 1436, 15....
+3     1  4232  4332 4232, 42.... 4246, 42....
+4     1  8390  9719 8390, 86.... 8650, 89....
+5     1 16194 17591 16194, 1.... 16472, 1....
+6     1 24926 28615 24926, 2.... 25213, 2....
+     Score
+1 21.46971
+2 81.77987
+3 39.66848
+4 33.95958
+5 25.50887
+6 37.54636
+&gt; 
+&gt; <span class='comments'># view the last tandem repeats</span>
+&gt; <span class='functs'>tail</span>&#40;TRs&#41;
+   Index Begin   End         Left        Right
+19     2 24506 24589 24506, 24548 24547, 24589
+20     3  5500 12591 5500, 57.... 5781, 60....
+21     3 13581 14606 13581, 1.... 13751, 1....
+22     3 15270 15644 15270, 1.... 15389, 1....
+23     5  2677  2844   2677, 2761   2760, 2844
+24     5  3037  3234 3037, 30.... 3072, 31....
+       Score
+19  10.95497
+20 250.98565
+21  82.65828
+22  16.39137
+23  15.51914
+24  45.80374
+&gt; 
+&gt; <span class='comments'># see the help page for more examples</span>
+&gt; ?DetectRepeats</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

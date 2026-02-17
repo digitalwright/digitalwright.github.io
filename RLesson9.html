@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #9
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #9 - Plotting curves and lines</p>
+
+Plotting of points, lines, and curves is illustrated in this lesson. First <a href="http://en.wikipedia.org/wiki/Spirograph">spirographs</a> are the generated for plotting, followed by the plotting of built-in datasets.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># Plotting spirographs</span></span>
+&gt; t &lt;- <span class='numbers'>1</span>:<span class='numbers'>1000</span>
+&gt; k &lt;- <span class='numbers'>0.1</span>
+&gt; l &lt;- <span class='numbers'>5</span>
+&gt; x1 &lt;- &#40;<span class='numbers'>1</span> - k&#41;*<span class='functs'>cos</span>&#40;t&#41; + l*k*<span class='functs'>cos</span>&#40;t*&#40;<span class='numbers'>1</span> - k&#41;/k&#41;
+&gt; y1 &lt;- &#40;<span class='numbers'>1</span> - k&#41;*<span class='functs'>sin</span>&#40;t&#41; - l*k*<span class='functs'>sin</span>&#40;t*&#40;<span class='numbers'>1</span> - k&#41;/k&#41;
+&gt; k &lt;- <span class='numbers'>4</span>
+&gt; l &lt;- <span class='numbers'>1</span>
+&gt; x2 &lt;- &#40;<span class='numbers'>1</span> - k&#41;*<span class='functs'>cos</span>&#40;t&#41; + l*k*<span class='functs'>cos</span>&#40;t*&#40;<span class='numbers'>1</span> - k&#41;/k&#41;
+&gt; y2 &lt;- &#40;<span class='numbers'>1</span> - k&#41;*<span class='functs'>sin</span>&#40;t&#41; - l*k*<span class='functs'>sin</span>&#40;t*&#40;<span class='numbers'>1</span> - k&#41;/k&#41;
+&gt; 
+&gt; <span class='comments'># plotting points</span>
+&gt; <span class='functs'>plot</span>&#40;x1, y1&#41; <span class='comments'># basic x-y scatterplot</span>
+&gt; <span class='functs'>plot</span>&#40;x1, y1, pch=<span class='numbers'>1</span>:<span class='numbers'>25</span>&#41; <span class='comments'># type of point</span>
+&gt; ?points <span class='comments'># options for different symbols</span>
+&gt; <span class='functs'>plot</span>(x1, y1, pch=<span class='numbers'>1</span>:<span class='numbers'>25</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Y axis label&quot;</span>, xlab=<span class='chars'>&quot;X axis label&quot;</span>,
++ &nbsp;&nbsp;&nbsp;main=<span class='chars'>&quot;Title of plot&quot;</span>)
+&gt; 
+&gt; <span class='comments'># adding color, text, and lines</span>
+&gt; <span class='functs'>plot</span>(x1, y1,
++ &nbsp;&nbsp;&nbsp;asp=<span class='numbers'>2</span>, <span class='comments'># aspect ratio</span>
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>rainbow</span>&#40;<span class='numbers'>100</span>, s=<span class='numbers'>0.8</span>, v=<span class='numbers'>0.8</span>&#41;,
++ &nbsp;&nbsp;&nbsp;cex=<span class='numbers'>0.5</span>) <span class='comments'># point size</span>
+&gt; <span class='functs'>abline</span>&#40;a=<span class='numbers'>0</span>, b=<span class='numbers'>1</span>&#41; <span class='comments'># line y=x</span>
+&gt; <span class='functs'>text</span>&#40;<span class='numbers'>2.5</span>, <span class='numbers'>1</span>, <span class='chars'>&quot;Some text.&quot;</span>&#41; <span class='comments'># text in the plot</span>
+&gt; <span class='functs'>mtext</span>&#40;<span class='chars'>&quot;Some margin text&quot;</span>, padj=<span class='numbers'>-1</span>&#41; <span class='comments'># text in the margin</span>
+&gt; <span class='functs'>axis</span>&#40;<span class='numbers'>4</span>, <span class='numbers'>-1</span>:<span class='numbers'>1</span>, col=<span class='chars'>&quot;red&quot;</span>, col.axis=<span class='chars'>&quot;blue&quot;</span>&#41; <span class='comments'># right axis</span>
+&gt; 
+&gt; <span class='comments'># plotting lines &#40;type="l"&#41;</span>
+&gt; <span class='comments'># points &#40;p&#41;, lines &#40;l&#41;, both &#40;b&#41;</span>
+&gt; <span class='functs'>plot</span>(y2, x2, type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;col=&#39;red2&#39;,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;&quot;</span>, ylab=<span class='chars'>&quot;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xaxt=<span class='chars'>&quot;n&quot;</span>, yaxt=<span class='chars'>&quot;n&quot;</span>, <span class='comments'># no axes</span>
++ &nbsp;&nbsp;&nbsp;bty=<span class='chars'>&quot;n&quot;</span>, <span class='comments'># no boundary box</span>
++ &nbsp;&nbsp;&nbsp;main=&quot;Happy Valentine&#39;s Day!&quot;)
+&gt; 
+&gt; <span class='comments'># specifying the axes' ranges</span>
+&gt; <span class='functs'>plot</span>(x1 + <span class='numbers'>1</span>, y1, type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;gray&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlim=<span class='functs'>range</span>&#40;x1, x2&#41;, ylim=<span class='functs'>range</span>&#40;y1, y2&#41;,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;X position&quot;</span>, ylab=<span class='chars'>&quot;Y position&quot;</span>)
+&gt; <span class='comments'># add points onto an existing plot</span>
+&gt; <span class='functs'>points</span>(x2, y2, type=<span class='chars'>&quot;l&quot;</span>,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>2</span>, <span class='comments'># line type</span>
++ &nbsp;&nbsp;&nbsp;lwd=<span class='numbers'>2</span>, <span class='comments'># line width</span>
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;darkgreen&quot;</span>)
+&gt; <span class='functs'>arrows</span>&#40;<span class='numbers'>-1</span>, <span class='numbers'>0</span>, <span class='numbers'>1</span>, <span class='numbers'>0</span>&#41; <span class='comments'># add arrows</span>
+&gt; <span class='functs'>legend</span>&#40;<span class='chars'>&quot;topright&quot;</span>, <span class='comments'># placement (or x, y position&#41;</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;&quot;equation #1&quot;, &quot;equation #2&quot;&#41;,
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>c</span>&#40;<span class='chars'>&quot;gray&quot;</span>, <span class='chars'>&quot;darkgreen&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>1</span>:<span class='numbers'>2</span>, lwd=<span class='numbers'>1</span>:<span class='numbers'>2</span>, bty=<span class='chars'>&quot;n&quot;</span>)</span></pre>
+
+<div class="breakout">Next, it is necessary to load the famous iris dataset, which contains information about three flower types. The data is stored in a data.frame, with character columns being stored as factors. Factors are a more efficient representation of repetitive character data, with 1 = "Level1", 2="Level2", etc. When initializing a data.frame, it is possible to prevent characters from being converted to factors by setting the argument stringsAsFactors to FALSE.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># see a list of all built-in datasets:</span></span>
+&gt; <span class='functs'>data</span>&#40;package = <span class='functs'>.packages</span>&#40;all.available = TRUE&#41;&#41;
+&gt; <span class='comments'># iris is a famous dataset available in R</span>
+&gt; <span class='functs'>data</span>&#40;iris&#41;
+&gt; <span class='functs'>typeof</span>&#40;iris&#41; <span class='comments'># data.frame</span>
+[1] "list"
+&gt; ?iris
+&gt; <span class='functs'>head</span>&#40;iris&#41;
+  Sepal.Length Sepal.Width Petal.Length Petal.Width
+1          5.1         3.5          1.4         0.2
+2          4.9         3.0          1.4         0.2
+3          4.7         3.2          1.3         0.2
+4          4.6         3.1          1.5         0.2
+5          5.0         3.6          1.4         0.2
+6          5.4         3.9          1.7         0.4
+  Species
+1  setosa
+2  setosa
+3  setosa
+4  setosa
+5  setosa
+6  setosa
+&gt; <span class='functs'>typeof</span>&#40;iris$Species&#41; <span class='comments'># integer</span>
+[1] "integer"
+&gt; 
+&gt; <span class='comments'># recall that data.frames are type list</span>
+&gt; <span class='comments'># so they can be accessed by name in two ways:</span>
+&gt; <span class='functs'>head</span>&#40;iris[, <span class='chars'>&quot;Species&quot;</span>]&#41;
+[1] setosa setosa setosa setosa setosa setosa
+Levels: setosa versicolor virginica
+&gt; <span class='functs'>head</span>&#40;iris$Species&#41;
+[1] setosa setosa setosa setosa setosa setosa
+Levels: setosa versicolor virginica
+&gt; <span class='functs'>all</span>&#40;iris[, <span class='chars'>&quot;Species&quot;</span>]==iris$Species&#41;
+[1] TRUE
+&gt; u &lt;- <span class='functs'>unique</span>&#40;iris[, <span class='chars'>&quot;Species&quot;</span>]&#41;
+&gt; u
+[1] setosa     versicolor virginica 
+Levels: setosa versicolor virginica
+&gt; <span class='functs'>as.character</span>&#40;u&#41; <span class='comments'># convert factor to character</span>
+[1] "setosa"     "versicolor" "virginica" 
+&gt; 
+&gt; <span class='comments'># using the match function to specify colors</span>
+&gt; <span class='comments'># match returns the first index of x in table</span>
+&gt; s &lt;- <span class='functs'>sample</span>&#40;<span class='numbers'>10</span>&#41;
+&gt; s
+ [1]  4 10  9  5  3  7  6  8  2  1
+&gt; <span class='functs'>match</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>3</span>, s&#41;
+[1] 10  9  5
+&gt; m &lt;- <span class='functs'>match</span>(iris[, <span class='chars'>&quot;Species&quot;</span>], <span class='comments'># each row</span>
++ &nbsp;&nbsp;&nbsp;u) <span class='comments'># the three unique species names</span>
+&gt; cols &lt;- <span class='functs'>c</span>&#40;<span class='chars'>&quot;green&quot;</span>, <span class='chars'>&quot;blue&quot;</span>, <span class='chars'>&quot;red&quot;</span>&#41; <span class='comments'># color vector</span>
+&gt; <span class='functs'>plot</span>(iris[, <span class='chars'>&quot;Petal.Length&quot;</span>],
++ &nbsp;&nbsp;&nbsp;iris[, <span class='chars'>&quot;Petal.Width&quot;</span>],
++ &nbsp;&nbsp;&nbsp;col=cols[m],
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Petal Length &#40;cm&#41;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Petal Width &#40;cm&#41;&quot;</span>)</span></pre>
+
+<div class="breakout">Trendlines can be fitted by specifying a a formula.  For example, the formula for y = m*x + b is y ~ x, and the formula for y = m*x is y ~ x + 0.</div>
+
+<pre><span class="codebox"><span class="line">l &lt;- <span class='functs'>lm</span>(Petal.Width~Petal.Length,</span>
++ &nbsp;&nbsp;&nbsp;data=iris)
+&gt; l
+<br>
+Call:
+lm(formula = Petal.Width ~ Petal.Length, data = iris)
+<br>
+Coefficients:
+ (Intercept)  Petal.Length  
+     -0.3631        0.4158  
+<br>
+&gt; <span class='functs'>summary</span>&#40;l&#41;
+<br>
+Call:
+lm(formula = Petal.Width ~ Petal.Length, data = iris)
+<br>
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.56515 -0.12358 -0.01898  0.13288  0.64272 
+<br>
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)  -0.363076   0.039762  -9.131  4.7e-16
+Petal.Length  0.415755   0.009582  43.387  < 2e-16
+                
+(Intercept)  ***
+Petal.Length ***
+---
+Signif. codes:  
+0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+<br>
+Residual standard error: 0.2065 on 148 degrees of freedom
+Multiple R-squared:  0.9271,&nbsp;&nbsp;&nbsp;Adjusted R-squared:  0.9266 
+F-statistic:  1882 on 1 and 148 DF,  p-value: < 2.2e-16
+<br>
+&gt; <span class='functs'>summary</span>&#40;l&#41;$r.squared
+[1] 0.9271098
+&gt; <span class='functs'>coef</span>&#40;l&#41;
+ (Intercept) Petal.Length 
+  -0.3630755    0.4157554 
+&gt; <span class='functs'>abline</span>&#40;l&#41;
+&gt; 
+&gt; <span class='comments'># LOcally Weighted RegrESSion &#40;LOWESS&#41;</span>
+&gt; low &lt;- <span class='functs'>lowess</span>&#40;iris[, <span class='chars'>&quot;Petal.Length&quot;</span>], iris[, <span class='chars'>&quot;Petal.Width&quot;</span>]&#41;
+&gt; <span class='functs'>str</span>&#40;low&#41;
+List of 2
+ $ x: num [1:150] 1 1.1 1.2 1.2 1.3 1.3 1.3 1.3 1.3 1.3 ...
+ $ y: num [1:150] 0.0689 0.1075 0.1462 0.1462 0.185 ...
+&gt; <span class='functs'>lines</span>&#40;low, col=<span class='chars'>&quot;orange&quot;</span>&#41;
+&gt; <span class='comments'># a more complicated legend with points and lines</span>
+&gt; <span class='functs'>legend</span>&#40;<span class='chars'>&quot;topleft&quot;</span>, <span class='comments'># placement (or x, y position&#41;</span>
++ &nbsp;&nbsp;&nbsp;legend=<span class='functs'>c</span>&#40;<span class='functs'>as.character</span>&#40;u&#41;, <span class='chars'>&quot;Regression&quot;</span>, <span class='chars'>&quot;LOWESS&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;pch=<span class='functs'>c</span>&#40;<span class='functs'>rep</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>3</span>&#41;, <span class='functs'>rep</span>&#40;NA, <span class='numbers'>2</span>&#41;&#41;, <span class='comments'># point type</span>
++ &nbsp;&nbsp;&nbsp;lty=<span class='functs'>c</span>&#40;<span class='functs'>rep</span>&#40;NA, <span class='numbers'>3</span>&#41;, <span class='functs'>rep</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;&#41;, <span class='comments'># line type</span>
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>c</span>&#40;cols, <span class='chars'>&quot;black&quot;</span>, <span class='chars'>&quot;orange&quot;</span>)&#41; <span class='comments'># colors</span>
+&gt; 
+&gt; <span class='comments'># scatterplot matrix</span>
+&gt; <span class='functs'>pairs</span>(~Petal.Length+Petal.Width+Sepal.Length+Sepal.Width,
++ &nbsp;&nbsp;&nbsp;data=iris,
++ &nbsp;&nbsp;&nbsp;col=cols[m])</span></pre>
+
+<div class="breakout">For the next session, it is necessary to download a dataset in tab-delimited format from <a href="data/RLessons/Stocks2014.txt">here</a>. This dataset contains the stock prices for several stocks during the year 2014. To figure out a filepath, drag the file into R and copy the path.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># set the correct path below</span></span>
+&gt; r &lt;- <span class='functs'>read.table</span>(<span class='chars'>&quot;&lt;&lt;PATH TO Stocks2014.txt&gt;&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;\t&quot;</span>, <span class='comments'># tab delimited</span>
++ &nbsp;&nbsp;&nbsp;header=TRUE, <span class='comments'># first line is column names</span>
++ &nbsp;&nbsp;&nbsp;stringsAsFactors=FALSE)
+&gt; <span class='functs'>head</span>&#40;r&#41;
+       Date   Open   High    Low  Close   Volume
+1 30-Dec-14 113.64 113.92 112.11 112.52 29881477
+2 29-Dec-14 113.79 114.77 113.70 113.91 27598920
+3 26-Dec-14 112.10 114.52 112.01 113.99 33720951
+4 24-Dec-14 112.58 112.71 112.01 112.01 14479611
+5 23-Dec-14 113.23 113.33 112.46 112.54 26028419
+6 22-Dec-14 112.16 113.49 111.97 112.94 45167549
+  Ticker
+1   AAPL
+2   AAPL
+3   AAPL
+4   AAPL
+5   AAPL
+6   AAPL
+&gt; <span class='functs'>typeof</span>&#40;r&#41;
+[1] "list"
+&gt; <span class='functs'>class</span>&#40;r&#41;
+[1] "data.frame"
+&gt; t &lt;- <span class='functs'>unique</span>&#40;r$Ticker&#41;
+&gt; d &lt;- <span class='functs'>unique</span>&#40;r$Date&#41;
+&gt; s &lt;- <span class='functs'>rev</span>&#40;<span class='functs'>seq_along</span>&#40;d&#41;&#41; <span class='comments'># reverse order</span>
+&gt; Day &lt;- s[<span class='functs'>match</span>&#40;r$Date, d&#41;]
+&gt; r &lt;- <span class='functs'>cbind</span>&#40;r, TradingDay=Day&#41;
+&gt; <span class='functs'>head</span>&#40;r&#41;
+       Date   Open   High    Low  Close   Volume
+1 30-Dec-14 113.64 113.92 112.11 112.52 29881477
+2 29-Dec-14 113.79 114.77 113.70 113.91 27598920
+3 26-Dec-14 112.10 114.52 112.01 113.99 33720951
+4 24-Dec-14 112.58 112.71 112.01 112.01 14479611
+5 23-Dec-14 113.23 113.33 112.46 112.54 26028419
+6 22-Dec-14 112.16 113.49 111.97 112.94 45167549
+  Ticker TradingDay
+1   AAPL        251
+2   AAPL        250
+3   AAPL        249
+4   AAPL        248
+5   AAPL        247
+6   AAPL        246
+&gt; <span class='functs'>plot</span>(Close~TradingDay,
++ &nbsp;&nbsp;&nbsp;data=r,
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>match</span>&#40;r$Ticker, t&#41;,
++ &nbsp;&nbsp;&nbsp;cex=<span class='numbers'>0.3</span>, log=<span class='chars'>&quot;y&quot;</span>)
+&gt; <span class='functs'>legend</span>&#40;x=<span class='numbers'>-10</span>, y=<span class='functs'>max</span>(r$Close&#41;*<span class='numbers'>1.5</span>,
++ &nbsp;&nbsp;&nbsp;legend=t, col=<span class='functs'>seq_along</span>&#40;t&#41;,
++ &nbsp;&nbsp;&nbsp;ncol=<span class='functs'>length</span>&#40;t&#41;, <span class='comments'># number of columns</span>
++ &nbsp;&nbsp;&nbsp;pch=<span class='numbers'>1</span>, cex=<span class='numbers'>0.8</span>, bty=<span class='chars'>&quot;n&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xpd=TRUE) <span class='comments'># do not crop outside plot</span></span></pre>
+
+<br><br><a style="float:left;" href="RLesson8.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson10.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

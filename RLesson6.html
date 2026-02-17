@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #6
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #6 - Functions and conditionals</p>
+
+This lesson describes the use of conditionals and functions. Conditionals are a way of making choices based on the value of a variable.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line">cond1 &lt;- cond2 &lt;- F</span>
+&gt; if (cond1) {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># do this if cond1</span>
++ } else if (cond2) {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># do this if !cond1 && cond2</span>
++ } else {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># do this if !&#40;cond1 || cond2&#41;</span>
++ }
+NULL
+&gt; 
+&gt; x &lt;- <span class='numbers'>2</span>
+&gt; if (x &gt;= <span class='numbers'>0</span>) {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;x&#41;
++ } else {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;-x&#41;
++ }
+[1] 2
+&gt; 
+&gt; <span class='comments'># note that the condition must be length 1</span>
+&gt; <span class='comments'># otherwise a warning will be given</span>
+&gt; y &lt;- <span class='functs'>c</span>&#40;<span class='numbers'>5</span>, <span class='numbers'>-5</span>&#41;
+&gt; if (y &gt;= <span class='numbers'>0</span>) {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;y&#41;
++ } else {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;-y&#41;
++ }
+[1]  5 -5
+Warning message:
+In if (y >= 0) { :
+  the condition has length > 1 and only the first element will be used
+&gt; <span class='comments'># this is the main use of && and ||, because</span>
+&gt; <span class='comments'># they only use the first pair of elements</span></pre></span>
+
+<div class="breakout">The ifelse function is a vectorized version of the conditional, meaning that it takes a vector of logicals as input, and returns a vector as output. Note that ifelse is a function, not a statement - it is different than the if {} else {} described above.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>ifelse</span>&#40;y &gt;= <span class='numbers'>0</span>, y, -y&#41;</span>
+[1] 5 5
+&gt; 
+&gt; <span class='comments'># Example:  several ways to compute GC-content:</span>
+&gt; <span class='comments'># GC content is the fraction of G's and C's</span>
+&gt; <span class='comments'># in a DNA sequence (A, C, G, T)</span>
+&gt; s &lt;- <span class='functs'>sample</span>&#40;<span class='functs'>c</span>(<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;C&quot;</span>, <span class='chars'>&quot;G&quot;</span>, <span class='chars'>&quot;T&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;size=<span class='numbers'>1000</span>,
++ &nbsp;&nbsp;&nbsp;replace=TRUE)
+&gt; <span class='comments'># using ifelse:</span>
+&gt; GC &lt;- <span class='functs'>ifelse</span>&#40;s==<span class='chars'>&quot;G&quot;</span> | s==<span class='chars'>&quot;C&quot;</span>, <span class='numbers'>1</span>, <span class='numbers'>0</span>&#41;
+&gt; GCcontent &lt;- <span class='functs'>sum</span>&#40;GC&#41;/<span class='functs'>length</span>&#40;s&#41;
+&gt; <span class='comments'># using which:</span>
+&gt; GCcontent &lt;- <span class='functs'>length</span>&#40;<span class='functs'>which</span>&#40;s==<span class='chars'>&quot;G&quot;</span> | s==<span class='chars'>&quot;C&quot;</span>&#41;&#41;/<span class='functs'>length</span>&#40;s&#41;
+&gt; <span class='comments'># direct sum:</span>
+&gt; GCcontent &lt;- <span class='functs'>sum</span>&#40;s==<span class='chars'>&quot;G&quot;</span> | s==<span class='chars'>&quot;C&quot;</span>&#41;/<span class='functs'>length</span>&#40;s&#41;
+&gt; <span class='comments'># display the result</span>
+&gt; <span class='functs'>cat</span>&#40;GCcontent*<span class='numbers'>100</span>, <span class='chars'>&quot;% GC-content&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
+50% GC-content</span></pre>
+
+<div class="breakout">Functions are a way of splitting up the program into smaller units. Each function performs a specific task, which allows this task to be reused without repeating code. Note that functions are very common: print, ifelse, etc. are all functions.</div>
+
+<pre><span class="codebox"><span class="line">f1 &lt;- <span class='functs'>function</span>&#40;&#41; {} <span class='comments'># basic function constructor</span></span>
+&gt; <span class='functs'>f1</span>&#40;&#41; <span class='comments'># calling this function does nothing</span>
+NULL
+&gt; <span class='comments'># functions typically have arguments and return something</span>
+&gt; f2 &lt;- <span class='functs'>function</span>&#40;z&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;z&#41;
++ }
+&gt; <span class='functs'>f2</span>&#40;<span class='numbers'>5L</span>&#41;
+[1] 5
+&gt; f2 &lt;- <span class='functs'>function</span>&#40;z&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>invisible</span>&#40;z&#41; <span class='comments'># do not print the returned value</span>
++ }
+&gt; <span class='functs'>f2</span>&#40;<span class='numbers'>5L</span>&#41;
+&gt; make_pos &lt;- <span class='functs'>function</span>&#40;num&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>ifelse</span>(num &gt;= <span class='numbers'>0</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-num)
++ } <span class='comments'># the last result is returned automatically</span>
+&gt; <span class='functs'>make_pos</span>&#40;y&#41; <span class='comments'># this is a &quot;vectorized&quot; function</span>
+[1] 5 5
+&gt; <span class='functs'>abs</span>&#40;y&#41; <span class='comments'># a built-in way of doing the same thing</span>
+[1] 5 5</span></pre>
+
+<div class="breakout">Functions can accept multiple inputs (arguments), which can be supplied with or without defaults. When using a function, the input parameters are matched to arguments in this order of precedence:  (1) exact matching on argument names, (2) inexact matching on argument names, (3) positional matching.</div>
+
+<pre><span class="codebox"><span class="line">match_sign &lt;- <span class='functs'>function</span>&#40;num, sign=<span class='numbers'>1</span>&#41; {
++ &nbsp;&nbsp;&nbsp;if (sign &gt;= <span class='numbers'>0</span>) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>ifelse</span>(num &gt;= <span class='numbers'>0</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-num)
++ &nbsp;&nbsp;&nbsp;} else { <span class='comments'># sign &lt; 0</span>
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>ifelse</span>(num &gt;= <span class='numbers'>0</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-num,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num)
++ &nbsp;&nbsp;&nbsp;}
++ }</span>
+&gt; <span class='functs'>match_sign</span>&#40;y&#41;
+[1] 5 5
+&gt; <span class='functs'>match_sign</span>&#40;y, sign=<span class='numbers'>-1</span>&#41;
+[1] -5 -5
+&gt; <span class='functs'>match_sign</span>&#40;y, <span class='numbers'>-1</span>&#41;
+[1] -5 -5</span></pre>
+
+<div class="breakout">Functions have local scoping, meaning whatever happens inside the function stays inside the function. The exception is when the global assignment operator `<<-` is used, which will assign the object both inside and outside the function.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># what happens in Function, stays in Function</span></span>
+&gt; f3 &lt;- <span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;x &lt;- <span class='numbers'>5</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;x&#41;
++ }
+&gt; <span class='functs'>print</span>&#40;x&#41;
+[1] 2
+&gt; <span class='functs'>f3</span>&#40;y&#41;
+[1] 5
+&gt; <span class='functs'>print</span>&#40;x&#41; <span class='comments'># x did not change outside the function!</span>
+[1] 2
+&gt; 
+&gt; f4 &lt;- <span class='functs'>function</span>&#40;z&#41; {
++ &nbsp;&nbsp;&nbsp;if (<span class='functs'>exists</span>&#40;<span class='chars'>&quot;x&quot;</span>)&#41;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>print</span>&#40;<span class='chars'>&quot;overwritting x globally!&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;x &lt;&lt;- z <span class='comments'># global assignment operator</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;x&#41;
++ }
+&gt; <span class='functs'>print</span>&#40;x&#41;
+[1] 2
+&gt; <span class='functs'>f4</span>&#40;<span class='numbers'>0</span>&#41;
+[1] "overwritting x globally!"
+[1] 0
+&gt; <span class='functs'>print</span>&#40;x&#41; <span class='comments'># now x is changed outside the function</span>
+[1] 0
+&gt; <span class='functs'>print</span>&#40;z&#41; <span class='comments'># there is no z outside the function</span>
+Error: object 'z' not found
+&gt; <span class='comments'># even though z was initialized inside the function</span></pre></span>
+
+<div class="breakout"> Since functions can be given any input by the user, it is pertinent to check that the arguments are as expected. This error checking can be performed in a variety of different ways, as illustrated below:</div>
+
+<pre><span class="codebox"><span class="line">f5 &lt;- <span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;if (!<span class='functs'>is.numeric</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>stop</span>&#40;<span class='chars'>&quot;x is not numeric&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;}
++ &nbsp;&nbsp;&nbsp;if (!<span class='functs'>is.integer</span>&#40;x)&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>warning</span>&#40;<span class='chars'>&quot;coercing x to integer&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;}
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;<span class='functs'>as.integer</span>&#40;x&#41;&#41;
++ }</span>
+&gt; <span class='functs'>f5</span>&#40;<span class='numbers'>5L</span>&#41;
+[1] 5
+&gt; <span class='functs'>f5</span>&#40;<span class='numbers'>5</span>&#41;
+[1] 5
+Warning message:
+In f5(5) : coercing x to integer
+&gt; <span class='functs'>f5</span>&#40;<span class='chars'>&quot;5&quot;</span>&#41;
+Error in f5("5") : x is not numeric
+&gt; 
+&gt; <span class='comments'># stopifnot - automatic generic error messages</span>
+&gt; f6 &lt;- <span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>is.logical</span>(x&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!<span class='functs'>is.na</span>&#40;x)&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;x&#41;
++ }
+&gt; <span class='functs'>f6</span>&#40;FALSE&#41;
+[1] FALSE
+&gt; <span class='functs'>f6</span>&#40;<span class='chars'>&quot;FALSE&quot;</span>&#41;
+Error: is.logical(x) is not TRUE
+&gt; <span class='functs'>f6</span>&#40;NA&#41;
+Error: !is.na(x) is not TRUE
+&gt; 
+&gt; <span class='comments'># sometimes it is useful to silently catch the error</span>
+&gt; t &lt;- <span class='functs'>try</span>&#40;<span class='functs'>f6</span>&#40;<span class='chars'>&quot;FALSE&quot;</span>&#41;, silent=TRUE&#41;
+&gt; t
+[1] "Error : is.logical(x) is not TRUE\n"
+attr(,"class")
+[1] "try-error"
+attr(,"condition")
+simpleError: is.logical(x) is not TRUE
+&gt; if (<span class='functs'>class</span>&#40;t&#41;==<span class='chars'>&quot;try-error&quot;</span>)
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;f6 failed silently.&quot;</span>&#41;
+f6 failed silently.</span></pre>
+
+<div class="breakout">Here are several more examples of using functions, error checking, and conditionals for performing different tasks:</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># takes in three numbers</span></span>
+&gt; <span class='comments'># outputs whether can be triangle</span>
+&gt; f7 &lt;- <span class='functs'>function</span>&#40;a, b, c&#41; { <span class='comments'># sides of triangle</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>is.numeric</span>(a&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>is.numeric</span>&#40;b&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>is.numeric</span>&#40;c)&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>length</span>(a&#41; == <span class='numbers'>1</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>length</span>&#40;b&#41; == <span class='numbers'>1</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>length</span>&#40;c&#41; == <span class='numbers'>1</span>)
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;if (<span class='functs'>all</span>&#40;&#40;a + b&#41; &gt; c, (b + c&#41; &gt; a, (c + a) &gt; b)) {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;TRUE&#41;
++ &nbsp;&nbsp;&nbsp;} else {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;FALSE&#41;
++ &nbsp;&nbsp;&nbsp;}
++ }
+&gt; <span class='functs'>f7</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>, <span class='numbers'>3</span>&#41;
+[1] FALSE
+&gt; <span class='functs'>f7</span>&#40;<span class='numbers'>1.1</span>, <span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;
+[1] TRUE
+&gt; 
+&gt; <span class='comments'># takes a positive integer</span>
+&gt; <span class='comments'># outputs whether its a perfect square</span>
+&gt; f8 &lt;- <span class='functs'>function</span>&#40;n&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>as.integer</span>(n&#41; == n,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>length</span>&#40;n&#41; == <span class='numbers'>1</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n &gt; <span class='numbers'>0</span>)
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;a &lt;- <span class='functs'>round</span>&#40;n^<span class='numbers'>0.5</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;a*a == n&#41;
++ }
+&gt; <span class='functs'>f8</span>&#40;<span class='numbers'>9.1</span>&#41;
+Error: as.integer(n) == n is not TRUE
+&gt; <span class='functs'>f8</span>&#40;<span class='numbers'>9</span>&#41; <span class='comments'># 3^2</span>
+[1] TRUE
+&gt; <span class='functs'>f8</span>&#40;<span class='numbers'>8</span>&#41;
+[1] FALSE
+&gt; 
+&gt; What2Wear &lt;- <span class='functs'>function</span>&#40;temp&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Error checking:</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>length</span>&#40;temp&#41; == <span class='numbers'>1L</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;<span class='functs'>is.numeric</span>&#40;temp&#41;&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;!<span class='functs'>is.na</span>&#40;temp&#41;&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;temp &gt; <span class='numbers'>-50</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>stopifnot</span>&#40;temp &lt; <span class='numbers'>120</span>&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># The What2Wear algorithm:</span>
++ &nbsp;&nbsp;&nbsp;x &lt;- <span class='chars'>&quot;Wear a shirt&quot;</span>
++ &nbsp;&nbsp;&nbsp;if (temp &gt;= <span class='numbers'>70</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and shorts&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;if (temp &lt; <span class='numbers'>70</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and pants&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;if (temp &lt; <span class='numbers'>50</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and a sweater&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;if (temp &lt; <span class='numbers'>30</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and a hat&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;if (temp &lt; <span class='numbers'>10</span>)
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and a heavy jacket&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Return the result:</span>
++ &nbsp;&nbsp;&nbsp;x &lt;- <span class='functs'>paste</span>&#40;x, <span class='chars'>&quot;and shoes.&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;x&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>invisible</span>&#40;x&#41;
++ }
+&gt; 
+&gt; <span class='functs'>What2Wear</span>&#40;<span class='numbers'>90</span>&#41;
+Wear a shirt and shorts and shoes.
+&gt; <span class='functs'>What2Wear</span>&#40;<span class='numbers'>-10</span>&#41;
+Wear a shirt and pants and a sweater and a hat and a heavy jacket and shoes.
+&gt; <span class='functs'>What2Wear</span>&#40;NA&#41;
+Error: is.numeric(temp) is not TRUE</span></pre>
+
+<br><br><a style="float:left;" href="RLesson5.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson7.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

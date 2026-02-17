@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Maximum Likelihood
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1sub">Phylogenetics<span class="right">&#9662;</span></a></li>
+<li><a href="MinimumEvolutionTrees.html" class="l2">Minimum Evolution</a></li>
+<li><a href="MaximumLikelihoodTrees.html" class="l2sel">Maximum Likelihood</a></li>
+<li><a href="MaximumParsimonyTrees.html" class="l2">Maximum Parsimony</a></li>
+<li><a href="AncestralStates.html" class="l2">Ancestral States</a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Maximum Likelihood</p>
+
+This short example describes how to use <i>Treeline</i> to optimize maximum likelihood (ML) trees.  The ML optimality criterion is grounded in the theory of molecular evolution and popular, although it is relatively slow.
+
+<br><br>
+
+For an in-depth tutorial on phylogenetics, see the &quot;Growing Phylogenetic Trees with Treeline&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I build a maximum likelihood phylogenetic tree?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, provide <i>Treeline</i> with a sequence alignment and model of evolution that will be used to optimize the tree.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># load the target sequences from a file</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41; <span class='comments'># use AA, DNA, or RNA</span>
+&gt; seqs
+DNAStringSet object of length 317:
+      width seq               names               
+  [1]   819 ATGGCTT...AAGAAAA Rickettsia prowaz...
+  [2]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [3]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [4]   822 ATGGGAA...GAAAAAG Porphyromonas gin...
+  [5]   819 ATGGCTA...TGGTAAA Pasteurella multo...
+  ...   ... ...
+[313]   819 ATGGCAA...TACTAAA Pectobacterium at...
+[314]   822 ATGCCTA...CGTCAAG Acinetobacter sp....
+[315]   864 ATGGGCA...TCAGTCT Thermosynechococc...
+[316]   831 ATGGCAC...GAAGAAG Bradyrhizobium ja...
+[317]   840 ATGGGCA...GCGAGGT Gloeobacter viola...
+&gt; 
+&gt; <span class='comments'># align coding sequences</span>
+&gt; seqs &lt;- <span class='functs'>AlignTranslation</span>&#40;seqs,
++ type=<span class='chars'>&quot;DNAStringSet&quot;</span>&#41; <span class='comments'># choose AA or DNA</span>
+Determining distance matrix based on shared 5-mers:
+  |========================================| 100%
+<br>
+Time difference of 0.32 secs
+<br>
+Clustering into groups by similarity:
+  |========================================| 100%
+<br>
+Time difference of 0.02 secs
+<br>
+Aligning Sequences:
+  |========================================| 100%
+<br>
+Time difference of 0.49 secs
+<br>
+Iteration 1 of 2:
+<br>
+Determining distance matrix based on alignment:
+  |========================================| 100%
+<br>
+Time difference of 0.05 secs
+<br>
+Reclustering into groups by similarity:
+  |========================================| 100%
+<br>
+Time difference of 0.03 secs
+<br>
+Realigning Sequences:
+  |========================================| 100%
+<br>
+Time difference of 0.22 secs
+<br>
+Iteration 2 of 2:
+<br>
+Determining distance matrix based on alignment:
+  |========================================| 100%
+<br>
+Time difference of 0.05 secs
+<br>
+Reclustering into groups by similarity:
+  |========================================| 100%
+<br>
+Time difference of 0.02 secs
+<br>
+Realigning Sequences:
+  |========================================| 100%
+<br>
+Time difference of 0.03 secs
+<br>
+&gt; 
+&gt; <span class='comments'># optimize the tree</span>
+&gt; tree &lt;- <span class='functs'>Treeline</span>&#40;seqs,
++ method=<span class='chars'>&quot;ML&quot;</span>,
++ model=MODELS, <span class='comments'># choose a model or test all</span>
++ showPlot=TRUE,
++ processors=NULL&#41; <span class='comments'># use all CPUs</span>
+Fitting initial tree to models:
+JC69  -ln(L) = 71307, AICc = 147914, BIC = 146854
+K80   -ln(L) = 70693, AICc = 146721, BIC = 145633
+F81   -ln(L) = 71270, AICc = 147947, BIC = 146800
+HKY85 -ln(L) = 70650, AICc = 146745, BIC = 145568
+T92   -ln(L) = 70682, AICc = 146736, BIC = 145619
+TN93  -ln(L) = 70308, AICc = 146096, BIC = 144890
+SYM   -ln(L) = 69984, AICc = 145449, BIC = 144242
+GTR   -ln(L) = 69699, AICc = 144991, BIC = 143692
+<br>
+The selected model was:  GTR
+<br>
+Optimizing up to 400 candidate trees:
+Tree #133. -ln(L) = 69081.540 (0.000%), 13 Climbs, 0 Grafts of 12  
+<br>
+Finalizing the best tree (#90):
+-ln(L) = 69081.539 (0.000%), 0 Climbs            
+<br>
+Model parameters:
+Frequency(A) = 0.253
+Frequency(C) = 0.227
+Frequency(G) = 0.369
+Frequency(T) = 0.151
+Rate A <-> C = 1.760
+Rate A <-> G = 2.133
+Rate A <-> T = 3.914
+Rate C <-> G = 1.107
+Rate C <-> T = 5.616
+Rate G <-> T = 1.000
+<br>
+Time difference of 307.1 secs
+<br>
+&gt; 
+&gt; <span class='comments'># optionally, output a Newick file</span>
+&gt; <span class='functs'>WriteDendrogram</span>&#40;tree, file=<span class='chars'>&quot;&quot;</span>&#41;
+((((('Thermoanaerobacter tengcongensis MB4':0.2144063,('Clostridium acetobutylicum ATCC 824':0.1143762,...</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

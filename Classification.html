@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Classification
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1sel">Classification<span class="right">&#9662;</span></a></li>
+<li><a href="ClassifyOrganisms.html" class="l2">Classify Organisms</a></li>
+<li><a href="ClassifyFunctions.html" class="l2">Classify Functions</a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">IDTAXA Classifier Overview</p>
+
+The IDTAXA algorithm can quickly and accurately classify nucleotide or amino acid sequences into a taxonomy of organisms or functions. IDTAXA is composed of the <i>LearnTaxa</i> function to train a classifier based on a reference database and the <i>IdTaxa</i> function to classify new sequences into a taxonomy.
+
+<p class="c1">Why use IDTAXA for classification?</p>
+
+<ul>
+<li>IDTAXA excels at avoiding classifying sequences to groups when their true group isn't present in the training data. This is a common issue in biological datasets because reference databases typically represent only a small fraction of the possible diversity.</li>
+<li>IDTAXA is more accurate than common alternative approaches on both <a href="https://link.springer.com/article/10.1186/s40168-018-0521-5">nucleotide</a> and <a href="https://academic.oup.com/nargab/article/3/3/lqab080/6371227">protein</a> sequences.</li>
+<li>Multiple pre-trained classifiers are provided on the <a href="Downloads.html">Downloads</a> page.</li>
+<li>Unlike many other classifiers, IDTAXA will not assign high-confidence classifications to random or repeat sequences.</li>
+<li>IDTAXA can generate beautiful sunburst diagrams showing the distribution of taxa.</li>
+</ul>
+
+<hr><br>
+<a href="ClassifyOrganisms.html">Classify Organisms</a> - Use the IDTAXA algorithm to classify variants of a gene into a taxonomy of organisms.<br><br>
+<a href="ClassifyOrganisms.html"><img alt="Classify Organisms" src="images/ClassifyOrganisms1.png" width="597"></a><br><br><hr><br>
+
+<a href="ClassifyFunctions.html">Classify Functions</a> - Use the IDTAXA algorithm to classify different protein or coding sequences into a taxonomy of functions.<br><br>
+<a href="ClassifyFunctions.html"><img alt="Classify Functions" src="images/ClassifyFunctions1.png" width="600"></a>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

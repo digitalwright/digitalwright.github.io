@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Classify Organisms
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1sub">Classification<span class="right">&#9662;</span></a></li>
+<li><a href="ClassifyOrganisms.html" class="l2sel">Classify Organisms</a></li>
+<li><a href="ClassifyFunctions.html" class="l2">Classify Functions</a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">IDTAXA &ndash; Classify Organisms<p>
+
+This short example describes how to use IDTAXA to classify organisms using nucleotide sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">A Murali <i>et al.</i> (2018) "IDTAXA: a novel approach for accurate taxonomic classification of microbiome sequences." <i>Microbiome</i>, <a href="https://doi.org/10.1186/s40168-018-0521-5">doi:10.1186/s40168-018-0521-5</a>.</p></div>
+
+For an in-depth tutorial on sequence alignment, see the &quot;Classify Sequences&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I perform taxonomic classification?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of sequences (e.g., &quot;~/mySeqs.fas&quot;). Trained classifiers for different marker gene (nucleotide) sequences can be found on the <a href="Downloads.html">Downloads</a> page.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file &#40;in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41; <span class='comments'># or readRNAStringSet</span>
+&gt; 
+&gt; <span class='comments'># remove any gaps &#40;if needed&#41;</span>
+&gt; seqs &lt;- <span class='functs'>RemoveGaps</span>&#40;seqs&#41;
+&gt; 
+&gt; <span class='comments'># for help, see the IdTaxa help page &#40;optional&#41;</span>
+&gt; ?IdTaxa
+&gt; 
+&gt; <span class='comments'># load a training set object &#40;trainingSet&#41;</span>
+&gt; <span class='comments'># see http://DECIPHER.codes/Downloads.html</span>
+&gt; <span class='functs'>load</span>&#40;<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO RData file&gt;&gt;&quot;</span>&#41;
+&gt; 
+&gt; <span class='comments'># classify the sequences</span>
+&gt; ids &lt;- <span class='functs'>IdTaxa</span>&#40;seqs,
++ &nbsp;&nbsp;&nbsp;trainingSet,
++ &nbsp;&nbsp;&nbsp;strand=<span class='chars'>&quot;both&quot;</span>, <span class='comments'># or &quot;top&quot; if same as trainingSet</span>
++ &nbsp;&nbsp;&nbsp;threshold=<span class='numbers'>60</span>, <span class='comments'># 60 (cautious) or 50 (sensible)</span>
++ &nbsp;&nbsp;&nbsp;processors=NULL&#41; <span class='comments'># use all available processors</span>
+  |============================================| 100%
+<br>
+Time difference of 135.83 secs
+<br>
+&gt; 
+&gt; <span class='comments'># look at the results</span>
+&gt; <span class='functs'>print</span>&#40;ids&#41;
+  A test set of class 'Taxa' with length 1000
+       confidence name                 taxon
+   [1]      78.0% ENA|OBRS01158965|... Root; Bacter...
+   [2]      44.7% ENA|OBRS01551965|... Root; unclas...
+   [3]      74.8% ENA|OBRS01920881|... Root; Bacter...
+   [4]      15.9% ENA|OBRS01851995|... Root; unclas...
+   [5]      19.7% ENA|OBRS01760119|... Root; unclas...
+   ...        ... ...                  ...
+ [996]      54.0% ENA|OBRS01119407|... Root; unclas...
+ [997]      56.0% ENA|OBRS01447422|... Root; unclas...
+ [998]      51.5% ENA|OBRS01883532|... Root; unclas...
+ [999]      64.7% ENA|OBRS01350537|... Root; Bacter...
+[1000]      47.5% ENA|OBRS01488581|... Root; unclas...
+&gt; <span class='functs'>plot</span>&#40;ids&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

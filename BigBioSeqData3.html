@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Big Biological Data Part #2
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2sel">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Managing big biological sequence data - Workflow part #2</p>
+
+Part #2 of the workflow uses sequences of the COI gene that were obtained from several locations in Pennsylvania. These DNA sequences are stored in FASTQ format along with their corresponding quality scores. After importing, the first step is to trim the sequences so that only the high quality center region remains. The subset of sequences that might belong to <i>Pythium</i> species will be identified by the presence of a conserved region common all <i>Pythium</i>. This analysis will be performed in batches so that all of the sequences do not need to fit in memory simultaneously.<br><br>
+
+<!--<video width="590" poster="images/Poster3.png" controls><source src="data/Videos/BigBioSeqData_Part2.mp4" type="video/mp4">Your browser does not support this video format.</video><br><br>-->
+<iframe width="590" height="443" src="https://drive.google.com/file/d/17bhsyhejLY6NYRohXnXfXn4rsb-EJOqI/preview"></iframe>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># Import from the compressed FASTQ sequence files</span></span>
+&gt; path &lt;- <span class='functs'>paste</span>&#40;data_dir,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;/FASTQ/&quot;</span>,
++ &nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;&quot;</span>&#41;
+&gt; files &lt;- <span class='functs'>list.files</span>&#40;path&#41;
+&gt; samples &lt;- <span class='functs'>substring</span>&#40;files,
++ &nbsp;&nbsp;&nbsp;first=<span class='numbers'>1</span>,
++ &nbsp;&nbsp;&nbsp;last=<span class='functs'>nchar</span>&#40;files&#41; - <span class='numbers'>6</span>&#41;
+&gt; for &#40;i in <span class='functs'>seq_along</span>&#40;files&#41;&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;samples[i], <span class='chars'>&quot;:\n&quot;</span>, sep=<span class='chars'>&quot;&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>Seqs2DB</span>&#40;<span class='functs'>paste</span>&#40;path, files[i], sep=<span class='chars'>&quot;&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;FASTQ&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifier=samples[i],
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>&#41;
++ }
+BerksFarmA:
+Reading FASTQ file chunk 5
+<br>
+38999 total sequences in table Reads.
+Time difference of 2.72 secs
+<br>
+BerksFarmB:
+Reading FASTQ file chunk 2
+<br>
+Added 10659 new sequences to table Reads.
+49658 total sequences in table Reads.
+Time difference of 0.76 secs
+<br>
+DauphinFarm:
+Reading FASTQ file chunk 1
+<br>
+Added 3475 new sequences to table Reads.
+53133 total sequences in table Reads.
+Time difference of 0.23 secs
+<br>
+LancasterFarmA:
+Reading FASTQ file chunk 7
+<br>
+Added 51099 new sequences to table Reads.
+104232 total sequences in table Reads.
+Time difference of 3.24 secs
+<br>
+LebanonFarmA:
+Reading FASTQ file chunk 2
+<br>
+Added 9892 new sequences to table Reads.
+114124 total sequences in table Reads.
+Time difference of 1.27 secs
+<br>
+LebanonFarmB:
+Reading FASTQ file chunk 5
+<br>
+Added 26667 new sequences to table Reads.
+140791 total sequences in table Reads.
+Time difference of 2.2 secs
+<br>
+LititzRunCreek:
+Reading FASTQ file chunk 2
+<br>
+Added 8876 new sequences to table Reads.
+149667 total sequences in table Reads.
+Time difference of 0.99 secs
+<br>
+YorkFarm:
+Reading FASTQ file chunk 9
+<br>
+Added 68726 new sequences to table Reads.
+218393 total sequences in table Reads.
+Time difference of 5.15 secs
+<br>
+&gt; 
+&gt; <span class='comments'># note the primers as they might appear in the sequence</span>
+&gt; forward &lt;- <span class='chars'>&quot;CCATCTCATCCCTGCGTGTCTCCGACTCAGNNNNNNNNNNTCAWCWMGATGGCTTTTTTCAAC&quot;</span>
+&gt; reverse &lt;- <span class='chars'>&quot;RRHWACKTGACTDATRATACCAAACCTATCCCCTGTGTGCCTTGGCAGTCTCAG&quot;</span>
+&gt; reverse &lt;- <span class='functs'>as.character</span>&#40;<span class='functs'>reverseComplement</span>&#40;<span class='functs'>DNAStringSet</span>&#40;reverse&#41;&#41;&#41;
+&gt; 
+&gt; <span class='comments'># Trim the sequences by quality and identify</span>
+&gt; <span class='comments'># the subset belonging to the Pythium genus</span>
+&gt; nSeqs &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;tbl=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;count=TRUE,
++ &nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
+&gt; offset &lt;- <span class='numbers'>0</span>
+&gt; ends &lt;- starts &lt;- counts &lt;- <span class='functs'>integer</span>&#40;nSeqs&#41;
+&gt; pBar &lt;- <span class='functs'>txtProgressBar</span>&#40;max=nSeqs, style=<span class='numbers'>3</span>&#41;
+  |                                            |   0%
+&gt; while &#40;offset &lt; nSeqs&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Select a batch of sequences</span>
++ &nbsp;&nbsp;&nbsp;dna &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tbl=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;QualityScaledXStringSet&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;limit=<span class='functs'>paste</span>&#40;offset, <span class='numbers'>1e4</span>, sep=<span class='chars'>&quot;,&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Convert quality scores to error probabilities</span>
++ &nbsp;&nbsp;&nbsp;bounds &lt;- <span class='functs'>TrimDNA</span>&#40;<span class='functs'>DNAStringSet</span>&#40;dna&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leftPatterns=forward,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rightPatterns=reverse,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quality=<span class='functs'>quality</span>&#40;dna&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Store the results for later use</span>
++ &nbsp;&nbsp;&nbsp;index &lt;- &#40;offset + <span class='numbers'>1</span>&#41;:&#40;offset + <span class='functs'>length</span>&#40;dna&#41;&#41;
++ &nbsp;&nbsp;&nbsp;starts[index] &lt;- <span class='functs'>start</span>&#40;bounds&#41;
++ &nbsp;&nbsp;&nbsp;ends[index] &lt;- <span class='functs'>end</span>&#40;bounds&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Find the pattern expected in Pythium sequences</span>
++ &nbsp;&nbsp;&nbsp;counts[index] &lt;- <span class='functs'>vcountPattern</span>&#40;pattern[[<span class='numbers'>1</span>]],
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subject=dna,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max.mismatch=<span class='numbers'>4</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with.indels=TRUE,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fixed=<span class='chars'>&quot;subject&quot;</span>&#41; <span class='comments'># allow ambiguities</span>
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;offset &lt;- offset + <span class='numbers'>1e4</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>setTxtProgressBar</span>&#40;pBar,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>ifelse</span>&#40;offset &gt; nSeqs, nSeqs, offset&#41;&#41;
++ }
+  |============================================| 100%
+&gt; 
+&gt; <span class='comments'># Add the results to new columns in the database</span>
+&gt; results &lt;- <span class='functs'>data.frame</span>&#40;start=starts,
++ &nbsp;&nbsp;&nbsp;end=ends,
++ &nbsp;&nbsp;&nbsp;count=counts&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;results,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;limit=<span class='numbers'>1000</span>&#41;
+&gt; 
+&gt; <span class='comments'># Cluster the reads in each sample by percent identity</span>
+&gt; for &#40;i in <span class='functs'>seq_along</span>&#40;samples&#41;&#41; {
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;samples[i]&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Select moderately long sequences</span>
++ &nbsp;&nbsp;&nbsp;dna &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifier=samples[i],
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clause=&quot;count &gt; <span class='numbers'>0</span> and
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#40;end - start + <span class='numbers'>1</span>&#41; &gt;= <span class='numbers'>100</span>&quot;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;:&quot;</span>, <span class='functs'>length</span>&#40;dna&#41;, <span class='chars'>&quot;sequences&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Trim the sequences to the high-quality region</span>
++ &nbsp;&nbsp;&nbsp;index &lt;- <span class='functs'>as.numeric</span>&#40;<span class='functs'>names</span>&#40;dna&#41;&#41;
++ &nbsp;&nbsp;&nbsp;dna &lt;- <span class='functs'>subseq</span>&#40;dna,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start=starts[index],
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end=ends[index]&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Cluster the sequences without a distance matrix</span>
++ &nbsp;&nbsp;&nbsp;clusters &lt;- <span class='functs'>IdClusters</span>&#40;myXStringSet=dna,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method=<span class='chars'>&quot;inexact&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cutoff=<span class='numbers'>0.03</span>, <span class='comments'># &gt; 97% identity</span>
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='comments'># Add the cluster numbers to the database</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>Add2DB</span>&#40;clusters,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verbose=FALSE&#41;
++ &nbsp;&nbsp;&nbsp;
++ &nbsp;&nbsp;&nbsp;<span class='functs'>cat</span>&#40;<span class='chars'>&quot;,&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>length</span>&#40;<span class='functs'>unique</span>&#40;clusters[, <span class='numbers'>1</span>]&#41;&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;clusters\n&quot;</span>&#41;
++ }
+BerksFarmA: 567 sequences, 56 clusters
+BerksFarmB: 137 sequences, 25 clusters
+DauphinFarm: 58 sequences, 13 clusters
+LancasterFarmA: 1162 sequences, 62 clusters
+LebanonFarmA: 85 sequences, 21 clusters
+LebanonFarmB: 3516 sequences, 115 clusters
+LititzRunCreek: 3440 sequences, 261 clusters
+YorkFarm: 2068 sequences, 28 clusters
+&gt; 
+&gt; <span class='comments'># Now the database contains a column of clusters</span>
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Reads&quot;</span>,
++ &nbsp;&nbsp;&nbsp;limit=<span class='numbers'>1000</span>,
++ &nbsp;&nbsp;&nbsp;clause=<span class='chars'>&quot;cluster is not NULL&quot;</span>&#41;</span></pre>
+
+<br><br><a style="float:left;" href="BigBioSeqData2.html">&lt; Previous Part</a><a style="float:right;" href="BigBioSeqData4.html">Next Part &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

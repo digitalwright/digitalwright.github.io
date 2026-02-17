@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Align Translation
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1sub">Alignment<span class="right">&#9662;</span></a></li>
+<li><a href="AlignSequences.html" class="l2">Align Sequences</a></li>
+<li><a href="AlignTranslation.html" class="l2sel">Align Translation</a></li>
+<li><a href="AlignSynteny.html" class="l2">Align Synteny</a></li>
+<li><a href="AlignProfiles.html" class="l2">Align Profiles</a></li>
+<li><a href="AlignPairs.html" class="l2">Align Pairs</a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Align Translation</p>
+
+This short example describes how to use DECIPHER to align a set of protein coding DNA sequences, as described in:
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright (2015) "DECIPHER: harnessing local sequence context to improve protein multiple sequence alignment." <i>BMC Bioinformatics</i>, <a href="http://www.biomedcentral.com/1471-2105/16/322">doi:10.1186/s12859-015-0749-z</a>.</p></div>
+
+For an in-depth tutorial on sequence alignment, see the &quot;The Art of Multiple Sequence Alignment in R&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I align protein coding sequences?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of unaligned sequences (e.g., &quot;~/mySeqs.fas&quot;).<br><br>
+
+The sequences will be translated before alignment, which requires knowledge of the reading frame for each sequence. By default, DECIPHER guesses the reading frame of the sequences, but it can also be specified (see below). The newly aligned amino acid (AA) sequences are "reverse translated" by inserting gaps into the original sequences.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># specify the path to the FASTA file (in quotes&#41;</span>
+&gt; fas &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO FASTA FILE&gt;&gt;&quot;</span>
+&gt; 
+&gt; <span class='comments'># load the sequences from the file</span>
+&gt; seqs &lt;- <span class='functs'>readDNAStringSet</span>&#40;fas&#41;
+&gt; 
+&gt; <span class='comments'># look at some of the sequences (optional&#41;</span>
+&gt; seqs
+  A DNAStringSet instance of length 317
+      width seq                   names               
+  [1]   819 ATGGCTTTA...AAAAGAAAA 1
+  [2]   822 ATGGGAATA...AGGAAAAAG 2
+  [3]   822 ATGGGAATA...AGGAAAAAG 3
+  [4]   822 ATGGGAATA...AGGAAAAAG 4
+  [5]   819 ATGGCTATC...CGTGGTAAA 5
+  ...   ... ...
+[313]   819 ATGGCAATT...CGTACTAAA 313
+[314]   822 ATGCCTATT...CGCGTCAAG 314
+[315]   864 ATGGGCATT...CGTCAGTCT 315
+[316]   831 ATGGCACTG...CGGAAGAAG 316
+[317]   840 ATGGGCATT...GGGCGAGGT 317
+&gt; 
+&gt; <span class='comments'># for help, see the AlignTranslation help page (optional&#41;</span>
+&gt; ?AlignTranslation
+&gt; 
+&gt; <span class='comments'># perform the alignment via the translations</span>
+&gt; <span class='comments'># change NA to 1, 2 or 3 if the readingFrame is known</span>
+&gt; aligned &lt;- <span class='functs'>AlignTranslation</span>&#40;seqs,
++ &nbsp;&nbsp;&nbsp;readingFrame=NA,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;AAStringSet&quot;</span>&#41; <span class='comments'># return AA or DNA sequences?</span>
+Determining distance matrix based on shared 4-mers:
+  |============================================| 100%
+<br>
+Time difference of 1.88 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.62 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 4.63 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.34 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.44 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 5.16 secs
+<br>
+Refining the alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the alignment in a browser (optional&#41;</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;aligned, highlight=<span class='numbers'>0</span>&#41;
+&gt; 
+&gt; <span class='comments'># write the alignment to a new FASTA file</span>
+&gt; <span class='functs'>writeXStringSet</span>&#40;aligned,
++ &nbsp;&nbsp;&nbsp;file=<span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO OUTPUT FASTA FILE&gt;&gt;&quot;</span>&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>
