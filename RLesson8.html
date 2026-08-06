@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #8
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #8 - Matrix manipulation and images</p>
+
+This lesson describes how to display images, manually locate points, and perform matrix manipulations. First it is necessary to install the "jpeg" package (see the first line), which is not part of base R. Similar packages exist for tiff, png, etc.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'>#install.packages&#40;"jpeg"&#41; # only need to run this once</span></span>
+&gt; <span class='functs'>library</span>&#40;jpeg&#41;
+&gt; <span class='comments'># access help for the new package's functions:</span>
+&gt; ?readJPEG
+&gt; ?writeJPEG
+&gt; 
+&gt; <span class='comments'># recall that matrices are stored column-by-column</span>
+&gt; m &lt;- <span class='functs'>matrix</span>&#40;<span class='numbers'>0</span>, nrow=<span class='numbers'>4</span>, ncol=<span class='numbers'>3</span>&#41;
+&gt; m - <span class='numbers'>1</span>:<span class='numbers'>4</span> <span class='comments'># recycled</span>
+     [,1] [,2] [,3]
+[1,]   -1   -1   -1
+[2,]   -2   -2   -2
+[3,]   -3   -3   -3
+[4,]   -4   -4   -4
+&gt; 
+&gt; Rlogo &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;img&quot;</span>, <span class='chars'>&quot;Rlogo.jpg&quot;</span>, package=<span class='chars'>&quot;jpeg&quot;</span>&#41;
+&gt; Rlogo <span class='comments'># there are multiple ways of specifying paths in R</span>
+[1] "/Library/Frameworks/R.framework/Versions/3.2/Resources/library/jpeg/img/Rlogo.jpg"
+&gt; <span class='comments'># drag and drop a file on the R console to see its path</span>
+&gt; img &lt;- <span class='functs'>readJPEG</span>&#40;Rlogo&#41;
+&gt; <span class='functs'>typeof</span>&#40;img&#41;
+[1] "double"
+&gt; <span class='functs'>class</span>&#40;img&#41; <span class='comments'># array</span>
+[1] "array"
+&gt; <span class='functs'>dim</span>&#40;img&#41; <span class='comments'># width x height x channels &#40;Red/Green/Blue, RGB&#41;</span>
+[1]  76 100   3
+&gt; m &lt;- img[,, <span class='numbers'>1</span>] <span class='comments'># select the red channel</span></pre></span>
+
+<div class="breakout">There are three ways to easily display the image, each with its pluses and minuses. The first method is probably the most common.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># method 1 - rasterImage</span></span>
+&gt; <span class='comments'># color, fast, can interpolate, requires R 2.11+</span>
+&gt; <span class='comments'># no pseudo-coloring &#40;e.g., rainbow&#40;&#41;&#41;</span>
+&gt; <span class='functs'>plot</span>(NA, <span class='comments'># initialize an empty plot window</span>
++ &nbsp;&nbsp;&nbsp;xlim=<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>2</span>]&#41;, ylim=<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>1</span>]&#41;,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Column&quot;</span>, ylab=<span class='chars'>&quot;Row&quot;</span>)
+&gt; <span class='functs'>rasterImage</span>(img,
++ &nbsp;&nbsp;&nbsp;<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>2</span>], <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>1</span>],
++ &nbsp;&nbsp;&nbsp;interpolate=FALSE)
+&gt; 
+&gt; <span class='comments'># method 2 - image</span>
+&gt; <span class='comments'># slow, no interpolation, axes [0 to 1]</span>
+&gt; <span class='comments'># single channel:  grayscale or pseudocoloring</span>
+&gt; a &lt;- &#40;img[,, <span class='numbers'>1</span>] + img[,, <span class='numbers'>2</span>] + img[,, <span class='numbers'>3</span>]&#41;/<span class='numbers'>3</span>
+&gt; <span class='functs'>image</span>&#40;a, col=<span class='functs'>gray</span>&#40;<span class='functs'>seq</span>&#40;<span class='numbers'>0</span>, <span class='numbers'>1</span>, <span class='numbers'>0.01</span>&#41;&#41;&#41; <span class='comments'># note the scales</span>
+&gt; 
+&gt; <span class='comments'># method 3 - rect &#40;pixels as individual rectanges&#41;</span>
+&gt; <span class='comments'># color, slow, no interpolation, almost any R version</span>
+&gt; row &lt;- <span class='functs'>rep</span>&#40;<span class='functs'>rev</span>&#40;<span class='functs'>seq_len</span>&#40;<span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>1</span>]&#41;&#41;, <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>2</span>]&#41;
+&gt; col &lt;- <span class='functs'>rep</span>&#40;<span class='functs'>seq_len</span>&#40;<span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>2</span>]&#41;, each=<span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>1</span>]&#41;
+&gt; <span class='functs'>plot</span>(NA, <span class='comments'># initialize an empty plot window</span>
++ &nbsp;&nbsp;&nbsp;xlim=<span class='functs'>range</span>&#40;col&#41;, ylim=<span class='functs'>range</span>&#40;row&#41;,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Column&quot;</span>, ylab=<span class='chars'>&quot;Row&quot;</span>)
+&gt; <span class='functs'>rect</span>(col - <span class='numbers'>1</span>, row - <span class='numbers'>1</span>, col, row,
++ &nbsp;&nbsp;&nbsp;col=<span class='functs'>rgb</span>&#40;img[,, <span class='numbers'>1</span>], img[,, <span class='numbers'>2</span>], img[,, <span class='numbers'>3</span>]&#41;,
++ &nbsp;&nbsp;&nbsp;border=NA)</span></pre>
+
+<div class="breakout">Image manipulation using matrix math is described next. Followed by how to merge matrices by binding two matrices along their columns or rows. The layout function will create a plot window with multiple panels, as defined by the input matrix:</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># Standard element-wise math with matrices</span></span>
+&gt; <span class='functs'>layout</span>&#40;<span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>4</span>, nrow=<span class='numbers'>2</span>&#41;&#41;
+&gt; <span class='functs'>image</span>&#40;a, main=<span class='chars'>&quot;default&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;a &gt; <span class='numbers'>0.5</span>, main=<span class='chars'>&quot;thresholded&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;a*a, main=<span class='chars'>&quot;squared&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;a - a*a, main=<span class='chars'>&quot;a - a*a&quot;</span>&#41;
+&gt; <span class='comments'># Matrix specific functions</span>
+&gt; <span class='functs'>layout</span>&#40;<span class='functs'>matrix</span>&#40;<span class='numbers'>1</span>:<span class='numbers'>4</span>, nrow=<span class='numbers'>2</span>&#41;&#41;
+&gt; <span class='functs'>image</span>&#40;a, main=<span class='chars'>&quot;default&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;<span class='functs'>t</span>&#40;a&#41;, main=<span class='chars'>&quot;transpose&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;a %*% <span class='functs'>t</span>&#40;a&#41;, main=<span class='chars'>&quot;matrix multiplication&quot;</span>&#41;
+&gt; <span class='comments'># Inverting a matrix can be performed with `solve`</span>
+&gt; <span class='functs'>image</span>&#40;<span class='functs'>solve</span>&#40;a[, <span class='numbers'>1</span>:<span class='numbers'>76</span>]&#41;, main=<span class='chars'>&quot;inverse&quot;</span>&#41;
+&gt; 
+&gt; <span class='comments'># default coloring in image is heat.colors&#40;12&#41;</span>
+&gt; <span class='functs'>layout</span>&#40;<span class='functs'>matrix</span>&#40;<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>2</span>, <span class='numbers'>3</span>, <span class='numbers'>2</span>&#41;, nrow=<span class='numbers'>2</span>&#41;&#41;
+&gt; <span class='functs'>image</span>&#40;a, col=<span class='functs'>rainbow</span>&#40;<span class='numbers'>100</span>&#41;, main=<span class='chars'>&quot;default in rainbow&quot;</span>&#41;
+&gt; b &lt;- <span class='functs'>rbind</span>&#40;a, a, a&#41; <span class='comments'># bind the matrix row-wise</span>
+&gt; <span class='functs'>dim</span>&#40;b&#41;
+[1] 228 100
+&gt; <span class='functs'>image</span>&#40;b, col=<span class='functs'>topo.colors</span>&#40;<span class='numbers'>100</span>&#41;, main=<span class='chars'>&quot;rbind in topo&quot;</span>&#41;
+&gt; <span class='functs'>image</span>&#40;<span class='functs'>cbind</span>&#40;a, a&#41;, col=<span class='functs'>terrain.colors</span>&#40;<span class='numbers'>100</span>&#41;,
++ &nbsp;&nbsp;&nbsp;main=<span class='chars'>&quot;cbind in terrain&quot;</span>&#41;
+&gt; <span class='comments'># note that cbind/rbind perform differently on arrays</span>
+&gt; 
+&gt; <span class='functs'>range</span>&#40;img&#41;
+[1] 0 1
+&gt; img &lt;- <span class='numbers'>1</span> - img <span class='comments'># &#39;inverse&#39; colors</span>
+&gt; <span class='functs'>plot</span>&#40;NA, xlim=<span class='functs'>range</span>&#40;col&#41;, ylim=<span class='functs'>range</span>&#40;row&#41;&#41;
+&gt; <span class='functs'>rasterImage</span>(img,
++ &nbsp;&nbsp;&nbsp;<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>2</span>], <span class='functs'>dim</span>&#40;img&#41;[<span class='numbers'>1</span>],
++ &nbsp;&nbsp;&nbsp;interpolate=FALSE)</span></pre>
+
+<div class="breakout">The locator function will return the &#40;x, y&#41; positions of points the user clicks. After clicking the desired point&#40;s&#41;, press the "ESC" key or right-click the plot to return.</div>
+
+<pre><span class="codebox"><span class="line">l &lt;- <span class='functs'>locator</span>&#40;&#41;</span>
+&gt; l
+$x
+[1] 36.40051 62.93799
+<br>
+$y
+[1] 58.30686 37.11001
+<br>
+&gt; <span class='functs'>abline</span>&#40;h=l$y, v=l$x&#41;
+&gt; <span class='comments'># get a temporary file name with extension ".jpeg"</span>
+&gt; fname &lt;- <span class='functs'>tempfile</span>&#40;fileext=<span class='chars'>&quot;.jpg&quot;</span>&#41;
+&gt; fname
+[1] "/var/folders/qr/4756lm1n6fn5yz76pp13xl740000gn/T//Rtmp9njRNb/file318225a92551.jpg"
+&gt; <span class='comments'># optionally write the image to a file</span>
+&gt; <span class='functs'>writeJPEG</span>&#40;img, fname&#41;
+&gt; <span class='comments'># delete the temporary file with unlink</span>
+&gt; <span class='comments'>#unlink&#40;fname&#41; # Caution:  be careful with unlink!</span></span></pre>
+
+<br><br><a style="float:left;" href="RLesson7.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson9.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

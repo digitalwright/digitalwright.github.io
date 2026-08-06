@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Design Probes
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1sub">Oligo Design<span class="right">&#9662;</span></a></li>
+<li><a href="DesignSignatures.html" class="l2">Design Signatures</a></li>
+<li><a href="DesignPrimers.html" class="l2">Design Primers</a></li>
+<li><a href="DesignProbes.html" class="l2sel">Design Probes</a></li>
+<li><a href="ProbeMelt.html" class="l2">ProbeMelt</a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Design FISH Probes</p>
+
+Use DECIPHER's DesignProbes function to design the optimal FISH probes for targeting one group of RNA sequences in the presence of many non-target groups, as described in:<br>
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright <i>et al.</i> (2014) "Automated Design of Probes for rRNA-Targeted Fluorescence In Situ Hybridization Reveals the Advantages of Using Dual Probes for Accurate Identification." <i>Applied and Environmental Microbiology</i>, <a href="http://aem.asm.org/content/80/16/5124.full">doi:10.1128/AEM.01685-14</a>.</p></div>
+
+For an in-depth tutorial, see the &quot;Design Group-Specific FISH Probes&quot; vignette on the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I design FISH probes?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of aligned sequences (e.g., &quot;~/mySeqs.fas&quot;).<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># load sequences into a database</span>
+&gt; fas &lt;- <span class='chars'>&quot;~/mySeqs.fas&quot;</span>
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ <span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas,
++ type=<span class='chars'>&quot;FASTA&quot;</span>,
++ dbFile=dbConn,
++ identifier=<span class='chars'>&quot;&quot;</span>&#41;
+Reading FASTA file chunk 1
+<br>
+118 total sequences in table Seqs.
+Time difference of 0.05 secs
+<br>
+&gt; 
+&gt; <span class='comments'># identify the sequences based on their description</span>
+&gt; x &lt;- <span class='functs'>dbGetQuery</span>&#40;dbConn,
++ <span class='chars'>&quot;select description from Seqs&quot;</span>&#41;$description
+&gt; ns &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ split=<span class='chars'>&quot; &quot;</span>&#41;,
++ FUN=`[`,
++ <span class='numbers'>1L</span>&#41;&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=ns&#41;,
++ dbFile=dbConn&#41;
+Expression:
+update `Seqs` set `identifier` = (select
+`temp`.`identifier` from `temp` where
+`temp`.`row_names` = `Seqs`.`row_names`) where
+exists (select `temp`.`identifier` from `temp`
+where `temp`.`row_names` = `Seqs`.`row_names`)
+<br>
+Added to table Seqs:  "identifier".
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; tiles &lt;- <span class='functs'>TileSeqs</span>&#40;dbConn&#41;
+  |========================================| 100%
+<br>
+Time difference of 13.73 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;tiles&#41;
+  row_names start end start_aligned end_aligned
+1         1     1  27             1          27
+2         2     2  28             2          28
+3         3     3  29             3          29
+4         4     4  30             4          30
+5         5     5  31             5          31
+6         6     6  32             6          32
+  misprime width            id coverage
+1    FALSE  1594 Acinetobacter        1
+2    FALSE  1594 Acinetobacter        1
+3    FALSE  1594 Acinetobacter        1
+4    FALSE  1594 Acinetobacter        1
+5    FALSE  1594 Acinetobacter        1
+6    FALSE  1594 Acinetobacter        1
+  groupCoverage                 target_site
+1             1 AGAGTTTGATCATGGCTCAGATTGAAC
+2             1 GAGTTTGATCATGGCTCAGATTGAACG
+3             1 AGTTTGATCATGGCTCAGATTGAACGC
+4             1 GTTTGATCATGGCTCAGATTGAACGCT
+5             1 TTTGATCATGGCTCAGATTGAACGCTG
+6             1 TTGATCATGGCTCAGATTGAACGCTGG
+&gt; 
+&gt; probes &lt;- <span class='functs'>DesignProbes</span>&#40;tiles,
++ identifier=<span class='chars'>&quot;Streptococcus&quot;</span>, <span class='comments'># target group</span>
++ target=<span class='chars'>&quot;SSU&quot;</span>&#41; <span class='comments'># target molecule</span>
+Streptococcus (751 candidate probes):
+  |========================================| 100%
+<br>
+Time difference of 79 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;probes&#41;
+     identifier start start_aligned permutations
+1 Streptococcus     1             1            1
+2 Streptococcus     2             2            1
+3 Streptococcus     3             3            1
+4 Streptococcus     4             4            1
+5 Streptococcus     5             5            1
+6 Streptococcus     6             6            1
+         score                probe.1 probe.2
+1 -15.2240.... TCCTGAGCCAGGATCAAACTCT    <NA>
+2 -11.1516.... GTCCTGAGCCAGGATCAAACTC    <NA>
+3 -11.0664....  GTCCTGAGCCAGGATCAAACT    <NA>
+4 -9.45344.... TCGTCCTGAGCCAGGATCAAAC    <NA>
+5 -9.70312.... TTCGTCCTGAGCCAGGATCAAA    <NA>
+6 -9.60355....   TCGTCCTGAGCCAGGATCAA    <NA>
+  probe.3 probe.4 efficiency.1 efficiency.2
+1    <NA>    <NA>    0.5451167           NA
+2    <NA>    <NA>    0.5822476           NA
+3    <NA>    <NA>    0.5014876           NA
+4    <NA>    <NA>    0.5493680           NA
+5    <NA>    <NA>    0.5397903           NA
+6    <NA>    <NA>    0.5470627           NA
+  efficiency.3 efficiency.4    FAm.1    FAm.2
+1           NA           NA 36.45083       NA
+2           NA           NA 37.66186       NA
+3           NA           NA 35.04946       NA
+4           NA           NA 36.58840       NA
+5           NA           NA 36.27878       NA
+6           NA           NA 36.62911       NA
+     FAm.3    FAm.4 coverage.1 coverage.2
+1       NA       NA          1         NA
+2       NA       NA          1         NA
+3       NA       NA          1         NA
+4       NA       NA          1         NA
+5       NA       NA          1         NA
+6       NA       NA          1         NA
+  coverage.3 coverage.4
+1         NA         NA
+2         NA         NA
+3         NA         NA
+4         NA         NA
+5         NA         NA
+6         NA         NA
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        mismatches
+1 Acinetobacter (10.7%,5.70kcal/mol,-18.4%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCATGGCTCAGAT) Actinomyces (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Bacillus (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Bacteroides (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Bifidobacterium (9.7%,5.98kcal/mol,-19.3%;TCCTGAGCCAGGATCAAACTCT/AGGGTTCGATTCTGGCTCAGGA) Clostridium (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Deinococcus (51.9%,0.26kcal/mol,-0.9%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGG) Enterococcus (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Escherichia (10.7%,5.70kcal/mol,-18.4%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCATGGCTCAGAT) Helicobacter (29.3%,2.63kcal/mol,-8.5%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGAG) Lactobacillus (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Listeria (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Neisseria (29.3%,2.63kcal/mol,-8.5%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGAT) Porphyromonas (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Propionibacterium (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) Pseudomonas (10.7%,5.70kcal/mol,-18.4%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCATGGCTCAGAT) Rhodobacter (29.3%,2.63kcal/mol,-8.5%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGAA) Staphylococcus (54.5%,0.00kcal/mol,0.0%;TCCTGAGCCAGGATCAAACTCT/AGAGTTTGATCCTGGCTCAGGA) 
+2                                                                                                                                                                                                                                                                                                                                                       Actinomyces (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Bacillus (44.4%,1.38kcal/mol,-4.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAT) Bacteroides (44.4%,1.38kcal/mol,-4.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAT) Clostridium (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Deinococcus (41.1%,1.72kcal/mol,-5.6%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGGT) Enterococcus (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Helicobacter (18.7%,4.47kcal/mol,-14.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGAGT) Lactobacillus (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Listeria (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Neisseria (18.7%,4.47kcal/mol,-14.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGATT) Porphyromonas (44.4%,1.38kcal/mol,-4.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAT) Propionibacterium (58.2%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAC) Rhodobacter (18.7%,4.47kcal/mol,-14.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGAAT) Staphylococcus (44.4%,1.38kcal/mol,-4.5%;GTCCTGAGCCAGGATCAAACTC/GAGTTTGATCCTGGCTCAGGAT) 
+3                                                                                                                                                                                                                                                                                                                                                                                   Actinomyces (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Bacillus (36.6%,1.38kcal/mol,-4.6%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAT) Bacteroides (36.6%,1.38kcal/mol,-4.6%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAT) Clostridium (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Deinococcus (33.5%,1.72kcal/mol,-5.8%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGGT) Enterococcus (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Helicobacter (14.2%,4.47kcal/mol,-15.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGAGT) Lactobacillus (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Listeria (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Neisseria (14.2%,4.47kcal/mol,-15.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGATT) Porphyromonas (36.6%,1.38kcal/mol,-4.6%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAT) Propionibacterium (50.1%,0.00kcal/mol,0.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAC) Rhodobacter (14.2%,4.47kcal/mol,-15.0%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGAAT) Staphylococcus (36.6%,1.38kcal/mol,-4.6%;GTCCTGAGCCAGGATCAAACT/AGTTTGATCCTGGCTCAGGAT) 
+4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       Actinomyces (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Bacillus (34.5%,2.08kcal/mol,-6.7%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGATGA) Bacteroides (34.5%,2.08kcal/mol,-6.7%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGATGA) Clostridium (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Deinococcus (17.9%,4.27kcal/mol,-13.8%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGGTGA) Enterococcus (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Lactobacillus (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Listeria (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Porphyromonas (34.5%,2.08kcal/mol,-6.7%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGATGA) Propionibacterium (54.9%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGACGA) Staphylococcus (34.5%,2.08kcal/mol,-6.7%;TCGTCCTGAGCCAGGATCAAAC/GTTTGATCCTGGCTCAGGATGA) 
+5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Actinomyces (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Bacillus (33.6%,2.08kcal/mol,-6.7%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGATGAA) Bacteroides (33.6%,2.08kcal/mol,-6.7%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGATGAA) Bifidobacterium (13.6%,4.98kcal/mol,-16.1%;TTCGTCCTGAGCCAGGATCAAA/TTCGATTCTGGCTCAGGATGAA) Clostridium (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Deinococcus (16.9%,4.34kcal/mol,-14.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGGTGAA) Enterococcus (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Lactobacillus (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Listeria (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Porphyromonas (33.6%,2.08kcal/mol,-6.7%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGATGAA) Propionibacterium (54.0%,0.00kcal/mol,0.0%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGACGAA) Staphylococcus (33.6%,2.08kcal/mol,-6.7%;TTCGTCCTGAGCCAGGATCAAA/TTTGATCCTGGCTCAGGATGAA) 
+6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Actinomyces (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Bacillus (34.3%,2.08kcal/mol,-7.2%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGATGA) Bacteroides (34.3%,2.08kcal/mol,-7.2%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGATGA) Bifidobacterium (18.1%,4.22kcal/mol,-14.7%;TCGTCCTGAGCCAGGATCAA/TCGATTCTGGCTCAGGATGA) Clostridium (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Deinococcus (17.7%,4.27kcal/mol,-14.9%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGGTGA) Enterococcus (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Lactobacillus (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Listeria (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Porphyromonas (34.3%,2.08kcal/mol,-7.2%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGATGA) Propionibacterium (54.7%,0.00kcal/mol,0.0%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGACGA) Staphylococcus (34.3%,2.08kcal/mol,-7.2%;TCGTCCTGAGCCAGGATCAA/TTGATCCTGGCTCAGGATGA)
+&gt; 
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

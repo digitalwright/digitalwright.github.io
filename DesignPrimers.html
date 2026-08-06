@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Design Primers
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1sub">Oligo Design<span class="right">&#9662;</span></a></li>
+<li><a href="DesignSignatures.html" class="l2">Design Signatures</a></li>
+<li><a href="DesignPrimers.html" class="l2sel">Design Primers</a></li>
+<li><a href="DesignProbes.html" class="l2">Design Probes</a></li>
+<li><a href="ProbeMelt.html" class="l2">ProbeMelt</a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Design PCR Primers</p>
+
+Use DECIPHER's DesignPrimers function to design the optimal set of PCR primers for targeting one group of DNA sequences in the presence of many non-target groups, as described in:<br>
+
+<div style="margin-left: 1em;"><p class="hanging">ES Wright <i>et al.</i> (2014) "Exploiting Extension Bias in PCR to Improve Primer Specificity in Ensembles of Nearly Identical DNA Templates." <i>Environmental Microbiology</i>, <a href="http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.12259/abstract">doi:10.1111/1462-2920.12259</a>.</p></div>
+
+For an in-depth tutorial, see the &quot;Design Group-Specific Primers&quot; vignette on the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I design PCR primers?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of aligned sequences (e.g., &quot;~/mySeqs.fas&quot;).<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># load sequences into a database</span>
+&gt; fas &lt;- <span class='chars'>&quot;~/mySeqs.fas&quot;</span>
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ <span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas,
++ type=<span class='chars'>&quot;FASTA&quot;</span>,
++ dbFile=dbConn,
++ identifier=<span class='chars'>&quot;&quot;</span>&#41;
+Reading FASTA file chunk 1
+<br>
+118 total sequences in table Seqs.
+Time difference of 0.04 secs
+<br>
+&gt; 
+&gt; <span class='comments'># identify the sequences based on their description</span>
+&gt; x &lt;- <span class='functs'>dbGetQuery</span>&#40;dbConn,
++ <span class='chars'>&quot;select description from Seqs&quot;</span>&#41;$description
+&gt; ns &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ split=<span class='chars'>&quot; &quot;</span>&#41;,
++ FUN=`[`,
++ <span class='numbers'>1L</span>&#41;&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=ns&#41;,
++ dbFile=dbConn&#41;
+Expression:
+update `Seqs` set `identifier` = (select
+`temp`.`identifier` from `temp` where
+`temp`.`row_names` = `Seqs`.`row_names`) where
+exists (select `temp`.`identifier` from `temp`
+where `temp`.`row_names` = `Seqs`.`row_names`)
+<br>
+Added to table Seqs:  "identifier".
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; tiles &lt;- <span class='functs'>TileSeqs</span>&#40;dbConn&#41;
+  |========================================| 100%
+<br>
+Time difference of 13.63 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;tiles&#41;
+  row_names start end start_aligned end_aligned
+1         1     1  27             1          27
+2         2     2  28             2          28
+3         3     3  29             3          29
+4         4     4  30             4          30
+5         5     5  31             5          31
+6         6     6  32             6          32
+  misprime width            id coverage
+1    FALSE  1594 Acinetobacter        1
+2    FALSE  1594 Acinetobacter        1
+3    FALSE  1594 Acinetobacter        1
+4    FALSE  1594 Acinetobacter        1
+5    FALSE  1594 Acinetobacter        1
+6    FALSE  1594 Acinetobacter        1
+  groupCoverage                 target_site
+1             1 AGAGTTTGATCATGGCTCAGATTGAAC
+2             1 GAGTTTGATCATGGCTCAGATTGAACG
+3             1 AGTTTGATCATGGCTCAGATTGAACGC
+4             1 GTTTGATCATGGCTCAGATTGAACGCT
+5             1 TTTGATCATGGCTCAGATTGAACGCTG
+6             1 TTGATCATGGCTCAGATTGAACGCTGG
+&gt; 
+&gt; primers &lt;- <span class='functs'>DesignPrimers</span>&#40;tiles,
++ identifier=<span class='chars'>&quot;Streptococcus&quot;</span>, <span class='comments'># target group</span>
++ minProductSize=<span class='numbers'>50</span>, <span class='comments'># base pairs</span>
++ numPrimerSets=<span class='numbers'>1</span>&#41; <span class='comments'># candidates to design</span>
+Streptococcus (1325 candidate primers):
+  |========================================| 100%
+<br>
+Determining Best Primer Pair:
+  |========================================| 100%
+<br>
+Time difference of 14 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;primers&#41;
+     identifier start_forward start_reverse
+1 Streptococcus           533          1289
+  product_size start_aligned_forward
+1          757                   553
+  start_aligned_reverse permutations_forward
+1                  1336                    1
+  permutations_reverse score_forward
+1                    1  -2.87986....
+  score_reverse score_set     forward_primer.1
+1  -0.00023....         0 CCGCGGTAATACGTAGGTCC
+  forward_primer.2 forward_primer.3
+1             <NA>             <NA>
+  forward_primer.4     reverse_primer.1
+1             <NA> GATTAGCTTGCCGTCACCGG
+  reverse_primer.2 reverse_primer.3
+1             <NA>             <NA>
+  reverse_primer.4 forward_efficiency.1
+1             <NA>            0.8161955
+  forward_efficiency.2 forward_efficiency.3
+1                   NA                   NA
+  forward_efficiency.4 reverse_efficiency.1
+1                   NA            0.8857364
+  reverse_efficiency.2 reverse_efficiency.3
+1                   NA                   NA
+  reverse_efficiency.4 forward_coverage.1
+1                   NA                  1
+  forward_coverage.2 forward_coverage.3
+1                 NA                 NA
+  forward_coverage.4 reverse_coverage.1
+1                 NA                  1
+  reverse_coverage.2 reverse_coverage.3
+1                 NA                 NA
+  reverse_coverage.4 mismatches_forward
+1                 NA                   
+                                                  mismatches_reverse
+1 Porphyromonas (0.0232%,GATTAGCTTGCCGTCACCGG/CCGGTGACTGGGGCTAAGTC) 
+  mismatches_set
+&gt; 
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

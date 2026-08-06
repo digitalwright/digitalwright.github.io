@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Design Signatures
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1sub">Oligo Design<span class="right">&#9662;</span></a></li>
+<li><a href="DesignSignatures.html" class="l2sel">Design Signatures</a></li>
+<li><a href="DesignPrimers.html" class="l2">Design Primers</a></li>
+<li><a href="DesignProbes.html" class="l2">Design Probes</a></li>
+<li><a href="ProbeMelt.html" class="l2">ProbeMelt</a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Design Signatures</p>
+
+The DesignSignatures function assists in the design of primers for sequencing, HRM, or FLP analysis with the goal of obtaining diverse amplicon signatures, as described in:<br>
+
+<div style="margin-left: 1em;"><p class="hanging">Wright, E. S. & Vetsigian, K. H. (2016) "DesignSignatures: a tool for designing primers that yields amplicons with distinct signatures." <i>Bioinformatics</i>, <a href="http://doi.org/10.1093/bioinformatics/btw047">doi:10.1093/bioinformatics/btw047</a>.</p></div>
+
+For an in-depth tutorial, see the &quot;Design Primers that Yield Group-Specific Signatures&quot; vignette on the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I design primers for amplicon sequencing?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, set the &quot;fas&quot; variable to the path to the FASTA file of unaligned sequences (e.g., &quot;~/mySeqs.fas&quot;).<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># load sequences into a database</span>
+&gt; fas &lt;- <span class='chars'>&quot;~/mySeqs.fas&quot;</span>
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ <span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas,
++ type=<span class='chars'>&quot;FASTA&quot;</span>,
++ dbFile=dbConn,
++ identifier=<span class='chars'>&quot;&quot;</span>&#41;
+Reading FASTA file chunk 1
+<br>
+118 total sequences in table Seqs.
+Time difference of 0.06 secs
+<br>
+&gt; 
+&gt; <span class='comments'># identify the sequences based on their description</span>
+&gt; x &lt;- <span class='functs'>dbGetQuery</span>&#40;dbConn,
++ <span class='chars'>&quot;select description from Seqs&quot;</span>&#41;$description
+&gt; ns &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ split=<span class='chars'>&quot; &quot;</span>&#41;,
++ FUN=`[`,
++ <span class='numbers'>1L</span>&#41;&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=ns&#41;,
++ dbFile=dbConn&#41;
+Expression:
+update `Seqs` set `identifier` = (select
+`temp`.`identifier` from `temp` where
+`temp`.`row_names` = `Seqs`.`row_names`) where
+exists (select `temp`.`identifier` from `temp`
+where `temp`.`row_names` = `Seqs`.`row_names`)
+<br>
+Added to table Seqs:  "identifier".
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># Primers for high-throughput sequencing:</span>
+&gt; primers &lt;- <span class='functs'>DesignSignatures</span>&#40;dbConn,
++ type=<span class='chars'>&quot;sequence&quot;</span>, <span class='comments'># sequencing signatures</span>
++ minProductSize=<span class='numbers'>300</span>, <span class='comments'># base pairs</span>
++ maxProductSize=<span class='numbers'>600</span>,
++ resolution=<span class='numbers'>5</span>, <span class='comments'># 5-mers</span>
++ levels=<span class='numbers'>5</span>&#41; <span class='comments'># counts of each k-mer</span>
+Tallying 8-mers for 19 groups:
+  |========================================| 100%
+<br>
+Time difference of 0.19 secs
+<br>
+Designing primer sequences based on the group 'Streptococcus':
+  |========================================| 100%
+<br>
+Time difference of 17.13 secs
+<br>
+Selecting the most common primer sequences:
+  |========================================| 100%
+<br>
+Time difference of 6.03 secs
+<br>
+Determining PCR products from each group:
+  |========================================| 100%
+<br>
+Time difference of 18.05 secs
+<br>
+Scoring primer pair combinations:
+  |========================================| 100%
+<br>
+Time difference of 1.38 secs
+<br>
+Choosing optimal forward and reverse pairs:
+  |========================================| 100%
+<br>
+Time difference of 3.93 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;primers&#41; <span class='comments'># top scoring primers</span>
+        forward_primer      reverse_primer
+1 CGGCTAACTMYGTGCCAGCA TCACRRCACGAGCTGACGA
+2 CGGCTAACTMYGTGCCAGCA CTCACRRCACGAGCTGACG
+3 CGGCTAACTMYGTGCCAGCA ACRRCACGAGCTGACGACA
+4  CCAGCAGCCGCGGTAATAC TCACRRCACGAGCTGACGA
+5    CCAGCAGCCGCGGTAAT TCACRRCACGAGCTGACGA
+6 CGGCTAACTMYGTGCCAGCA CACRRCACGAGCTGACGAC
+         score coverage products
+1 0.169827....        1      118
+2 0.169564....        1      118
+3 0.169325....        1      118
+4 0.168742....        1      118
+5 0.168682....        1      118
+6 0.168608....        1      118
+  similar_signatures missing_signatures
+1                                      
+2                                      
+3                                      
+4                                      
+5                                      
+6                                      
+&gt; 
+&gt; <span class='comments'># High Resolution Melt &#40;HRM&#41; assay:</span>
+&gt; primers &lt;- <span class='functs'>DesignSignatures</span>&#40;dbConn,
++ type=<span class='chars'>&quot;melt&quot;</span>, <span class='comments'># melt curve signatures</span>
++ resolution=<span class='functs'>seq</span>&#40;<span class='numbers'>75</span>, <span class='numbers'>100</span>, <span class='numbers'>0.25</span>&#41;, <span class='comments'># degrees Celsius</span>
++ minProductSize=<span class='numbers'>55</span>, <span class='comments'># base pairs</span>
++ maxProductSize=<span class='numbers'>400</span>&#41;
+Tallying 8-mers for 19 groups:
+  |========================================| 100%
+<br>
+Time difference of 0.18 secs
+<br>
+Designing primer sequences based on the group 'Streptococcus':
+  |========================================| 100%
+<br>
+Time difference of 17.11 secs
+<br>
+Selecting the most common primer sequences:
+  |========================================| 100%
+<br>
+Time difference of 5.77 secs
+<br>
+Determining PCR products from each group:
+  |========================================| 100%
+<br>
+Time difference of 113.6 secs
+<br>
+Scoring primer pair combinations:
+  |========================================| 100%
+<br>
+Time difference of 0.26 secs
+<br>
+Choosing optimal forward and reverse pairs:
+  |========================================| 100%
+<br>
+Time difference of 0.67 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;primers&#41; <span class='comments'># top scoring primers</span>
+       forward_primer       reverse_primer
+1 MRACTCCTACGGGAGGCAG CTGCTGGCACRKAGTTAGCC
+2  CCTACGGGAGGCAGCAGT CTGCTGGCACRKAGTTAGCC
+3   YCCTACGGGAGGCAGCA CTGCTGGCACRKAGTTAGCC
+4  YCCTACGGGAGGCAGCAG CTGCTGGCACRKAGTTAGCC
+5 CMRACTCCTACGGGAGGCA CTGCTGGCACRKAGTTAGCC
+6 MRACTCCTACGGGAGGCAG  GCTGGCACRKAGTTAGCCG
+         score     coverage products
+1 0.076803.... 0.947368....      114
+2 0.075581.... 0.947368....      114
+3 0.075165.... 0.947368....      114
+4 0.075165.... 0.947368....      114
+5 0.074834.... 0.947368....      114
+6 0.074710.... 0.947368....      114
+                                                                                                                                                                                                                        similar_signatures
+1               (Clostridium, Deinococcus, Escherichia, Neisseria); (Acinetobacter, Bacteroides, Helicobacter, Lactobacillus, Porphyromonas, Staphylococcus, Streptococcus); (Bacillus, Rhodobacter); (Bifidobacterium, Propionibacterium)
+2                             (Bacillus, Rhodobacter); (Clostridium, Escherichia, Neisseria); (Acinetobacter, Bacteroides, Enterococcus, Helicobacter, Lactobacillus, Porphyromonas, Staphylococcus); (Bifidobacterium, Propionibacterium)
+3                                                    (Bacillus, Rhodobacter); (Clostridium, Escherichia, Neisseria); (Acinetobacter, Bacteroides, Enterococcus, Helicobacter, Lactobacillus, Porphyromonas, Staphylococcus, Streptococcus)
+4                                                    (Bacillus, Rhodobacter); (Clostridium, Escherichia, Neisseria); (Acinetobacter, Bacteroides, Enterococcus, Helicobacter, Lactobacillus, Porphyromonas, Staphylococcus, Streptococcus)
+5 (Clostridium, Deinococcus, Escherichia, Neisseria); (Acinetobacter, Bacteroides, Enterococcus, Helicobacter, Lactobacillus, Porphyromonas, Staphylococcus, Streptococcus); (Bacillus, Rhodobacter); (Bifidobacterium, Propionibacterium)
+6                                             (Acinetobacter, Bacteroides, Helicobacter, Lactobacillus, Staphylococcus); (Bacillus, Rhodobacter); (Clostridium, Deinococcus, Escherichia, Neisseria); (Bifidobacterium, Propionibacterium)
+  missing_signatures
+1        Pseudomonas
+2        Pseudomonas
+3        Pseudomonas
+4        Pseudomonas
+5        Pseudomonas
+6        Pseudomonas
+&gt; 
+&gt; <span class='comments'># Primers for community fingerprinting:</span>
+&gt; primers &lt;- <span class='functs'>DesignSignatures</span>&#40;dbConn,
++ type=<span class='chars'>&quot;length&quot;</span>, <span class='comments'># amplicon length signatures</span>
++ levels=<span class='numbers'>2</span>, <span class='comments'># presence/absence</span>
++ minProductSize=<span class='numbers'>200</span>, <span class='comments'># base pairs</span>
++ maxProductSize=<span class='numbers'>1400</span>,
++ resolution=<span class='functs'>c</span>&#40;<span class='functs'>seq</span>&#40;<span class='numbers'>200</span>, <span class='numbers'>700</span>, <span class='numbers'>3</span>&#41;, <span class='comments'># length bins</span>
++ <span class='functs'>seq</span>&#40;<span class='numbers'>705</span>, <span class='numbers'>1000</span>, <span class='numbers'>5</span>&#41;,
++ <span class='functs'>seq</span>&#40;<span class='numbers'>1010</span>, <span class='numbers'>1400</span>, <span class='numbers'>10</span>&#41;&#41;&#41;
+Tallying 8-mers for 19 groups:
+  |========================================| 100%
+<br>
+Time difference of 0.17 secs
+<br>
+Designing primer sequences based on the group 'Streptococcus':
+  |========================================| 100%
+<br>
+Time difference of 17.8 secs
+<br>
+Selecting the most common primer sequences:
+  |========================================| 100%
+<br>
+Time difference of 5.98 secs
+<br>
+Determining PCR products from each group:
+  |========================================| 100%
+<br>
+Time difference of 5.86 secs
+<br>
+Scoring primer pair combinations:
+  |========================================| 100%
+<br>
+Time difference of 0.46 secs
+<br>
+Choosing optimal forward and reverse pairs:
+  |========================================| 100%
+<br>
+Time difference of 0.5 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;primers&#41; <span class='comments'># top scoring primers</span>
+        forward_primer      reverse_primer
+1    YCCTACGGGAGGCAGCA CACRRCACGAGCTGACGAC
+2   CCTACGGGAGGCAGCAGT TCACRRCACGAGCTGACGA
+3  MRACTCCTACGGGAGGCAG TCACRRCACGAGCTGACGA
+4   YCCTACGGGAGGCAGCAG CACRRCACGAGCTGACGAC
+5  CMRACTCCTACGGGAGGCA CACRRCACGAGCTGACGAC
+6 YGAGTGGCGRACGGGTGAGT ACRRCACGAGCTGACGACA
+         score     coverage products
+1 0.007167....            1      118
+2 0.007167....            1      118
+3 0.007167....            1      118
+4 0.007167....            1      118
+5 0.007167....            1      118
+6 0.006771.... 0.947368....      114
+                                                                                                                                                                  similar_signatures
+1 (Acinetobacter, Bacillus, Lactobacillus, Listeria, Staphylococcus, Streptococcus); (Escherichia, Neisseria, Pseudomonas); (Actinomyces, Porphyromonas); (Bacteroides, Deinococcus)
+2 (Acinetobacter, Bacillus, Lactobacillus, Listeria, Staphylococcus, Streptococcus); (Escherichia, Neisseria, Pseudomonas); (Actinomyces, Porphyromonas); (Bacteroides, Deinococcus)
+3 (Acinetobacter, Bacillus, Lactobacillus, Listeria, Staphylococcus, Streptococcus); (Escherichia, Neisseria, Pseudomonas); (Actinomyces, Porphyromonas); (Bacteroides, Deinococcus)
+4 (Acinetobacter, Bacillus, Lactobacillus, Listeria, Staphylococcus, Streptococcus); (Escherichia, Neisseria, Pseudomonas); (Actinomyces, Porphyromonas); (Bacteroides, Deinococcus)
+5 (Acinetobacter, Bacillus, Lactobacillus, Listeria, Staphylococcus, Streptococcus); (Escherichia, Neisseria, Pseudomonas); (Actinomyces, Porphyromonas); (Bacteroides, Deinococcus)
+6                         (Lactobacillus, Streptococcus); (Bacillus, Listeria, Staphylococcus); (Actinomyces, Escherichia, Neisseria, Pseudomonas); (Deinococcus, Propionibacterium)
+  missing_signatures
+1                   
+2                   
+3                   
+4                   
+5                   
+6      Porphyromonas
+&gt; 
+&gt; <span class='comments'># Primers for restriction fragment length polymorphism &#40;RFLP&#41;:</span>
+&gt; <span class='functs'>data</span>&#40;RESTRICTION_ENZYMES&#41;
+&gt; myEnzymes &lt;- RESTRICTION_ENZYMES[<span class='functs'>c</span>&#40;<span class='chars'>&quot;EcoRI&quot;</span>, <span class='chars'>&quot;HinfI&quot;</span>&#41;]
+&gt; primers &lt;- <span class='functs'>DesignSignatures</span>&#40;dbConn,
++ type=<span class='chars'>&quot;length&quot;</span>, <span class='comments'># amplicon length signatures</span>
++ levels=<span class='numbers'>2</span>, <span class='comments'># presence/absence</span>
++ minProductSize=<span class='numbers'>200</span>, <span class='comments'># base pairs</span>
++ maxProductSize=<span class='numbers'>600</span>,
++ resolution=<span class='functs'>c</span>&#40;<span class='functs'>seq</span>&#40;<span class='numbers'>50</span>, <span class='numbers'>100</span>, <span class='numbers'>3</span>&#41;, <span class='comments'># length bins</span>
++ <span class='functs'>seq</span>&#40;<span class='numbers'>105</span>, <span class='numbers'>200</span>, <span class='numbers'>5</span>&#41;,
++ <span class='functs'>seq</span>&#40;<span class='numbers'>210</span>, <span class='numbers'>600</span>, <span class='numbers'>10</span>&#41;&#41;,
++ enzymes=myEnzymes&#41;
+Tallying 8-mers for 19 groups:
+  |========================================| 100%
+<br>
+Time difference of 0.18 secs
+<br>
+Designing primer sequences based on the group 'Streptococcus':
+  |========================================| 100%
+<br>
+Time difference of 17.84 secs
+<br>
+Selecting the most common primer sequences:
+  |========================================| 100%
+<br>
+Time difference of 6 secs
+<br>
+Determining PCR products from each group:
+  |========================================| 100%
+<br>
+Time difference of 3.46 secs
+<br>
+Scoring primer pair combinations:
+  |========================================| 100%
+<br>
+Time difference of 0.21 secs
+<br>
+Choosing optimal forward and reverse pairs:
+  |========================================| 100%
+<br>
+Time difference of 0.45 secs
+<br>
+Finding the best restriction enzyme:
+  |========================================| 100%
+<br>
+Time difference of 18.04 secs
+<br>
+&gt; <span class='functs'>head</span>&#40;primers&#41; <span class='comments'># top scoring primers</span>
+          forward_primer      reverse_primer
+1   YGAGTGGCGRACGGGTGAGT  YGTATYACCGCGGCTGCT
+2   YGAGTGGCGRACGGGTGAGT YGTATYACCGCGGCTGCTG
+3  YGAGTGGCGRACGGGTGAGTA  YGTATYACCGCGGCTGCT
+4  YGAGTGGCGRACGGGTGAGTA YGTATYACCGCGGCTGCTG
+5 YGAGTGGCGRACGGGTGAGTAA  YGTATYACCGCGGCTGCT
+6 YGAGTGGCGRACGGGTGAGTAA YGTATYACCGCGGCTGCTG
+         score     coverage products
+1 0.019621.... 0.947368....      114
+2 0.019621.... 0.947368....      114
+3 0.019621.... 0.947368....      114
+4 0.019621.... 0.947368....      114
+5 0.019621.... 0.947368....      114
+6 0.019621.... 0.947368....      114
+                                                                            similar_signatures
+1 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+2 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+3 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+4 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+5 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+6 (Bacillus, Streptococcus); (Clostridium, Listeria, Staphylococcus); (Escherichia, Neisseria)
+  missing_signatures enzyme digest_score
+1      Porphyromonas  HinfI   0.04524469
+2      Porphyromonas  HinfI   0.04524469
+3      Porphyromonas  HinfI   0.04524469
+4      Porphyromonas  HinfI   0.04524469
+5      Porphyromonas  HinfI   0.04524469
+6      Porphyromonas  HinfI   0.04524469
+  fragments
+1       299
+2       299
+3       299
+4       299
+5       299
+6       299
+&gt; 
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

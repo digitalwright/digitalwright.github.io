@@ -1,0 +1,441 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - R Lesson #10
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2sel">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">R Lesson #10 - Tabulating imported data</p>
+
+For this lesson, a CRAN Logs dataset is required, which is one of the comma-delimited download available from <a href="http://cran-logs.rstudio.com">here</a>. Each of the links contains a file with the package downloads from one day on the RStudio server. Select any day for download, then right-click the link and choose "Download Linked File" &#40;or equivalent&#41;. Using a file connection, it is possible to read-in the file without first unzipping it, as shown below.<br><br>
+
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"># establish a gzip file connection</span>
+&gt; g &lt;- <span class='functs'>gzfile</span>(<span class='chars'>&quot;&lt;&lt;PATH TO DOWNLOADED file.csv.gz&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;r&quot;</span>) <span class='comments'># open read-only</span>
+&gt; r &lt;- <span class='functs'>read.csv</span>(g,
++ &nbsp;&nbsp;&nbsp;stringsAsFactors=F)
+&gt; <span class='functs'>close</span>&#40;g&#41;
+&gt; <span class='functs'>object.size</span>&#40;r&#41;
+37146024 bytes
+&gt; <span class='functs'>dim</span>&#40;r&#41;
+[1] 443700     10
+&gt; <span class='functs'>head</span>&#40;r&#41;
+        date     time    size r_version r_arch
+1 2015-11-21 04:37:01    9252     3.2.2 x86_64
+2 2015-11-21 04:37:01  917418     3.2.2 x86_64
+3 2015-11-21 04:36:20  398860      <NA>   <NA>
+4 2015-11-21 04:36:31    5061      <NA>   <NA>
+5 2015-11-21 04:36:53  242622      <NA>   <NA>
+6 2015-11-21 04:36:17 2153301      <NA>   <NA>
+       r_os              package  version country
+1 linux-gnu               bitops    1.0-6      US
+2 linux-gnu                RCurl 1.95-4.7      US
+3      <NA>              permute    0.8-4      US
+4      <NA>                 PGM2      1.0      US
+5      <NA>            phyloclim    0.9-4      US
+6      <NA> PerformanceAnalytics 1.4.3541      US
+  ip_id
+1     1
+2     1
+3     2
+4     2
+5     2
+6     2
+&gt; <span class='functs'>tail</span>&#40;r&#41;
+             date     time    size r_version r_arch
+443695 2015-11-21 23:43:33 1776979     3.2.1 x86_64
+443696 2015-11-21 23:43:31  504229     3.2.2   i386
+443697 2015-11-21 23:43:36   76935     3.2.2 x86_64
+443698 2015-11-21 23:43:29  290933     3.2.2 x86_64
+443699 2015-11-21 23:43:33  955846     3.2.2 x86_64
+443700 2015-11-21 23:43:34 1380833     3.2.2 x86_64
+               r_os     package version country ip_id
+443695 darwin10.8.0      Matrix   1.2-2      US   113
+443696      mingw32    reshape2   1.4.1      US  8156
+443697      mingw32 DataCombine   0.2.9      US  8156
+443698    linux-gnu   iterators   1.0.8      US   113
+443699    linux-gnu    jsonlite  0.9.17      CO 17464
+443700      mingw32       rtfbs   0.3.4      US 13872</span></pre>
+
+<div class="breakout">The table function can be used to tabulate data. Given an input vector, it returns the number of occurences of each unique entry.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>table</span>&#40;<span class='functs'>c</span>&#40;<span class='chars'>&quot;D&quot;</span>, <span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;D&quot;</span>, <span class='chars'>&quot;D&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;&#41;</span>
+<br>
+A B C D 
+1 2 1 3 
+&gt; t1 &lt;- <span class='functs'>table</span>&#40;r$r_version&#41;
+&gt; t1 <span class='comments'># note that the output is sorted by name</span>
+<br>
+2.11.1 2.12.0 2.12.1 2.12.2 2.13.1 2.14.0 2.14.1 
+    22      1      2     18      6     23     51 
+2.14.2 2.15.0 2.15.1 2.15.2 2.15.3  3.0.0  3.0.1 
+   249     53    101    293    103    141    355 
+ 3.0.2  3.0.3  3.1.0  3.1.1  3.1.2  3.1.3  3.2.0 
+  5053    571   1692   9329  13475   7643   7847 
+ 3.2.1  3.2.2  3.3.0 
+ 13383 256579   2767 
+&gt; <span class='functs'>sort</span>&#40;t1&#41; <span class='comments'># sort by increasing number</span>
+<br>
+2.12.0 2.12.1 2.13.1 2.12.2 2.11.1 2.14.0 2.14.1 
+     1      2      6     18     22     23     51 
+2.15.0 2.15.1 2.15.3  3.0.0 2.14.2 2.15.2  3.0.1 
+    53    101    103    141    249    293    355 
+ 3.0.3  3.1.0  3.3.0  3.0.2  3.1.3  3.2.0  3.1.1 
+   571   1692   2767   5053   7643   7847   9329 
+ 3.2.1  3.1.2  3.2.2 
+ 13383  13475 256579 
+&gt; <span class='functs'>sort</span>&#40;t1, decreasing=TRUE&#41;
+<br>
+ 3.2.2  3.1.2  3.2.1  3.1.1  3.2.0  3.1.3  3.0.2 
+256579  13475  13383   9329   7847   7643   5053 
+ 3.3.0  3.1.0  3.0.3  3.0.1 2.15.2 2.14.2  3.0.0 
+  2767   1692    571    355    293    249    141 
+2.15.3 2.15.1 2.15.0 2.14.1 2.14.0 2.11.1 2.12.2 
+   103    101     53     51     23     22     18 
+2.13.1 2.12.1 2.12.0 
+     6      2      1 
+&gt; <span class='functs'>sessionInfo</span>&#40;&#41; <span class='comments'># find your version of R</span>
+R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11.1 (El Capitan)
+<br>
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+<br>
+attached base packages:
+[1] stats4    parallel  stats     graphics  grDevices
+[6] utils     datasets  methods   base     
+&gt; <span class='comments'># what fraction have each OS</span>
+&gt; t2 &lt;- <span class='functs'>table</span>&#40;r$r_os&#41;
+&gt; t2
+<br>
+                             darwin10.8.0 
+                2230                 1662 
+        darwin13.1.0         darwin13.3.0 
+                1182                    8 
+        darwin13.4.0         darwin14.0.0 
+               13355                    3 
+        darwin14.1.0         darwin14.3.0 
+                  21                    8 
+        darwin14.4.0         darwin14.5.0 
+                  43                  189 
+        darwin15.0.0          darwin9.8.0 
+                 197                   97 
+         freebsd11.0            linux-gnu 
+                 382               129812 
+     linux-gnueabihf              mingw32 
+                  34               170534 
+&gt; t2 &lt;- t2/<span class='functs'>sum</span>&#40;t2&#41; <span class='comments'># convert to fraction</span>
+&gt; <span class='functs'>head</span>&#40;<span class='functs'>sort</span>&#40;t2, decreasing=TRUE&#41;&#41;
+<br>
+             mingw32            linux-gnu 
+         0.533323743          0.405970784 
+        darwin13.4.0
+         0.041766091          0.006974046 
+        darwin10.8.0         darwin13.1.0 
+         0.005197697          0.003696557 
+&gt; <span class='comments'># top 20 package downloads</span>
+&gt; t3 &lt;- <span class='functs'>table</span>&#40;r$package&#41;
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t3&#41;, n=<span class='numbers'>20</span>&#41;
+<br>
+       rJava          DBI      foreach       gtable 
+        2555         2609         2715         2771 
+    labeling      munsell    dichromat        proto 
+        2792         2805         2814         2856 
+  colorspace RColorBrewer       scales     reshape2 
+        3033         3148         3211         3278 
+    magrittr       digest      stringr         curl 
+        3298         3321         3457         3463 
+        plyr      stringi      ggplot2         Rcpp 
+        3702         3965         4013         5465 
+&gt; <span class='comments'># what countries have the most downloads</span>
+&gt; t4 &lt;- <span class='functs'>table</span>&#40;r$country&#41;
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t4&#41;, n=<span class='numbers'>20</span>&#41; <span class='comments'># two letter code</span>
+<br>
+    RU     ZA     HK     CH     AU     TH     ES 
+  3223   3519   3784   4081   4154   5052   5943 
+    CA     FR     BR     JP     KR     DE     IT 
+  6468   6485   6742   8288   8887  10118  10186 
+    IN     GB     CZ     TW     CN     US 
+ 10306  12869  15823  24205  60285 196083 </span></pre>
+
+<div class="breakout">The function tapply requires three inputs: a vector </span>&#40;X&#41;, an index </span>&#40;INDEX&#41;, and a function </span>&#40;FUN&#41;. It will apply the input function to the vector in groups according to the index. The type of result depends on what the function returns: if it is always length 1 then the result will be a vector, otherwise it will be a list. This behavior can be changed to always return a list by setting the simplify argument to FALSE.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># tapply - apply a function by group</span></span>
+&gt; <span class='functs'>tapply</span>&#40;<span class='functs'>c</span>(<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;, <span class='comments'># input vector</span>
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;, <span class='comments'># indices</span>
++ &nbsp;&nbsp;&nbsp;c) <span class='comments'># function</span>
+$`1`
+[1] "A" "B"
+<br>
+$`2`
+[1] "C"
+<br>
+&gt; <span class='comments'># note that the result is a list</span>
+&gt; <span class='functs'>tapply</span>&#40;<span class='functs'>c</span>(<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>2</span>&#41;,
++ &nbsp;&nbsp;&nbsp;paste,
++ &nbsp;&nbsp;&nbsp;collapse=<span class='chars'>&quot;&quot;</span>) <span class='comments'># extra parameter</span>
+   1    2 
+"AB"  "C" 
+&gt; <span class='comments'># note that the result is a vector</span>
+&gt; <span class='functs'>tapply</span>&#40;<span class='functs'>c</span>(<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='numbers'>2</span>, <span class='numbers'>1</span>, <span class='numbers'>1</span>&#41;,
++ &nbsp;&nbsp;&nbsp;paste,
++ &nbsp;&nbsp;&nbsp;collapse=<span class='chars'>&quot;&quot;</span>)
+   1    2 
+"BC"  "A" 
+&gt; <span class='functs'>tapply</span>&#40;<span class='functs'>c</span>(<span class='chars'>&quot;A&quot;</span>, <span class='chars'>&quot;B&quot;</span>, <span class='chars'>&quot;C&quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>c</span>&#40;<span class='numbers'>2</span>, <span class='numbers'>1</span>, <span class='numbers'>1</span>&#41;,
++ &nbsp;&nbsp;&nbsp;paste,
++ &nbsp;&nbsp;&nbsp;collapse=<span class='chars'>&quot;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;simplify=FALSE) <span class='comments'># return a list</span>
+$`1`
+[1] "BC"
+<br>
+$`2`
+[1] "A"
+<br>
+&gt; <span class='comments'># note that the result is always sorted by name</span></pre></span>
+
+<div class="breakout">For the next commands, it is necessary to download the file <a href="data/RLessons/GEOS_TVSeries.txt">here</a>. This tab-delimited file contains a set of TV ratings from participants in the Global Episode Opinion Survey </span>&#40;GEOS&#41;.</div>
+
+<pre><span class="codebox"><span class='comments'># load in the GEOS dataset</span>
+&gt; tv &lt;- <span class='functs'>read.table</span>(<span class='chars'>&quot;&lt;&lt;PATH TO GEOS_TVSeries.txt&gt;&gt;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;header=T,
++ &nbsp;&nbsp;&nbsp;sep=<span class='chars'>&quot;\t&quot;</span>,
++ &nbsp;&nbsp;&nbsp;stringsAsFactors=FALSE)
+&gt; <span class='functs'>head</span>&#40;tv&#41;
+  Series        Episode Rating StdDev Count
+1  Alias  Truth Be Told   8.74   1.58   194
+2  Alias   So It Begins   8.34   1.65   179
+3  Alias         Parity   8.31   1.71   167
+4  Alias A Broken Heart   8.09   1.82   161
+5  Alias    Doppelgnger   8.30   1.74   151
+6  Alias      Reckoning   8.38   1.76   156
+  Episode.number
+1              1
+2              2
+3              3
+4              4
+5              5
+6              6
+&gt; 
+&gt; t5 &lt;- <span class='functs'>tapply</span>(tv$Count, <span class='comments'># data</span>
++ &nbsp;&nbsp;&nbsp;tv$Series, <span class='comments'># index</span>
++ &nbsp;&nbsp;&nbsp;sum, <span class='comments'># function</span>
++ &nbsp;&nbsp;&nbsp;na.rm=TRUE) <span class='comments'># extra arguments</span>
+&gt; <span class='comments'># note that the output is sorted by name</span>
+&gt; <span class='functs'>head</span>&#40;t5&#41; <span class='comments'># the output is tagged by name</span>
+             24           Alias    Alien Nation 
+          13253           10837             264 
+American Gothic       Andromeda           Angel 
+            711            9738           33275 
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t5&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># most rated TV Series</span>
+             Doctor Who (1963) 
+                         27039 
+Star Trek: The Original Series 
+                         30920 
+                         Angel 
+                         33275 
+                 Stargate SG-1 
+                         45493 
+                   The X-Files 
+                         47387 
+                     Babylon 5 
+                         56176 
+      Buffy the Vampire Slayer 
+                         62218 
+Star Trek: The Next Generation 
+                         62323 
+    Star Trek: Deep Space Nine 
+                         79348 
+            Star Trek: Voyager 
+                         82279 
+&gt; t6 &lt;- <span class='functs'>tapply</span>(tv$Rating,
++ &nbsp;&nbsp;&nbsp;tv$Series,
++ &nbsp;&nbsp;&nbsp;mean,
++ &nbsp;&nbsp;&nbsp;na.rm=TRUE)
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t6&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># top 10 TV series</span>
+         Wonderfalls           Twin Peaks 
+            8.685385             8.737742 
+                  Oz         Carniv<e0>le 
+            8.739464             8.742500 
+Arrested Development             Deadwood 
+            8.769434             8.801111 
+            The Wire      Game of Thrones 
+            8.847833             8.848500 
+             Firefly     Band Of Brothers 
+            8.858235             9.113000 
+&gt; 
+&gt; <span class='comments'># weighted &#40;by Count&#41; average Rating</span>
+&gt; t7 &lt;- <span class='functs'>tapply</span>(tv$Count*tv$Rating,
++ &nbsp;&nbsp;&nbsp;tv$Series,
++ &nbsp;&nbsp;&nbsp;sum,
++ &nbsp;&nbsp;&nbsp;na.rm=TRUE)
+&gt; w.avg &lt;- t7/t5
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;w.avg&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># top 10 TV series</span>
+        Carniv<e0>le                   Oz 
+            8.736204             8.739646 
+              Dexter           Twin Peaks 
+            8.763119             8.771006 
+Arrested Development             Deadwood 
+            8.771099             8.802536 
+     Game of Thrones             The Wire 
+            8.845765             8.851126 
+             Firefly     Band Of Brothers 
+            8.874777             9.112297 
+&gt; <span class='functs'>head</span>&#40;<span class='functs'>sort</span>&#40;w.avg&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># worst 10 TV series</span>
+Mystery Science Theater 3000 
+                    5.576703 
+                   Threshold 
+                    5.772278 
+                  Family Guy 
+                    5.850557 
+                     Surface 
+                    5.950123 
+                Knight Rider 
+                    6.053208 
+                      Scrubs 
+                    6.149460 
+                  Space 1999 
+                    6.178289 
+               Lost In Space 
+                    6.182098 
+        Desperate Housewives 
+                    6.188700 
+                  Highlander 
+                    6.194055 
+&gt; <span class='functs'>plot</span>(w.avg,
++ &nbsp;&nbsp;&nbsp;pch=NA, <span class='comments'># plot without points</span>
++ &nbsp;&nbsp;&nbsp;xaxt=&#39;n&#39;, <span class='comments'># no x-axis</span>
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;&quot;</span>, <span class='comments'># no x-axis label</span>
++ &nbsp;&nbsp;&nbsp;ylab=<span class='chars'>&quot;Weighted Average Rating&quot;</span>)
+&gt; <span class='comments'># display weighted average ratings</span>
+&gt; <span class='comments'># in alphabetical order</span>
+&gt; <span class='functs'>text</span>&#40;x=<span class='numbers'>1</span>:<span class='functs'>length</span>(w.avg&#41;, y=w.avg,
++ &nbsp;&nbsp;&nbsp;labels=<span class='functs'>names</span>&#40;w.avg&#41;,
++ &nbsp;&nbsp;&nbsp;cex=<span class='numbers'>0.5</span>)
+&gt; 
+&gt; <span class='comments'># table is the same as tapply with FUN=length</span>
+&gt; x &lt;- tv$Series
+&gt; t8.table &lt;- <span class='functs'>table</span>&#40;x&#41; <span class='comments'># count the number of series</span>
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t8.table&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># longest running TV Series</span>
+x
+                            24 
+                           209 
+  Mystery Science Theater 3000 
+                           209 
+                    Smallville 
+                           218 
+                 Stargate SG-1 
+                           223 
+                       Friends 
+                           239 
+                    Family Guy 
+                           267 
+                          NCIS 
+                           269 
+                    South Park 
+                           276 
+CSI: Crime Scene Investigation 
+                           330 
+                  The Simpsons 
+                           615 
+&gt; t8.tapply &lt;- <span class='functs'>tapply</span>(x,
++ &nbsp;&nbsp;&nbsp;x,
++ &nbsp;&nbsp;&nbsp;length)
+&gt; <span class='functs'>all</span>&#40;t8.table==t8.tapply&#41;
+[1] TRUE</span></pre>
+
+<div class="breakout">It is sometimes useful to make a new index by merging the data in different vectors. Here, paste is used to create a new index from two columns. Using this new index with tapply breaks the output into more groups.</div>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># using the CRAN dataset from before:</span></span>
+&gt; index &lt;- <span class='functs'>paste</span>&#40;r$r_version, r$r_os&#41;
+&gt; <span class='comments'># there is now a new indexing variable</span>
+&gt; t9 &lt;- <span class='functs'>table</span>&#40;index&#41; <span class='comments'># table of the new index</span>
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t9&#41;&#41; <span class='comments'># sometimes the version/os is missing</span>
+index
+3.2.2 darwin13.4.0      3.2.1 mingw32 
+              6547               8723 
+     3.1.2 mingw32    3.2.2 linux-gnu 
+             10609             115141 
+             NA NA      3.2.2 mingw32 
+            123943             131887 
+&gt; <span class='comments'># now sum download sizes by the new index</span>
+&gt; t10 &lt;- <span class='functs'>tapply</span>&#40;<span class='functs'>as.numeric</span>(r$size&#41;, <span class='comments'># coerce to number</span>
++ &nbsp;&nbsp;&nbsp;index,
++ &nbsp;&nbsp;&nbsp;sum,
++ &nbsp;&nbsp;&nbsp;na.rm=TRUE)
+&gt; <span class='functs'>tail</span>&#40;<span class='functs'>sort</span>&#40;t10&#41;, n=<span class='numbers'>10</span>&#41; <span class='comments'># biggest downloads by index</span>
+     3.1.1 mingw32    3.1.1 linux-gnu 
+        3648520410         4431702724 
+     3.2.0 mingw32      3.1.3 mingw32 
+        5084462032         5732757172 
+3.2.2 darwin13.4.0      3.2.1 mingw32 
+        6772883004         9180003054 
+     3.1.2 mingw32              NA NA 
+       10819789887        60369378298 
+   3.2.2 linux-gnu      3.2.2 mingw32 
+      111322007214       137171388391 </span></pre>
+
+<div class="breakout">Histograms are a visual way of depicting some of the same results obtained above.</div>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>hist</span>&#40;tv$Rating&#41;</span>
+&gt; <span class='functs'>abline</span>&#40;v=<span class='functs'>mean</span>(tv$Rating, na.rm=TRUE&#41;,
++ &nbsp;&nbsp;&nbsp;lty=<span class='numbers'>2</span>, lwd=<span class='numbers'>2</span>)
+&gt; <span class='functs'>hist</span>&#40;tv$Rating, breaks=<span class='numbers'>100</span>&#41;
+&gt; <span class='functs'>hist</span>(tv$Count,
++ &nbsp;&nbsp;&nbsp;main=<span class='chars'>&quot;TV Series Episodes&quot;</span>,
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Number of Ratings&quot;</span>)
+&gt; <span class='functs'>hist</span>(tv$StdDev,
++ &nbsp;&nbsp;&nbsp;freq=F, <span class='comments'># show Density</span>
++ &nbsp;&nbsp;&nbsp;xlab=<span class='chars'>&quot;Standard Deviation of Ratings&quot;</span>,
++ &nbsp;&nbsp;&nbsp;col=<span class='chars'>&quot;lightyellow&quot;</span>)</span></pre>
+
+<br><br><a style="float:left;" href="RLesson9.html">&lt; Previous Lesson</a><a style="float:right;" href="RLesson11.html">Next Lesson &gt;</a>
+<br>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

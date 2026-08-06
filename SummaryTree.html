@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Summary Tree
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1sub">Phylogenetics<span class="right">&#9662;</span></a></li>
+<li><a href="MinimumEvolutionTrees.html" class="l2">Minimum Evolution</a></li>
+<li><a href="MaximumLikelihoodTrees.html" class="l2">Maximum Likelihood</a></li>
+<li><a href="MaximumParsimonyTrees.html" class="l2">Maximum Parsimony</a></li>
+<li><a href="SummaryTree.html" class="l2sel">Summary Tree</a></li>
+<li><a href="AncestralStates.html" class="l2">Ancestral States</a></li>
+<li><a href="Tutorials.html" class="l1">Tutorials<span class="right">&#9656;</span></a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Summary Tree</p>
+
+This short example describes how to use <i>Zipline</i> to generate a summary tree.  Given a set of gene trees, <i>Zipline</i> will construct a species tree summarizing the gene trees.
+
+<br><br>
+
+For an in-depth tutorial on phylogenetics, see the &quot;Growing Phylogenetic Trees with Treeline&quot; vignette, available from the <a href="Documentation.html">Documentation</a> page.
+
+<p class="c1">How do I build a summary (species) tree with <i>Zipline</i>?</p>
+
+First it is necessary to <a href="Downloads.html">install</a> DECIPHER and load the library in R. Next, construct or load a set of trees representing phylogenies for different genes.
+
+<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='comments'># load the DECIPHER library in R</span></span>
+&gt; <span class='functs'>library</span>&#40;DECIPHER&#41;
+&gt; 
+&gt; <span class='comments'># load the gene trees from a file</span>
+&gt; treefile &lt;- <span class='chars'>&quot;&lt;&lt;REPLACE WITH PATH TO NEWICK FILE&gt;&gt;&quot;</span>
+&gt; gene_trees &lt;- <span class='functs'>ReadDendrogram</span>&#40;treefile&#41;
+&gt; <span class='functs'>head</span>&#40;gene_trees&#41;
+[[1]]
+'dendrogram' with 1 branches and 21 members total, at height 1.282693 
+<br>
+[[2]]
+'dendrogram' with 1 branches and 21 members total, at height 1.111368 
+<br>
+[[3]]
+'dendrogram' with 1 branches and 20 members total, at height 0.928914 
+<br>
+[[4]]
+'dendrogram' with 1 branches and 20 members total, at height 0.722309 
+<br>
+[[5]]
+'dendrogram' with 1 branches and 19 members total, at height 0.721084 
+<br>
+[[6]]
+'dendrogram' with 1 branches and 17 members total, at height 0.710298 
+<br>
+&gt; <span class='functs'>length</span>&#40;gene_trees&#41;
+[1] 1547
+&gt; 
+&gt; <span class='comments'># construct a summary tree</span>
+&gt; species_tree &lt;- <span class='functs'>Zipline</span>&#40;gene_trees,
++ distance=<span class='chars'>&quot;edges&quot;</span>, <span class='comments'># choose distance measure</span>
++ bootstraps=<span class='numbers'>100</span>, <span class='comments'># number of bootstrap replicates</span>
++ processors=NULL&#41; <span class='comments'># use all CPUs</span>
+  |========================================| 100%
+<br>
+Time difference of 211.74 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the summary tree</span>
+&gt; <span class='functs'>plot</span>&#40;species_tree&#41;
+&gt; 
+&gt; <span class='comments'># optionally, output a Newick file</span>
+&gt; <span class='functs'>WriteDendrogram</span>&#40;species_tree, file=<span class='chars'>&quot;&quot;</span>&#41;
+(((('Brachypodium Distachyon':1.15974013,('Vigna Radiata':0,('Hordeum Vulgare Goldenpromise':1.020277101,('Gossypium Raimondii':0,'Hordeum Vulgare':1.027163752)'0.26':0.06270699534)'0.26':0.5226355698)'0.06':0.2650900662)'0':0.1088220048,('Arabidopsis Thaliana':0,('Aegilops Tauschii':0.886963178,('Solanum Tuberosum':0.09943447167,'Triticum Urartu':0.9005655283)'0.11':0.3063432162)'0.11':0.4159593989)'0.04':0.2134667621)'0':0.3589009797,(((('Prunus Dulcis':0.02409886598,'Setaria Italica':0.975901134)'0.08':0.1635212025,'Setaria Viridis':0.9108888397)'0.13':0.4923261857,'Marchantia Polymorpha':0)'0.01':0.2754227367,((('Phaseolus Vulgaris':0,'Eragrostis Tef':1.151230608)'0.08':0.2893039559,'Eragrostis Curvula':1.058647665)'0.06':0.2026906549,('Theobroma Cacao Matina':0,((('Brassica Napus':0,'Zea Mays':1.003627625)'0.35':0.223869828,'Sorghum Bicolor':0.83658518)'0.35':0.3335290899,('Chlamydomonas Reinhardtii':0,(('Malus Domestica Golden':0.1437167806,'Panicum Hallii Fil2':0.8562832194)'0.32':0.2945097102,'Panicum Hallii Hal2':0.8491722277)'0.38':0.5203053191)'0.17':0.5046315111)'0.01':0.2011246643)'0.02':0.1066289809)'0':0.2494489187)'0':0.1828469344)'0':0.09021009871,('Cucumis Sativus':0,((((('Oryza Meridionalis':0,'Trifolium Pratense':1.030095562)'0.34':0.4879089196,'Olea Europaea Sylvestris':0.9561726415)'0':0.4172130363,'Galdieria Sulphuraria':0)'0':0.3870871548,(('Prunus Persica':0,'Oryza Longistaminata':1.183869207)'0.1':0.2049658629,(('Capsicum Annuum':0.06941343062,'Oryza Rufipogon':0.9305865694)'0.09':0.4278390472,('Ostreococcus Lucimarinus':0,'Oryza Glumipatula':1.047447274)'0.06':0.1422292899)'0.02':0.3883494401)'0':0.2090227334)'0':0.2077721321,(('Arabidopsis Halleri':0,(('Chara Braunii':0,'Oryza Barthii':1.258400248)'0.04':0.4092308642,'Oryza Indica':1.2411002)'0.01':0.2964073207)'0':0.5425728061,('Oryza Punctata':0.8449515112,('Medicago Truncatula':0.09821259864,(('Prunus Avium':0.07260482098,'Oryza Brachyantha':0.927395179)'0.31':0.3978892782,'Leersia Perrieri':0.8873489322)'0.26':0.257668496)'0.08':0.3137395674)'0.05':0.258298256)'0':0.08897846848)'0':0.2258791662)'0':0.1845204834);</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

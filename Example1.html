@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Gallery Example 1
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2sel">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Gallery - Example 1</p>
+
+Below is the <a href="http://www.r-project.org/">R</a> code to reproduce the example:<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># load sequences into a database</span>
+&gt; fas &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;50S_ribosomal_protein_L2.fas&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;DECIPHER&quot;</span>&#41;
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;FASTA&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='chars'>&quot;&quot;</span>&#41;
+Reading FASTA file from line  1 to 1e+05
+<br>
+317 total sequences in table Seqs.
+Time difference of 0.15 secs
+<br>
+&gt; 
+&gt; <span class='comments'># identify the sequences based on genus</span>
+&gt; x &lt;- <span class='functs'>dbGetQuery</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;select description from Seqs&quot;</span>&#41;$description
+&gt; ns &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split=<span class='chars'>&quot; &quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;FUN=`[`,
++ &nbsp;&nbsp;&nbsp;<span class='numbers'>1L</span>&#41;&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=ns&#41;,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn&#41;
+Expression:
+update or replace Seqs set identifier = :identifier where row_names =
+:row_names
+<br>
+Added to table Seqs:  &quot;identifier&quot;.
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># align the translated sequences</span>
+&gt; dna &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;nameBy=<span class='chars'>&quot;identifier&quot;</span>&#41;
+Search Expression:
+select identifier, _Seqs.sequence from Seqs join _Seqs on
+Seqs.row_names = _Seqs.row_names where _Seqs.row_names
+in (select row_names from Seqs)
+<br>
+DNAStringSet of length: 317
+Time difference of 0.03 secs
+<br>
+&gt; AA &lt;- <span class='functs'>AlignTranslation</span>&#40;dna,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;AAStringSet&quot;</span>&#41;
+Determining distance matrix based on shared 4-mers:
+  |============================================| 100%
+<br>
+Time difference of 2.02 secs
+<br>
+Clustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.49 secs
+<br>
+Aligning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 5.2 secs
+<br>
+Determining distance matrix based on alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.36 secs
+<br>
+Reclustering into groups by similarity:
+  |============================================| 100%
+<br>
+Time difference of 0.44 secs
+<br>
+Realigning Sequences:
+  |============================================| 100%
+<br>
+Time difference of 5.75 secs
+<br>
+Refining the alignment:
+  |============================================| 100%
+<br>
+Time difference of 0.01 secs
+<br>
+&gt; <span class='functs'>Seqs2DB</span>&#40;AA,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;AAStringSet&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='chars'>&quot;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Aligned&quot;</span>&#41;
+Adding 317 sequences to the database.
+<br>
+317 total sequences in table Aligned.
+Time difference of 0.28 secs
+<br>
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=ns&#41;,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Aligned&quot;</span>&#41;
+Expression:
+update or replace Aligned set identifier = :identifier where
+row_names = :row_names
+<br>
+Added to table Aligned:  &quot;identifier&quot;.
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># form a consensus sequence for each genus</span>
+&gt; cons &lt;- <span class='functs'>IdConsensus</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Aligned&quot;</span>,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;AAStringSet&quot;</span>,
++ &nbsp;&nbsp;&nbsp;threshold=<span class='numbers'>0.5</span>,
++ &nbsp;&nbsp;&nbsp;minInformation=<span class='numbers'>0.5</span>&#41;
+  |============================================| 100%
+<br>
+Found consensus for 70 groups.
+Time difference of 1.08 secs
+<br>
+&gt; <span class='functs'>Seqs2DB</span>&#40;cons,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;DNAStringSet&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;identifier=<span class='chars'>&quot;&quot;</span>,
++ &nbsp;&nbsp;&nbsp;tblName=<span class='chars'>&quot;Consensus&quot;</span>&#41;
+Adding 70 sequences to the database.
+<br>
+70 total sequences in table Consensus.
+Time difference of 0.05 secs
+<br>
+&gt; aa &lt;- <span class='functs'>SearchDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;Consensus&quot;</span>,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;AAStringSet&quot;</span>,
++ &nbsp;&nbsp;&nbsp;nameBy=<span class='chars'>&quot;description&quot;</span>,
++ &nbsp;&nbsp;&nbsp;limit=<span class='chars'>&quot;<span class='numbers'>40</span>,<span class='numbers'>20</span>&quot;</span>,
++ &nbsp;&nbsp;&nbsp;removeGaps=<span class='chars'>&quot;common&quot;</span>&#41;
+Search Expression:
+select description, _Consensus.sequence from
+Consensus join _Consensus on Consensus.row_names =
+_Consensus.row_names where _Consensus.row_names in
+(select row_names from Consensus) limit 40,20
+<br>
+AAStringSet of length: 20
+Time difference of 0.01 secs
+<br>
+&gt; 
+&gt; <span class='comments'># view the sequences in a browser</span>
+&gt; <span class='functs'>BrowseSeqs</span>&#40;aa,
++ &nbsp;&nbsp;&nbsp;threshold=<span class='numbers'>0.5</span>,
++ &nbsp;&nbsp;&nbsp;minInformation=<span class='numbers'>0.5</span>,
++ &nbsp;&nbsp;&nbsp;colWidth=<span class='numbers'>60</span>&#41;
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;
+[1] TRUE</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

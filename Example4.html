@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Gallery Example 4
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2sel">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Gallery - Example 4</p>
+
+Below is the <a href="http://www.r-project.org/">R</a> code to reproduce the example:<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># import a GenBank sequence file</span>
+&gt; gen &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;Bacteria_175seqs.gen&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;DECIPHER&quot;</span>&#41;
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;gen,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;GenBank&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbConn,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;&quot;</span>&#41;
+Reading GenBank file chunk 1
+<br>
+175 total sequences in table Seqs.
+Time difference of 0.23 secs
+<br>
+&gt; 
+&gt; <span class='comments'># add rank information to the database</span>
+&gt; ids &lt;- <span class='functs'>IdentifyByRank</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;level=<span class='numbers'>10</span>,
++ &nbsp;&nbsp;&nbsp;add2tbl=TRUE&#41;
+<br>
+Updating column: &quot;identifier&quot;...
+Formed 72 distinct groups.
+Added to table Seqs: &quot;identifier&quot;.
+Time difference of 0.03 secs
+<br>
+&gt; 
+&gt; <span class='comments'># add length information to the database</span>
+&gt; lns &lt;- <span class='functs'>IdLengths</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;add2tbl=TRUE&#41;
+<br>
+Lengths counted for 175 sequences.
+Added to Seqs:  &quot;standard&quot;, &quot;nonstandard&quot;, and &quot;width&quot;.
+<br>
+&gt; 
+&gt; <span class='comments'># view the database table in a browser</span>
+&gt; <span class='functs'>BrowseDB</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;maxChars=<span class='numbers'>25</span>&#41;
+&gt; 
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;
+[1] TRUE</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>

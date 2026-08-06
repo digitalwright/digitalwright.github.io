@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<title>
+DECIPHER - Gallery Example 3
+</title>
+<link rel="stylesheet" type="text/css" href="data/theme.css">
+<script type="text/javascript" src="data/script.js"></script>
+</head>
+
+<body id="Body" onload="numberLines(); toggle();">
+<div id="Header"><a href="/"><img class="header" alt="DECIPHER logo" src="images/DECIPHER.png"></a><br clear="all"><br>
+<div id="Main">
+<ul id="NavBar">
+
+<li><a href="Alignment.html" class="l1">Alignment<span class="right">&#9656;</span></a></li>
+<li><a href="Classification.html" class="l1">Classification<span class="right">&#9656;</span></a></li>
+<li><a href="Homology.html" class="l1">Homology<span class="right">&#9656;</span></a></li>
+<li><a href="OligoDesign.html" class="l1">Oligo Design<span class="right">&#9656;</span></a></li>
+<li><a href="Phylogenetics.html" class="l1">Phylogenetics<span class="right">&#9656;</span></a></li>
+<li><a href="Tutorials.html" class="l1sub">Tutorials<span class="right">&#9662;</span></a></li>
+<li><a href="Gallery.html" class="l2sel">Examples Gallery</a></li>
+<li><a href="Documentation.html" class="l2">Documentation</a></li>
+<li><a href="RLessons.html" class="l2">R Lessons</a></li>
+<li><a href="Bioinformatics.html" class="l2">Bioinformatics</a></li>
+
+</ul>
+</div>
+
+<div id="ContentFrame">
+
+<ul id="TopBar">
+<li><a href="index.html" class="l1">Home</a></li>
+<li><a href="News.html" class="l1">News</a></li>
+<li><a href="Downloads.html" class="l1">Downloads</a></li>
+<li><a href="Contact.html" class="l1">Contact</a></li>
+<li><a href="Citations.html" class="l1">Citations</a></li>
+</ul>
+
+<div id="Content">
+
+<p class="c0">Gallery - Example 3</p>
+
+Below is the <a href="http://www.r-project.org/">R</a> code to reproduce the example:<br><br>
+<a id="displayText" href="javascript:toggle();">Hide output</a><br>
+
+<pre><span class="codebox"><span class="line"><span class='functs'>library</span>&#40;DECIPHER&#41;</span>
+&gt; <span class='functs'>library</span>&#40;RSQLite&#41;
+&gt; 
+&gt; <span class='comments'># load sequences into a database</span>
+&gt; fas &lt;- <span class='functs'>system.file</span>&#40;<span class='chars'>&quot;extdata&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;Streptomyces_ITS_aligned.fas&quot;</span>,
++ &nbsp;&nbsp;&nbsp;package=<span class='chars'>&quot;DECIPHER&quot;</span>&#41;
+&gt; dbConn &lt;- <span class='functs'>dbConnect</span>&#40;<span class='functs'>SQLite</span>&#40;&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;:memory:&quot;</span>&#41;
+&gt; <span class='functs'>Seqs2DB</span>&#40;fas,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;FASTA&quot;</span>,
++ &nbsp;&nbsp;&nbsp;dbFile=dbConn,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;&quot;</span>&#41;
+Reading FASTA file chunk 1
+<br>
+88 total sequences in table Seqs.
+Time difference of 0.03 secs
+<br>
+&gt; 
+&gt; <span class='comments'># identify the sequences by their species</span>
+&gt; x &lt;- <span class='functs'>dbGetQuery</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;select description from Seqs&quot;</span>&#41;$description
+&gt; x &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot;Streptomyces &quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;`[`,
++ &nbsp;&nbsp;&nbsp;<span class='numbers'>2L</span>&#41;&#41;
+&gt; x &lt;- <span class='functs'>unlist</span>&#40;<span class='functs'>lapply</span>&#40;<span class='functs'>strsplit</span>&#40;x,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='chars'>&quot; &quot;</span>&#41;,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>function</span>&#40;x&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if &#40;x[<span class='numbers'>1</span>]==<span class='chars'>&quot;sp.&quot;</span>&#41;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>return</span>&#40;x[<span class='numbers'>2</span>]&#41;
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x[<span class='numbers'>1</span>]
++ &nbsp;&nbsp;&nbsp;}&#41;&#41;
+&gt; x &lt;- <span class='functs'>ifelse</span>&#40;x==<span class='chars'>&quot;sp_AA4&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;S. AA4&quot;</span>,
++ &nbsp;&nbsp;&nbsp;<span class='functs'>paste</span>&#40;<span class='chars'>&quot;S.&quot;</span>,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&#41;&#41;
+&gt; <span class='functs'>Add2DB</span>&#40;myData=<span class='functs'>data.frame</span>&#40;identifier=x&#41;,
++ &nbsp;&nbsp;&nbsp;dbConn&#41;
+Expression:
+update or replace Seqs set identifier = :identifier where row_names =
+:row_names
+<br>
+Added to table Seqs:  &quot;identifier&quot;.
+Time difference of 0 secs
+<br>
+&gt; 
+&gt; <span class='comments'># form a consensus for each species</span>
+&gt; cons &lt;- <span class='functs'>IdConsensus</span>&#40;dbConn,
++ &nbsp;&nbsp;&nbsp;threshold=<span class='numbers'>0.3</span>,
++ &nbsp;&nbsp;&nbsp;minInformation=<span class='numbers'>0.1</span>&#41;
+  |============================================| 100%
+<br>
+Found consensus for 19 groups.
+Time difference of 0.26 secs
+<br>
+&gt; 
+&gt; <span class='comments'># calculate a maximum likelihood tree</span>
+&gt; dend &lt;- <span class='functs'>Treeline</span>&#40;cons,
++ &nbsp;&nbsp;&nbsp;method=<span class='chars'>&quot;ML&quot;</span>,
++ &nbsp;&nbsp;&nbsp;type=<span class='chars'>&quot;dendrogram&quot;</span>&#41;
+Constructing initial neighbor-joining tree:
+  |============================================| 100%
+<br>
+Fitting initial tree to models:
+JC69  -ln(L) = 4784, AICc = 9643, BIC = 9790
+K80   -ln(L) = 4734, AICc = 9544, BIC = 9695
+F81   -ln(L) = 4768, AICc = 9617, BIC = 9777
+HKY85 -ln(L) = 4711, AICc = 9507, BIC = 9670
+T92   -ln(L) = 4719, AICc = 9518, BIC = 9673
+TN93  -ln(L) = 4699, AICc = 9484, BIC = 9651
+SYM   -ln(L) = 4709, AICc = 9505, BIC = 9672
+GTR   -ln(L) = 4685, AICc = 9462, BIC = 9642
+<br>
+The selected model was:  GTR
+<br>
+Optimizing up to 400 candidate trees:
+Tree #177. -ln(L) = 4658.481 (0.000%), 3 Climbs, 0 Grafts of 0                 
+<br>
+Finalizing the best tree (#167):
+-ln(L) = 4658.481 (0.000%), 0 Climbs                                           
+<br>
+Model parameters:
+Frequency(A) = 0.208
+Frequency(C) = 0.255
+Frequency(G) = 0.347
+Frequency(T) = 0.190
+Rate A <-> C = 0.438
+Rate A <-> G = 1.191
+Rate A <-> T = 0.915
+Rate C <-> G = 0.545
+Rate C <-> T = 2.228
+Rate G <-> T = 1.000
+<br>
+Time difference of 11.3 secs
+<br>
+&gt; dend &lt;- <span class='functs'>dendrapply</span>&#40;dend,
++ &nbsp;&nbsp;&nbsp;FUN=<span class='functs'>function</span>&#40;n&#41; {
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>if</span>&#40;<span class='functs'>is.leaf</span>&#40;n&#41;&#41; 
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>attr</span>&#40;n, <span class='chars'>&quot;label&quot;</span>&#41; &lt;- 
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>as.expression</span>&#40;<span class='functs'>substitute</span>&#40;<span class='functs'>italic</span>&#40;leaf&#41;,
++ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class='functs'>list</span>&#40;leaf=<span class='functs'>attr</span>&#40;n, <span class='chars'>&quot;label&quot;</span>&#41;&#41;&#41;&#41;
++ &nbsp;&nbsp;&nbsp;n
++ &nbsp;&nbsp;&nbsp;}&#41;
+&gt; 
+&gt; <span class='comments'># display the phylogenetic tree</span>
+&gt; p &lt;- <span class='functs'>par</span>&#40;mar=<span class='functs'>c</span>&#40;<span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>1</span>, <span class='numbers'>10</span>&#41;,
++ &nbsp;&nbsp;&nbsp;xpd=TRUE&#41;
+&gt; <span class='functs'>plot</span>&#40;dend,
++ &nbsp;&nbsp;&nbsp;yaxt=<span class='chars'>&quot;n&quot;</span>,
++ &nbsp;&nbsp;&nbsp;horiz=TRUE&#41;
+&gt; <span class='functs'>arrows</span>&#40;<span class='numbers'>-0.2</span>, <span class='numbers'>2</span>, <span class='numbers'>0</span>, <span class='numbers'>2</span>,
++ &nbsp;&nbsp;&nbsp;angle=<span class='numbers'>90</span>,
++ &nbsp;&nbsp;&nbsp;length=<span class='numbers'>0.05</span>,
++ &nbsp;&nbsp;&nbsp;code=<span class='numbers'>3</span>&#41;
+&gt; <span class='functs'>text</span>&#40;<span class='numbers'>-0.1</span>, <span class='numbers'>2</span>,
++ &nbsp;&nbsp;&nbsp;<span class='chars'>&quot;0.2 subs./site&quot;</span>,
++ &nbsp;&nbsp;&nbsp;pos=<span class='numbers'>3</span>&#41;&#41;
+&gt; <span class='functs'>par</span>&#40;p&#41;
+&gt; 
+&gt; <span class='functs'>dbDisconnect</span>&#40;dbConn&#41;
+[1] TRUE</span></pre>
+
+</div>
+
+<div class="fadedScroller_fade"></div>
+
+</div>
+</div>
+<br />
+</body></html>
